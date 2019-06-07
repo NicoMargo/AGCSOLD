@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="CSS/Index.css">
+
+    <title>AGCS</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        #myInput {
+            background-image: url('/css/searchicon.png');
+            background-position: 10px 10px;
+            background-repeat: no-repeat;
+            width: 100%;
+            font-size: 16px;
+            padding: 12px 20px 12px 40px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+        }
+
+        #myTable {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #ddd;
+            font-size: 18px;
+        }
+
+        #myTable th,
+        #myTable td {
+            text-align: left;
+            padding: 12px;
+        }
+
+        #myTable tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        #myTable tr.header,
+        #myTable tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="row sticky-top">
+        <div class="bg-danger w-100">
+            <a href="index.html">
+                <h1 class="pl-5 offset-md-1 text-white float-left">AGCS</h1>
+            </a>
+            <div class="offset-md-9 pt-2">
+                <span class="text-white" id="empresa">Empresa</span>
+                <span class="ml-2 mr-2 text-white">|</span>
+                <span class="text-white" id="usuario">Usuario</span>
+                <span class="ml-2 mr-2 text-white">|</span>
+                <img src="./img/icon-user.png" alt="icono-User" class="w-10 mr-5">
+            </div>
+        </div>
+    </nav>
+
+
+
+    <div class="row">
+        <div class="col-md-1 bg-dark">
+            <aside>
+                <div class="mx-auto w-8 h-100">
+                    <a href=""><img class="mt-4 w-450" src="./img/camion.png" alt=""></a><br>
+                    <a href=""><img class="mt-4 w-450" src="./img/dinero.png" alt=""></a><br>
+                    <a href=""><img class="mt-4 w-450" src="./img/clientes.png" alt=""></a><br>
+                    <a href=""><img class="mt-4 w-450" src="./img/proveedores.png" alt=""></a><br>
+                    <a href=""><img class="mt-4 w-450" src="./img/diagrama.png" alt=""></a><br>
+                    <a href=""><img class="mt-4 w-450" src="./img/ajustes.png" alt=""></a>
+                </div>
+            </aside>
+        </div>
+        <div class="col-md-11"> 
+            <button type="button" class="btn btn-primary btn-lg btn-block">Configuracion 1</button>
+            <button type="button" class="btn btn-secondary btn-lg btn-block">Configuracion 2</button>
+            <button type="button" class="btn btn-warning btn-lg btn-block">Configuracion 3</button>
+            <button type="button" class="btn btn-info btn-lg btn-block">Configuracion 4</button>
+            <button type="button" class="btn btn-dark btn-lg btn-block">Configuracion 5</button>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,332 @@
+﻿@using AGCS.Models
+@model AGCS.Models.Client
+<!doctype html>
+<html lang="es">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/Table.css">
+    <link rel="stylesheet" href="~/css/MySiteCSS.css">
+    <title>AGCS</title>
+
+    <!--
+        Persona --- nombre apellido email id
+            Usuario --- Cod Admin
+            PersonaFiscal --- Dni/Cuit - Telefono - bla
+                Cliente - piso letra
+                Proveedor - address-->
+</head>
+
+    <body>
+
+                <div class="card">
+                    <div class="card-header">
+                        <strong class="card-title">Clientes</strong>
+                    </div>
+                    <div class="card-body content">
+                        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar Cliente">
+                        <button type="button" id="createClient" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
+                            Agregar Cliente
+                        </button>
+                        <table id="myTable" class="content">
+                            <tr class="header content">
+                                <th style="width:20%;">Apellido</th>
+                                <th style="width:15%;">Nombre</th>
+                                <th style="width:15%;">DNI/CUIT/CUIL</th>
+                                <th style="width:10%;">Celular</th>
+                                <th style="width:25%;">Email</th>
+                                <th style="width:10%;"></th>
+                                <th style="width:10%;"></th>
+                            </tr>
+                            @{
+                                for (int i = 0; i < ViewBag.Clients.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@ViewBag.Clients[i].Surname</td>
+                                        <td>@ViewBag.Clients[i].Name</td>
+                                        <td>@ViewBag.Clients[i].Dni</td>
+                                        <td>@ViewBag.Clients[i].Cellphone</td>
+                                        <td>@ViewBag.Clients[i].Email</td>
+                                        <td><a data-toggle="modal" data-target="#updateClient"><img position="@i" class="imageABM" src="~/images/edit.png" /></a></td>
+                                        <td><a data-toggle="modal" data-target="#confirmationModal"><img position="@i" class="w-50" src="~/images/delete.png" /></a></td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>
+ 
+
+        <!-- Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5 class="modal-title" id="confirmationModal">Esta seguro que quiere eliminar al cliente?</h5>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" id="confirm" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Extra large modal Create-->
+    <div class="modal fade bd-example-modal-xl" id="createClient" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Crear Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Apellido</span></strong>
+                            </div>
+                            <input id="modalCreateSurname" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nombre</span></strong>
+                            </div>
+                            <input id="modalCreateName" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>DNI/CUIT/CUIL</span></strong>
+                            </div>
+                            <input id="modalCreateDni" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Celular</span></strong>
+                            </div>
+                            <input id="modalCreateTelephone" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Email</span></strong>
+                            </div>
+                            <input id="modalCreateEmail" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Telefono</span></strong>
+                            </div>
+                            <input id="modalCreateCellphone" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-5">
+                        <h4 class="badge-pill badge-danger">Dirección</h4>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Localidad</span></strong>
+                            </div>
+                            <input id="modalCreateTown" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Direccion</span></strong>
+                            </div>
+                            <input id="modalCreateAddress" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Provincia</span></strong>
+                            </div>
+                            <select class="form-control">
+                                <option value="CABA">CABA</option>
+                                <option value="Buenos Aires">Buenos Aires</option>
+                                <option value="Mendoza">Mendoza</option>
+                                <option value="Santa Fé">Santa Fe</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Número</span></strong>
+                            </div>
+                            <input id="modalCreateNumber" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Piso</span></strong>
+                            </div>
+                            <input id="modalCreateFloor" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Letra</span></strong>
+                            </div>
+                            <input id="modalCreateAppartment" class="form-control text-center" type="text">
+                            <div class="validation_msg" id="msg_Nombre">dx</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secundary" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" id="newClient" data-dismiss="modal">Crear</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Extra large modal Update-->
+    <div class="modal fade bd-example-modal-xl" id="updateClient" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Datos Del Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Apellido</span></strong>
+                            </div>
+                            <input id="modalSurname" class="form-control text-center" type="text">
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nombre</span></strong>
+                            </div>
+                            <input id="modalName" class="form-control text-center" type="text">
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>DNI/CUIT/CUIL</span></strong>
+                            </div>
+                            <input id="modalDni" class="form-control text-center" type="text">
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Celular</span></strong>
+                            </div>
+                            <input id="modalTelephone" class="form-control text-center" type="text">
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Email</span></strong>
+                            </div>
+                            <input id="modelEmail" class="form-control text-center" type="text">
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Telefono</span></strong>
+                            </div>
+                            <input id="modalCellphone" class="form-control text-center" type="text">
+                        </div>
+                    </div>
+                    <div class="text-center mt-5">
+                        <h4 class="badge-pill badge-danger">Dirección</h4>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Localidad</span></strong>
+                            </div>
+                            <input id="modelTown" class="form-control text-center" type="text">
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Direccion</span></strong>
+                            </div>
+                            <input id="modelAddress" class="form-control text-center" type="text">
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Provincia</span></strong>
+                            </div>
+                            <select class="form-control">
+                                <option value="CABA">CABA</option>
+                                <option value="Buenos Aires">Buenos Aires</option>
+                                <option value="Mendoza">Mendoza</option>
+                                <option value="Santa Fé">Santa Fe</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Número</span></strong>
+                            </div>
+                            <input id="modelNumber" class="form-control text-center" type="text">
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Piso</span></strong>
+                            </div>
+                            <input id="modelFloor" class="form-control text-center" type="text">
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Letra</span></strong>
+                            </div>
+                            <input id="modelAppartment" class="form-control text-center" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secundary" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" id="Submit" data-dismiss="modal">Guardar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+        var urlGetOne = "@Url.Action("GetDataClient", "Backend")";
+        var urlUpdate = "@Url.Action("UpdateClient", "Backend")";
+        var urlDelete = "@Url.Action("DeleteClient", "Backend")";
+        var urlCreate = "@Url.Action("CreateClient", "Backend")";
+    </script>
+    <script src="~/js/ButtonIDClick.js"></script>
+    </body>
+
+</html>

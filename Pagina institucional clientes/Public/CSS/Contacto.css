@@ -1,0 +1,65 @@
+.DivContacto{
+    background-color: rgb(73, 137, 255);
+    border: rgb(26, 96, 224) solid 1px;
+    width: 50%;
+    margin: auto;
+    margin-top: 10px;
+    height: 50px;
+}
+.pContacto{
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 40px;
+    text-align: center;
+    line-height: 45px;
+}
+.DivContenedor{
+    box-sizing: border-box;
+    width: 50%;
+    margin: auto;
+    margin-top: 40px;
+    height: 350px;
+    border: rgb(0, 60, 170) solid 2px;
+}
+.Datos{
+    width: 50%;   
+    float: left;
+    margin-top: 115px;
+}
+.Titulo{
+    text-align: center;
+    font-weight:bold;
+    font-size: 30px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.Texto{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+    font-size: 15px;
+    text-decoration: underline;
+}
+.Transportes{
+    width: 50%; 
+    float: right;
+}
+ul{
+    float: left;
+}
+.Subte{
+float: right;
+margin-right: 95px;
+}
+.Map{
+    position: relative;
+    padding-bottom: 5%;
+  
+}
+.Map iframe {
+    width: 100% !important;
+}
+.MargenIzquierda{
+    margin-left: 50% !important;
+}
+.DIB{
+    display:inline-block;
+}

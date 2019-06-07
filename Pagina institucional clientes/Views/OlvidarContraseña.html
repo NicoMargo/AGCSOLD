@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+	<meta name="description" content="Jugueteria mayorista Alex">
+	<meta name="keywords" content="Jugueteria Alex, mayorista, juguetes, Alex jugueteria, Login, Iniciar Sesion, Iniciar, Sesion"> 
+
+    <title>Jugueteria Alex | Reestablecer Contraseña</title>
+    
+	<script type="text/javascript" src="Login/Login.js"></script>	
+
+    <link rel="stylesheet" type="text/css" href="../Public/CSS/Login.css">
+    <link rel="stylesheet" type="text/css" href="../Public/CSS/Index.css">	
+
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap/bootstrap css/bootstrap.css">
+    
+</head>
+<body>
+
+		<!--Header Dinamico-->
+        <div class="sticky-top">
+            <nav class="navbar navbar-dark encabezado navbar-expand-sm ">	  		  
+                    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                      <div class="navbar-nav ml-auto mr-auto text-center">
+                            <img src="img/Logo Alex.png" width="100" height="40" class="d-inline-block align-top mr-4" alt="Logo Alex">
+    
+                            <div><input class="search ml-5" name="search" type="search" placeholder="¿Qué estas buscando?"value=""></div>
+                      </div>
+              
+                      <div class="d-flex flex-row justify-content-center">
+                            <div class="Telefono mr-4">(011) 4951-9648</div>
+                      </div>
+              
+                    </div>
+                 </nav>
+                 
+             <!--Navbar Estatico-->
+             <nav class="navbar navbar-dark navegadorEncabezado navbar-expand-sm ">
+              
+                    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                      <div class="navbar-nav ml-auto mr-auto text-center">
+                          <a class="navegador active ml-5 pl-5" href="index.html">Inicio</a>
+                            <a class="navegador" href="#">Juguetes</a>
+    
+                            <div class="dropdown">
+                                <a class="navegador " id="dropdownMenuEnlace" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" href="index.html#Categorias" role="button">Categorías</a>
+    
+                                <div class="dropdown-menu" aria-labelledby="drowndownMenuEnlace">
+                                <a href="nenesnenas.html" class="dropdown-item">Nenes/Nenas</a>
+                                <a href="bebes.html" class="dropdown-item">Bebes</a>
+    
+                                </div>
+                        </div>					
+                          <a class="navegador" href="#Destacados">Destacados</a>
+                          <a class=" navegador" href="Marcas.html">Marcas</a>
+                          <a class="navegador" href="Contacto.html">Contacto</a>
+                    </div>		 
+                    
+                    <div class="d-flex flex-row justify-content-center">
+                        <img onclick="Acarrito()" src="img/carrito.svg" class="carrito mr-3 mt-1" width="38px" height="18%" class="mr-3" alt="carro">
+                        <!--<a class="nav-item nav-link mr-4 btn btn-primary" role="button" href="login.html">Mi Sesión</a>-->
+                        <img onclick="Alogin()" src="img/user1.png" style="opacity: 0.7;" width="45px" height="45px" alt="">
+                  </div>
+    
+                 </div>
+            </nav>
+        </div>
+
+<!--Formulario Login-->
+
+<section class="container mt-5 mb-5 mb-10">
+
+            
+        <div class="col-4 mx-auto mt-5">
+            <h3 class="text-uppercase text-center">REESTABLECER CONTRASEÑA</h3>
+        
+            <form action="" class="justify-content-center flex-column flex-md-row">
+        
+            <div class="form-group my-3 mx-2 ">
+                <label for="" class="mx-2">Nombre:</label>
+                <input type="text" required autocomplete="on" placeholder="Ingresa tu nombre" class="form-control">
+            </div>
+
+            <div class="form-group my-3 mx-2 ">
+                    <label for="" class="mx-2">Email:</label>
+                    <input type="email" required autocomplete="on" placeholder="Ingresa tu mail" class="form-control">
+            </div>
+            
+            <small id="emailHelp" class="form-text text-muted mx-2">Te enviaremos un código a tu bandeja de entrada para reestablecer la contraseña.</small>
+
+            <div class="form-group my-3 mx-4">
+                <button class="btn btn-primary float-right" type="submit">Enviar</button>
+                </div>
+            <br>
+ 
+            <div class="mt-1 mx-2 font-weight-bold">
+                <a href="login.html">Volver a iniciar sesión</a>
+            </div>
+        
+            </form>
+        </div>
+</section>
+<br><br>
+
+<!--Footer-->
+<div class="jumbotron mt-12 bg-primary bg-primary text-white rounded-0">
+    <div class="container">
+
+        <div>
+        <p class="lead">Marcas con las que trabajamos:</p> 
+        <img src="img/Marca Rondi.png" width="100px" class="mr-2" alt="Rondi">
+        <img src="img/Marca Ruibal.jpg" width="85" class="mr-2" alt="Ruibal">
+        <img src="img/Marca HotWheels.png" width="100px" class="mr-2" alt="HotWheels">
+        <img src="img/Marca Barbie.png" width="100px" class="mr-2" alt="Barbie">
+        <img src="img/Welly_b.png" width="100px" class="mr-2" alt="Welly">			
+        <img src="img/Marca Mattel.png" width="85" class="mr-2" alt="Mattel">
+        <img src="img/Marca Hasbro.png"  width="85px" class="mr-2" alt="Hasbro">
+        <img src="img/Marca Kinsmart.png" width="100px" class="mr-2" alt="Kinsmart">
+        <img src="img/Marca Playmobil.png" width="100px" class="mr-2" alt="Playmobil">
+        <img src="img/Marca Juliana.png" width="100px" class="mr-2" alt="Juliana">
+        </div>
+
+      <hr class="my-4">
+
+      <div class="d-flex justify-content-between align-items-center">
+        <p>© 2018 Alex Todos los derechos reservados</p>
+        <p>Sarmiento 2401</p>
+        <p>(011) 4951-9648</p>
+        <a  href="https://www.facebook.com/jugueteriaalexx/"><img src="img/facebook.svg" height="40" width="40" alt="Facebook"></a>  
+      </div>
+    </div>
+  </div>
+
+ <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+ <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+ <script src="bootstrap/bootstrap js/bootstrap.js"></script>
+ 
+</body>
+</html>

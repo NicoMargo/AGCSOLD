@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="CSS/Index.css">
+    
+    <title>AGCS</title>
+    <style>
+            * {
+              box-sizing: border-box;
+            }
+            
+            #myInput {
+              background-image: url('/css/searchicon.png');
+              background-position: 10px 10px;
+              background-repeat: no-repeat;
+              width: 100%;
+              font-size: 16px;
+              padding: 12px 20px 12px 40px;
+              border: 1px solid #ddd;
+              margin-bottom: 12px;
+            }
+            
+            #myTable {
+              border-collapse: collapse;
+              width: 100%;
+              border: 1px solid #ddd;
+              font-size: 18px;
+            }
+            
+            #myTable th, #myTable td {
+              text-align: left;
+              padding: 12px;
+            }
+            
+            #myTable tr {
+              border-bottom: 1px solid #ddd;
+            }
+            
+            #myTable tr.header, #myTable tr:hover {
+              background-color: #f1f1f1;
+            }
+            </style>
+  </head>
+  <body>
+     
+            <!-- Extra large modal -->
+
+
+    <div class="modal fade bd-example-modal-xl" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Datos Del Cliente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="offset-md-1 col-md-2">
+                        <div class="text-center">
+                            <strong><span>Apellido</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="Liu" type="text">
+                    </div>
+                    <div class="offset-md-1 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Nombre</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="Chino" type="text">
+                    </div>
+                    <div class="offset-md-1 col-md-2">
+                        <div class="text-center">
+                            <strong><span>DNI/CUIT/CUIL</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="43994080" type="text">
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="offset-md-1 col-md-2">
+                        <div class="text-center">
+                            <strong><span>Telefono</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="44322210" type="text">
+                    </div>
+                    <div class="offset-md-1 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Email</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="chino_Liu_2001@gmail.com" type="text">
+                    </div>  
+                    <div class="offset-md-1 col-md-2">
+                        <div class="text-center">
+                            <strong><span>Telefono 2</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="1549836476" type="text">
+                    </div>                 
+                </div>
+                <div class="text-center mt-5">
+                    <h4 class="badge-pill badge-danger" >Dirección</h4>
+                </div>
+                <div class="row mt-4">
+                    <div class="offset-md-1 col-md-2">
+                        <div class="text-center">
+                            <strong><span>Localidad</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="Caballito" type="text">
+                    </div>
+                    <div class="offset-md-1 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Direccion</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="Avenida Rivadavia" type="text">
+                    </div> 
+                    <div class="offset-md-1 col-md-2">
+                        <div class="text-center">
+                            <strong><span>Provincia</span></strong>
+                        </div>                      
+                        <select class="form-control">
+                            <option value="CABA">CABA</option>
+                            <option value="Buenos Aires">Buenos Aires</option>
+                            <option value="Mendoza">Mendoza</option>
+                            <option value="Santa Fé">Santa Fe</option>
+                        </select>
+                    </div>                  
+                </div>
+                <div class="row mt-4">
+                    <div class="offset-md-1 col-md-2">
+                        <div class="text-center">
+                            <strong><span>Número</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="5985" type="text">
+                    </div>
+                    <div class="offset-md-1 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Piso</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="5" type="text">
+                    </div> 
+                    <div class="offset-md-1 col-md-2">
+                        <div class="text-center">
+                            <strong><span>Letra</span></strong>
+                        </div>                      
+                        <input class="form-control text-center" value="A" type="text">
+                    </div>                  
+                </div>
+                                  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secundary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <nav class="row sticky-top" >		
+        <div class="bg-danger w-100">
+            <a href="index.html"><h1 class="pl-5 offset-md-1 text-white float-left">AGCS</h1></a>
+            <div class="offset-md-9 pt-2">
+                <span class="text-white" id="empresa">Empresa</span>
+                <span class="ml-2 mr-2 text-white">|</span>
+                <span class="text-white" id="usuario">Usuario</span>
+                <span class="ml-2 mr-2 text-white">|</span>
+                <img src="./img/icon-user.png" alt="icono-User" class="w-10 mr-5">
+            </div>
+      </div>	
+    </nav>
+
+    
+      <div class="row">
+        <div class="col-md-1 bg-dark">
+          <aside>
+            <div class="mx-auto w-8 h-100">
+              <a href=""><img class="mt-4 w-450" src="./img/camion.png" alt=""></a><br>             
+              <a href=""><img class="mt-4 w-450" src="./img/dinero.png" alt=""></a><br>
+              <a href=""><img class="mt-4 w-450" src="./img/clientes.png" alt=""></a><br>
+              <a href=""><img class="mt-4 w-450" src="./img/proveedores.png" alt=""></a><br>
+              <a href=""><img class="mt-4 w-450" src="./img/diagrama.png" alt=""></a><br>
+              <a href=""><img class="mt-4 w-450" src="./img/ajustes.png" alt=""></a>			
+              </aside>
+        </div>
+        <div class="col-lg-11">
+          <div class="content mt-3">
+            <div class="animated fadeIn">    
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Clientes</strong>
+                            </div>
+                            <div class="card-body">
+                                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar Cliente" title="Type in a name">
+                                    <table id="myTable">
+                                            <tr class="header">
+                                              <th style="width:20%;">Apellido</th>
+                                              <th style="width:20%;">Nombre</th>
+                                              <th style="width:15%;">DNI/CUIT/CUIL</th>
+                                              <th style="width:15%;">Teléfono</th>
+                                              <th style="width:30%;">Email</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Liu</td>
+                                                <td>Chino</td>
+                                                <td>43994080</td>
+                                                <td>44325567</td>
+                                                <td>Chino@gmail.com</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Margossian</td>
+                                                <td>Chino</td>
+                                                <td>43994080</td>
+                                                <td>44325567</td>
+                                                <td>Chino@gmail.com</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lombardi</td>
+                                                <td>Chino</td>
+                                                <td>43994080</td>
+                                                <td>44325567</td>
+                                                <td>Chino@gmail.com</td>
+                                            </tr>
+                                            <tr>
+                                                    <td>Arru</td>
+                                                    <td>Chino</td>
+                                                    <td>43994080</td>
+                                                    <td>44325567</td>
+                                                    <td>Chino@gmail.com</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Caputo</td>
+                                                    <td>Chino</td>
+                                                    <td>43994080</td>
+                                                    <td>44325567</td>
+                                                    <td>Chino@gmail.com</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Bruno</td>
+                                                    <td>Chino</td>
+                                                    <td>43994080</td>
+                                                    <td>44325567</td>
+                                                    <td>Chino@gmail.com</td>
+                                                </tr>
+                                                <tr>
+                                                        <td>Gibaut</td>
+                                                        <td>Chino</td>
+                                                        <td>43994080</td>
+                                                        <td>44325567</td>
+                                                        <td>Chino@gmail.com</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Lerner</td>
+                                                        <td>Chino</td>
+                                                        <td>43994080</td>
+                                                        <td>44325567</td>
+                                                        <td>Chino@gmail.com</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Kemensky</td>
+                                                        <td>Chino</td>
+                                                        <td>43994080</td>
+                                                        <td>44325567</td>
+                                                        <td>Chino@gmail.com</td>
+                                                    </tr>
+                                                    <tr>
+                                                            <td>Washi</td>
+                                                            <td>Chino</td>
+                                                            <td>43994080</td>
+                                                            <td>44325567</td>
+                                                            <td>Chino@gmail.com</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Ramos</td>
+                                                            <td>Chino</td>
+                                                            <td>43994080</td>
+                                                            <td>44325567</td>
+                                                            <td>Chino@gmail.com</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Binker</td>
+                                                            <td>Chino</td>
+                                                            <td>43994080</td>
+                                                            <td>44325567</td>
+                                                            <td>Chino@gmail.com</td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>Macri</td>
+                                                                <td>Chino</td>
+                                                                <td>43994080</td>
+                                                                <td>44325567</td>
+                                                                <td>Chino@gmail.com</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>XD</td>
+                                                                <td>Chino</td>
+                                                                <td>43994080</td>
+                                                                <td>44325567</td>
+                                                                <td>Chino@gmail.com</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Jojo</td>
+                                                                <td>Chino</td>
+                                                                <td>43994080</td>
+                                                                <td>44325567</td>
+                                                                <td>Chino@gmail.com</td>
+                                                            </tr>
+                                                            <tr>
+                                                                    <td>Lisa Lisa</td>
+                                                                    <td>Chino</td>
+                                                                    <td>43994080</td>
+                                                                    <td>44325567</td>
+                                                                    <td>Chino@gmail.com</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Speedwagon</td>
+                                                                    <td>Chino</td>
+                                                                    <td>43994080</td>
+                                                                    <td>44325567</td>
+                                                                    <td>Chino@gmail.com</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Patricio Amigo Satanico Del Chino</td>
+                                                                    <td>Chino</td>
+                                                                    <td>43994080</td>
+                                                                    <td>44325567</td>
+                                                                    <td>Chino@gmail.com</td>
+                                                                </tr>
+                                                                <tr>
+                                                                        <td>Gabo</td>
+                                                                        <td>Chino</td>
+                                                                        <td>43994080</td>
+                                                                        <td>44325567</td>
+                                                                        <td>Chino@gmail.com</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Saidman</td>
+                                                                        <td>Chino</td>
+                                                                        <td>43994080</td>
+                                                                        <td>44325567</td>
+                                                                        <td>Chino@gmail.com</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Santos</td>
+                                                                        <td>Chino</td>
+                                                                        <td>43994080</td>
+                                                                        <td>44325567</td>
+                                                                        <td>Chino@gmail.com</td>
+                                                                    </tr>
+                                          </table>    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+
+            $(document).ready(function() {
+            $('#myModal').modal('show')
+            function myFunction() {
+              // Declare variables 
+              var input, filter, table, tr, td, i, txtValue;
+              input = document.getElementById("myInput");
+              filter = input.value.toUpperCase();
+              table = document.getElementById("myTable");
+              tr = table.getElementsByTagName("tr");
+            
+              // Loop through all table rows, and hide those who don't match the search query
+              for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                  txtValue = td.textContent || td.innerText;
+                  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                  } else {
+                    tr[i].style.display = "none";
+                  }
+                } 
+              }
+            }
+        });
+            </script>
+</body>
+</html>

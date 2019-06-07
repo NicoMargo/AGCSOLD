@@ -1,0 +1,11 @@
+﻿.imageABM {
+    width: 30%;
+}
+
+.validation_msg {
+    color : red;
+}
+
+.validation_error {
+    border-color: red;
+}
