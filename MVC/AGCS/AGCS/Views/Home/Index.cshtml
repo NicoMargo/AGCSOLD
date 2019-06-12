@@ -1,15 +1,65 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_LogInLayout.cshtml";
 }
-<p>
-    Learn how to build ASP.NET apps that can run anywhere.
-    <a class="btn btn-default" href="@Url.Action("Pruebas", "Backend")">
-        Pruebas
-    </a>
-</p>
-<p>
-    Learn how to build ASP.NET apps that can run anywhere.
-    <a class="btn btn-default" href="@Url.Action("ABMClientes", "Backend")">
-        ABMClientes
-    </a>
-</p>
+
+<header class="bg-primary text-white">
+    <section class="mt-2 jumbotron bg-primary text-center">
+        <form method="post" action="@Url.Action("Index", "Backend")">
+            <div class="container ">
+                <h3 class="pt-3 jumbotron-heading">Ingrese las Credenciales</h3>
+                <div class="mt-5">
+                    <input type="text" class="w-25 form-control d-inline-block" placeholder="Email">
+                    <input type="password" class="w-25 form-control d-inline-block" placeholder="Contraseña Empresa">
+                    <input type="password" class="w-25 form-control d-inline-block" placeholder="Contraseña Usuario">
+                </div>
+            </div>
+            <div class="container">
+                <button type="submit" class="col-md-9 mt-4 btn btn-success">Iniciar Sesion</button>
+            </div>
+        </form>        
+    </section>
+</header>
+<div class="container">
+    <div>
+        <h2 class="text-center">Ayudamos a resolver los problemas de tu sector</h2><hr>
+        <p class="lead text-center">UN SOFTWARE <strong>FÁCIL</strong>, <strong>FLEXIBLE </strong>Y <strong>RÁPIDO</strong></p>
+    </div>
+    <div class="row gap-y text-center">
+        <div class="col-md-6 col-xl-4 feature-1">
+            <p class="feature-icon"><i class="icon-wallet" style="color: #c10071;"></i></p>
+            <h5>Ventas</h5>
+            <p>Gestioná las ventas de tu negocio, emití comprobantes, facturas y presupuestos fácilmente.</p>
+        </div><div class="col-md-6 col-xl-4 feature-1">
+            <p class="feature-icon"><i class="icon-basket" style="color: #0e97ff;"></i></p>
+            <h5>Compras</h5>
+            <p>Administrá tus compras y gastos. Actualizá el costo de tus productos de una manera sencilla y cómoda.</p>
+        </div><div class="col-md-6 col-xl-4 feature-1">
+            <p class="feature-icon"><i class="icon-toolbox" style="color: #7a54d8;"></i></p>
+            <h5>Stock</h5>
+            <p>Controlá tu stock en todo momento. Establecé un stock crítico y realizá fácilmente un inventario.</p>
+        </div><div class="col-md-6 col-xl-4 feature-1">
+            <p class="feature-icon"><i class="icon-document" style="color: #78cf18;"></i></p>
+            <h5>Facturación Electrónica</h5>
+            <p>Emití facturas electrónicas de forma fácil y rápida. Ahorrá al no tener que comprar controlador fiscal.</p>
+        </div><div class="col-md-6 col-xl-4 feature-1">
+            <p class="feature-icon"><i class="fa fa-barcode" style="color: #191919;"></i></p>
+            <h5>Lector de Código de Barras</h5>
+            <p>Generá e imprimí etiquetas de código de barras para tus productos y así integrar lectores de código.</p>
+        </div><div class="col-md-6 col-xl-4 feature-1">
+            <p class="feature-icon"><i class="icon-book-open" style="color: #fb8302;"></i></p>
+            <h5>Cuentas Corrientes</h5>
+            <p>Controlá los pagos a tus proveedores y los cobros a tus clientes fácilmente, emitiendo los recibos.</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

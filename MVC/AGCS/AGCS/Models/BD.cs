@@ -35,8 +35,8 @@ namespace AGCS.Models
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spGetClients";
-            CommandConnection.Parameters.AddWithValue("@idBusiness", idBusiness);
+            CommandConnection.CommandText = "spClientsGet";
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
             MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
             while (ConnectionReader.Read())
             {
@@ -68,9 +68,9 @@ namespace AGCS.Models
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spGetOneClient";
+            CommandConnection.CommandText = "spClientGetOne";
             CommandConnection.Parameters.AddWithValue("@id", idClient);
-            CommandConnection.Parameters.AddWithValue("@idBusiness", idBusiness);
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
             MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
             if (ConnectionReader.Read())
             {
@@ -78,9 +78,10 @@ namespace AGCS.Models
                 Convert.ToInt32(ConnectionReader["idClients"]),
                 ConnectionReader["Name"].ToString(),
                 ConnectionReader["Surname"].ToString(),
-                Convert.ToInt32(ConnectionReader["DNI_CUIT"]),
+                Convert.ToInt32(ConnectionReader["DNI_CUIT"]), 
                 ConnectionReader["eMail"].ToString(),
-                Convert.ToInt32(ConnectionReader["Telephone"]));
+                Convert.ToInt32(ConnectionReader["Telephone"]),
+                Convert.ToInt32(ConnectionReader["Cellphone"]));
                 /*Addres info ...*/
             }
             else { client = null; }
@@ -93,7 +94,7 @@ namespace AGCS.Models
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spInsertClient";
+            CommandConnection.CommandText = "spClientInsert";
             CommandConnection.Parameters.AddWithValue("@idBusiness", idBusiness);
             CommandConnection.Parameters.AddWithValue("@Name", client.Name);
             CommandConnection.Parameters.AddWithValue("@Surname", client.Surname);
@@ -115,7 +116,7 @@ namespace AGCS.Models
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spUpdateClient";
+            CommandConnection.CommandText = "spClientUpdate";
             CommandConnection.Parameters.AddWithValue("@id", client.Id);
             CommandConnection.Parameters.AddWithValue("@idBusiness", idBusiness);
             CommandConnection.Parameters.AddWithValue("@Name", client.Name);
@@ -139,9 +140,9 @@ namespace AGCS.Models
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spDeleteClient";
+            CommandConnection.CommandText = "spClientDelete";
             CommandConnection.Parameters.AddWithValue("@id", id);
-            CommandConnection.Parameters.AddWithValue("@idBusiness", idBusiness);
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
             CommandConnection.ExecuteNonQuery();
             Disconect(Connection);
         }
