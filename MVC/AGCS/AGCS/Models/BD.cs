@@ -54,7 +54,7 @@ namespace AGCS.Models
                     try { dni = Convert.ToInt32(ConnectionReader["DNI_CUIT"]); } catch (Exception e) { dni = -1; }
                     try { eMail = ConnectionReader["eMail"].ToString(); } catch (Exception e) { eMail = ""; }
                     try { telephone = Convert.ToInt32(ConnectionReader["Telephone"]); } catch (Exception e) { telephone = -1; }
-                    Client client = new Client(id, name, surname, dni, eMail, telephone);
+                    Client client = new Client(id, name, surname, eMail, telephone, dni);
                     ListOfClients.Add(client);
                 }
                 catch (Exception e) { }

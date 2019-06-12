@@ -32,7 +32,7 @@ namespace AGCS.Models
             _floor = Floor;
         }
         //New Client
-        public Client( string Name, string Surname, int dni, string email, int Telephone, int Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
+        public Client(string Name, string Surname, int dni, string email, int Telephone, int Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(999, Name, Surname, email, Telephone, Cellphone)
         {            
             _town = Town;
             _Address = Address;
@@ -42,7 +42,6 @@ namespace AGCS.Models
             _floor = Floor;
         }
 
-       
         public int Dni { get => _dni; }       
         public string Town { get => _town; }
         public string Address { get => _Address; }
