@@ -14,14 +14,14 @@ namespace AGCS.Models
         protected int telephone;
         protected int cellphone;
 
-        protected Person(int id, string name, string surname, string email, int telephone, int cellphone)
+        protected Person(int id, string name, string surname, string email, int cellphone, int telephone)
         {
             this.id = id;
             this.name = name;
             this.surname = surname;
             this.email = email;
-            this.telephone = telephone;
             this.cellphone = cellphone;
+            this.telephone = telephone;
         }
 
         protected Person(int id, string name, string surname, string email, int cellphone)

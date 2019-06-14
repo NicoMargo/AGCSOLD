@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $(".imageABM").click(function () {
+    $(".updateClient").click(function () {
         let Index = $(this).attr("position");
         $.ajax({
             type: "POST",

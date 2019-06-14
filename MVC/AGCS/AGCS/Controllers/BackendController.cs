@@ -31,14 +31,14 @@ namespace AGCS.Controllers
         public JsonResult GetDataClient(int pos)
         {
             BD.GetOneClient(BD.ListOfClients[pos].Id, BD.idBusiness);
-            string JsonDataClient = JsonConvert.SerializeObject(BD.OneClient);
+            string JsonDataClient = JsonConvert.SerializeObject(BD.SelectedClient);
             return Json(JsonDataClient);            
         }
         [HttpPost]
-        public bool UpdateClient(string Surname, string Name, int dni, string email, int Telephone, int Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
+        public bool UpdateClient(string Surname, string Name, int Dni, string email, int Telephone, int Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
         {
             bool Success = true;
-            Client cUpdateClient = new Client(BD.OneClient.Id, Name, Surname,dni,email,Telephone,Cellphone);
+            Client cUpdateClient = new Client(BD.SelectedClient.Id, Name, Surname,Dni,email,Telephone,Cellphone);
             try
             {
                 BD.UpdateClient(cUpdateClient);                
@@ -51,19 +51,19 @@ namespace AGCS.Controllers
             return Success;
         }
         [HttpPost]
-        public bool CreateClient(string Surname="" , string Name="" , int dni = 0, string email = "", int Telephone = 0, int Cellphone = 0, string Town = "", string Address = "", string Province = "", string Leter = "", int Number = 0, int Floor = 0)
+        public bool CreateClient(string surname="" , string name="" , int dni = 0, string email = "", int telephone = 0, int cellphone = 0, string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
         {
             bool Success = true;
-            Client NewClient = new Client(Name, Surname, dni, email, Telephone, Cellphone, Town, Address, Province, Leter, Number, Floor);
-            try
-            {
-                BD.InsertClient(NewClient);
+            Client NewClient = new Client(name, surname, dni, email, telephone, cellphone);
+            //try
+            //{
+                BD.InsertClient(NewClient);/*
             }
             catch
             {
                  Success = false;
             }
-
+            */
             return Success;
         }
         [HttpDelete]

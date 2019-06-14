@@ -1,4 +1,4 @@
-﻿.imageABM {
+﻿.imgClientUpdate {
     width: 30%;
 }
 
@@ -8,4 +8,8 @@
 
 .validation_error {
     border-color: red;
+}
+
+.hidden {
+    display : none;
 }

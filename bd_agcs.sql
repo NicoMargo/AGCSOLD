@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 24-05-2019 a las 14:26:25
+-- Tiempo de generación: 14-06-2019 a las 15:17:21
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -21,8 +21,93 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `bd_agcs`
 --
-CREATE DATABASE IF NOT EXISTS `bd_agcs` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `bd_agcs`;
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+DROP PROCEDURE IF EXISTS `spClientDelete`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientDelete` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
+if(EXISTS(SELECT clients.idClients FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
+THEN
+	DELETE from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness;
+end IF$$
+
+DROP PROCEDURE IF EXISTS `spClientGetOne`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetOne` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
+SELECT * FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness$$
+
+DROP PROCEDURE IF EXISTS `spClientInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_CUIT` INT, IN `pEmail` VARCHAR(45), IN `pTelephone` INT, IN `pCellphone` INT)  NO SQL
+if( pIdBusiness > -1 && pName != "" && pSurname != "" && pDNI_CUIT != 0 )
+then
+	insert into clients(clients.Name,clients.Surname,clients.DNI_CUIT,clients.Business_idBusiness) values( pName, pSurname, pDNI_CUIT, pIdBusiness);
+	
+    set @lastId = (select clients.idClients from clients where clients.idClients = LAST_INSERT_ID() and clients.Name = pName and clients.Surname = pSurname and clients.DNI_CUIT = pDNI_CUIT and clients.Business_idBusiness = pIdBusiness);
+	
+    if(@lastId is not null)
+    then
+    
+		if( pEmail is not null  /*and pEmail != (SELECT clients.eMail from clients where clients.idClients = @lastId)*/) 
+		THEN
+			UPDATE clients set clients.eMail = pEmail WHERE clients.idClients = @lastId and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pTelephone is not null  /*and pTelephone != (SELECT clients.Telephone from clients where clients.idClients = @lastId)*/) 
+		THEN
+			UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = @lastId and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pCellphone is not null /*and pCellphone != (SELECT clients.Cellphone from clients where clients.idClients = @lastId)*/) 
+		THEN
+			UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = @lastId and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+    
+    end if;
+end if$$
+
+DROP PROCEDURE IF EXISTS `spClientsGet`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientsGet` (IN `pIdBusiness` INT)  NO SQL
+SELECT clients.idClients, clients.Name, clients.Surname, clients.DNI_CUIT, clients.eMail,clients.Cellphone FROM clients where clients.Business_idBusiness = pIdBusiness$$
+
+DROP PROCEDURE IF EXISTS `spClientUpdate`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` INT(20), IN `pEmail` VARCHAR(45), IN `pTelephone` INT, IN `pCellphone` INT)  NO SQL
+if(EXISTS(SELECT clients.idClients from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
+THEN
+	
+	if( pName is not null and pName!= (SELECT clients.Name from clients where clients.idClients = id) ) 
+    THEN
+    	UPDATE clients set Name = pName WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+    
+	if( pSurname is not null and pSurname != (SELECT clients.Surname from clients where clients.idClients = id)) 
+    THEN
+    	UPDATE clients set clients.Surname = pSurname WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+    
+    if( pDNI_CUIT is not null and pDNI_CUIT != (SELECT clients.DNI_CUIT from clients where clients.idClients = id)) 
+    THEN
+    	UPDATE clients set clients.DNI_CUIT = pDNI_CUIT WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+    
+    if( pEmail is not null and pEmail != (SELECT clients.eMail from clients where clients.idClients = id)) 
+    THEN
+    	UPDATE clients set clients.eMail = pEmail WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+    
+    if( pTelephone is not null and pTelephone != (SELECT clients.Telephone from clients where clients.idClients = id)) 
+    THEN
+    	UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+    
+	if( pCellphone is not null and pCellphone != (SELECT clients.Cellphone from clients where clients.idClients = id)) 
+    THEN
+    	UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+
+end if$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -114,22 +199,26 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `DNI_CUIT` int(11) DEFAULT NULL,
   `eMail` varchar(45) DEFAULT NULL,
   `Telephone` int(11) DEFAULT NULL,
+  `Cellphone` int(11) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idClients`,`Business_idBusiness`),
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
 --
 
-INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Business_idBusiness`) VALUES
-(3, 'milk', 'chichi', 555, 'milk123', 0, 1),
-(4, 'Don Juan', 'Equisde', 44444555, 'juan@mail.cim', 45678912, 1),
-(5, 'Carlitos', 'perez', 43212345, 'carlomagno@gmail.cim', 49889944, 1),
-(6, 'Don Juan', 'Equisde', 44444555, 'juan@mail.cim', 45678912, 1),
-(11, 'goku', 'son', 65665, 'fjkhsgdfjsdghj', 677677, 1),
-(20, 'asdf', 'sdafa', 345, 'dsfgsdfg', 0, 1);
+INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Cellphone`, `Business_idBusiness`) VALUES
+(5, 'Carlitos', 'pereza', 0, 'carlomagno@gmail.cim', 30748787, 0, 1),
+(6, 'Don Juan', 'Equisde', 44444555, 'juan@mail.cim', 45678912, 0, 1),
+(7, 'Robot de', 'Prueba', 17, 'c17@patrullaroja.com', NULL, 0, 1),
+(8, 'Yare Yare', 'Dawa', 0, 'bot01@mail.com', 0, 0, 1),
+(22, 'Margosian', '11', 0, NULL, NULL, 111, 1),
+(23, 'test', 'prueba', 123456, NULL, NULL, 43214321, 1),
+(25, 'nombre', 'apellido', 987654321, NULL, NULL, 40005000, 1),
+(26, 'b', 'a', 1, NULL, NULL, NULL, 1),
+(27, 'b', 'a', 1, 'c', 3, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -268,12 +357,12 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `Name` varchar(45) DEFAULT NULL,
   `Surname` varchar(45) DEFAULT NULL,
   `Telephone` int(11) DEFAULT NULL,
+  `Cellphone` int(11) NOT NULL,
   `Factory_Plant` varchar(45) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
-  `Address_idAddress` int(11) NOT NULL,
-  PRIMARY KEY (`idSupplier`,`Business_idBusiness`,`Address_idAddress`),
-  KEY `fk_Supplier_Business1_idx` (`Business_idBusiness`),
-  KEY `fk_Supplier_Address1_idx` (`Address_idAddress`)
+  `Address` varchar(200) NOT NULL,
+  PRIMARY KEY (`idSupplier`,`Business_idBusiness`),
+  KEY `fk_Supplier_Business1_idx` (`Business_idBusiness`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -389,7 +478,6 @@ ALTER TABLE `purchases_x_products`
 -- Filtros para la tabla `suppliers`
 --
 ALTER TABLE `suppliers`
-  ADD CONSTRAINT `fk_Supplier_Address1` FOREIGN KEY (`Address_idAddress`) REFERENCES `address` (`idAddress`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Supplier_Business1` FOREIGN KEY (`Business_idBusiness`) REFERENCES `business` (`idBusiness`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
