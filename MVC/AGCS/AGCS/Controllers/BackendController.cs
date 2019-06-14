@@ -26,7 +26,17 @@ namespace AGCS.Controllers
             ViewBag.Clients = BD.ListOfClients;
             return View();
         }
-        
+        public ActionResult CreateBill()
+        {
+            return View();
+        }
+        [HttpPost]
+        public JsonResult GetProductToEnter(int id)
+        {
+            Product myProduct = new Product (12, "Manga Yakusoku No Neverland N°2",658,23);
+            string JsonDataClient = JsonConvert.SerializeObject(myProduct);
+            return Json(JsonDataClient);
+        } 
         [HttpPost]
         public JsonResult GetDataClient(int pos)
         {
