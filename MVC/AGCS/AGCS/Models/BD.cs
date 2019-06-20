@@ -9,8 +9,8 @@ namespace AGCS.Models
 {
     public class BD
     {
-       //public static string connectionString = "Server=127.0.0.1;User=root;Database=pruebaclientes"; //Anush
-        public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
+       public static string connectionString = "Server=127.0.0.1;User=root;Database=bd_agcs"; //Anush
+       // public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
         public static List<Client> ListOfClients = new List<Client>();
         public static Client OneClient;
         public static int idBusiness = 1;
