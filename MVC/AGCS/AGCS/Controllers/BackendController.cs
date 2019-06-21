@@ -12,7 +12,7 @@ namespace AGCS.Controllers
 {
     public class BackendController : Controller
     {
-       
+    
         // GET: Backend
         public ActionResult Index()
         {
@@ -33,8 +33,36 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetProductToEnter(int id)
         {
-            Product myProduct = new Product (12, "Manga Yakusoku No Neverland N°2",658,23);
-            string JsonDataClient = JsonConvert.SerializeObject(myProduct);
+            Product[] MyProducts;
+            MyProducts = new Product[4];
+            Product myProduct = new Product (0, "Manga Yakusoku No Neverland N°1",658,23);
+            Product myProduct2 = new Product(1, "Manga Yakusoku No Neverland N°2", 658, 23);
+            Product myProduct3 = new Product(2, "Manga Yakusoku No Neverland N°3", 658, 23);
+            Product myProduct4 = new Product(3, "Manga Yakusoku No Neverland N°4", 658, 23);
+            MyProducts[0] = myProduct;
+            MyProducts[1] = myProduct2;
+            MyProducts[2] = myProduct3;
+            MyProducts[3] = myProduct4;
+            string JsonDataClient;
+            switch (id)
+            {
+                case 1:
+                    JsonDataClient = JsonConvert.SerializeObject(myProduct);
+                    break;
+                case 2:
+                    JsonDataClient = JsonConvert.SerializeObject(myProduct2);
+                    break;
+                case 3:
+                    JsonDataClient = JsonConvert.SerializeObject(myProduct3);
+                    break;
+                case 4:
+                    JsonDataClient = JsonConvert.SerializeObject(myProduct4);
+                    break;
+                default:
+                    JsonDataClient = JsonConvert.SerializeObject(myProduct);
+                    break;
+            }
+           
             return Json(JsonDataClient);
         } 
         [HttpPost]
