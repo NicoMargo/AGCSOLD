@@ -34,15 +34,23 @@ namespace AGCS.Controllers
         public JsonResult GetProductToEnter(int id)
         {
             Product[] MyProducts;
-            MyProducts = new Product[4];
-            Product myProduct = new Product (0, "Manga Yakusoku No Neverland N°1",658,23);
+            MyProducts = new Product[10];
+            Product myProduct  = new Product(0, "Manga Yakusoku No Neverland N°1", 658, 23);
             Product myProduct2 = new Product(1, "Manga Yakusoku No Neverland N°2", 658, 23);
             Product myProduct3 = new Product(2, "Manga Yakusoku No Neverland N°3", 658, 23);
             Product myProduct4 = new Product(3, "Manga Yakusoku No Neverland N°4", 658, 23);
+            Product myProduct5 = new Product(4, "Manga Yakusoku No Neverland N°5", 658, 23);
+            Product myProduct6 = new Product(5, "Manga Yakusoku No Neverland N°6", 658, 23);
+            Product myProduct7 = new Product(6, "Manga Yakusoku No Neverland N°7", 658, 23);
+            Product myProduct8 = new Product(7, "Manga Yakusoku No Neverland N°8", 658, 23);
             MyProducts[0] = myProduct;
             MyProducts[1] = myProduct2;
             MyProducts[2] = myProduct3;
             MyProducts[3] = myProduct4;
+            MyProducts[4] = myProduct5;
+            MyProducts[5] = myProduct6;
+            MyProducts[6] = myProduct7;
+            MyProducts[7] = myProduct8;
             string JsonDataClient;
             switch (id)
             {
@@ -58,11 +66,22 @@ namespace AGCS.Controllers
                 case 4:
                     JsonDataClient = JsonConvert.SerializeObject(myProduct4);
                     break;
+                case 5:
+                    JsonDataClient = JsonConvert.SerializeObject(myProduct5);
+                    break;
+                case 6:
+                    JsonDataClient = JsonConvert.SerializeObject(myProduct6);
+                    break;
+                case 7:
+                    JsonDataClient = JsonConvert.SerializeObject(myProduct7);
+                    break;
+                case 8:
+                    JsonDataClient = JsonConvert.SerializeObject(myProduct8);
+                    break;
                 default:
                     JsonDataClient = JsonConvert.SerializeObject(myProduct);
                     break;
-            }
-           
+            }           
             return Json(JsonDataClient);
         } 
         [HttpPost]

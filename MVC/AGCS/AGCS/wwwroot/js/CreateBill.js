@@ -1,5 +1,8 @@
 ﻿$(document).ready(function () {
-    var idOfProd;
+    var idOfProd, D, T = 0;
+    $(".text-black").keypress(function () {
+        alert(T);
+    });
     $("#codProdToEnter").focus();
     $('#codProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -9,21 +12,20 @@
                 EnterProduct();
             } else {
                 $("#codProdToEnter").css({ "border": " 0.15rem solid red" });
-            }
-            
+            }            
         }
     });
     function EnterProduct() {     
         $.ajax({
             type: "POST",
             url: urlEnterProduct,
-            data: { id: $("#codProdToEnter").val },
+            data: { id: $("#codProdToEnter").val() },
             success: function (DataJsonClient) {
-                let Data = JSON.parse(DataJsonClient);
-                idOfProd = Data.Id;
-                $("#descProdToEnter").append(Data.Description);
-                $("#priceProdToEnter").append(Data.Price);
-                $("#stockProdToEnter").append(Data.Stock);
+                D = JSON.parse(DataJsonClient);
+                idOfProd = D.Id;
+                $("#descProdToEnter").append(D.Description);
+                $("#priceProdToEnter").append(D.Price);
+                $("#stockProdToEnter").append(D.Stock);
                 $("#quantProdToEnter").focus();
             },
             error: function () {
@@ -44,12 +46,14 @@
         }
     });
     function EnterProductToBill() {
-        
+        $("#total").empty();
+        T += (D.Price * parseInt($("#quantProdToEnter").val(), 10));
+        $("#total").append(T);
         if ($("#" + idOfProd).length > 0) {
             document.getElementById("q" + idOfProd).value = parseInt($("#quantProdToEnter").val(), 10) + parseInt($("#q" + idOfProd).val(), 10);
         } else {
-            var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + $("#descProdToEnter").text() + '</td>' + '<td><input type="number" id="q'+idOfProd +'" placeholder="Cantidad" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + $("#priceProdToEnter").text() + '</td><td>' + $("#stockProdToEnter").text() + '</td><td><img id="e' + idOfProd + '" class="w-25" src="/images/boton-x.png" alt="Borrar"></td></tr>';
-            $("#tableProducts").prepend(ProdToEnter);            
+            var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><img id="e' + idOfProd + '" class="w-25" src="/images/boton-x.png" alt="Borrar"></td></tr>';
+            $("#tableProducts").prepend(ProdToEnter);
         }
         $("#quantProdToEnter").val("");
         $("#codProdToEnter").val("");
@@ -58,5 +62,4 @@
         $("#stockProdToEnter").empty();
         $("#codProdToEnter").focus();
     }
-
 });
