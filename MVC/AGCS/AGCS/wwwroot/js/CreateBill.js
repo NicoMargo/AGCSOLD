@@ -1,8 +1,5 @@
 ﻿$(document).ready(function () {
-    var idOfProd, D, T = 0;
-    $(".text-black").keypress(function () {
-        alert(T);
-    });
+    var idOfProd, D, T = 0, Items;
     $("#codProdToEnter").focus();
     $('#codProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -18,7 +15,7 @@
     function EnterProduct() {     
         $.ajax({
             type: "POST",
-            url: urlEnterProduct,
+            url: "/Backend/GetProductToEnter",
             data: { id: $("#codProdToEnter").val() },
             success: function (DataJsonClient) {
                 D = JSON.parse(DataJsonClient);
@@ -47,7 +44,7 @@
     });
     function EnterProductToBill() {
         $("#total").empty();
-        T += (D.Price * parseInt($("#quantProdToEnter").val(), 10));
+        T += D.Price * parseInt($("#quantProdToEnter").val(), 10);
         $("#total").append(T);
         if ($("#" + idOfProd).length > 0) {
             document.getElementById("q" + idOfProd).value = parseInt($("#quantProdToEnter").val(), 10) + parseInt($("#q" + idOfProd).val(), 10);
@@ -62,4 +59,23 @@
         $("#stockProdToEnter").empty();
         $("#codProdToEnter").focus();
     }
+    $("#b").click(function () {
+        alert("Handler for .click() called.");
+        $.ajax({
+            type: "POST",
+            url: "/Backend/NewBill",
+            data: { id: $("#codProdToEnter").val() },
+            success: function (DataJsonClient) {
+                D = JSON.parse(DataJsonClient);
+                idOfProd = D.Id;
+                $("#descProdToEnter").append(D.Description);
+                $("#priceProdToEnter").append(D.Price);
+                $("#stockProdToEnter").append(D.Stock);
+                $("#quantProdToEnter").focus();
+            },
+            error: function () {
+                alert("ERROR");
+            }
+        });
+    });
 });

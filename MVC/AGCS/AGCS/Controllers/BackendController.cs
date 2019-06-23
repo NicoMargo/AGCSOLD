@@ -12,14 +12,12 @@ namespace AGCS.Controllers
 {
     public class BackendController : Controller
     {
-    
+
         // GET: Backend
         public ActionResult Index()
         {
             return View();
         }
-
-        
         public ActionResult ABMClientes()
         {
             BD.GetClients(BD.idBusiness);
@@ -35,7 +33,7 @@ namespace AGCS.Controllers
         {
             Product[] MyProducts;
             MyProducts = new Product[10];
-            Product myProduct  = new Product(0, "Manga Yakusoku No Neverland N°1", 658, 23);
+            Product myProduct = new Product(0, "Manga Yakusoku No Neverland N°1", 658, 23);
             Product myProduct2 = new Product(1, "Manga Yakusoku No Neverland N°2", 658, 23);
             Product myProduct3 = new Product(2, "Manga Yakusoku No Neverland N°3", 658, 23);
             Product myProduct4 = new Product(3, "Manga Yakusoku No Neverland N°4", 658, 23);
@@ -81,34 +79,34 @@ namespace AGCS.Controllers
                 default:
                     JsonDataClient = JsonConvert.SerializeObject(myProduct);
                     break;
-            }           
+            }
             return Json(JsonDataClient);
-        } 
+        }
         [HttpPost]
         public JsonResult GetDataClient(int pos)
         {
             BD.GetOneClient(BD.ListOfClients[pos].Id, BD.idBusiness);
             string JsonDataClient = JsonConvert.SerializeObject(BD.OneClient);
-            return Json(JsonDataClient);            
+            return Json(JsonDataClient);
         }
         [HttpPost]
         public bool UpdateClient(string Surname, string Name, int dni, string email, int Telephone, int Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
         {
             bool Success = true;
-            Client cUpdateClient = new Client(BD.OneClient.Id, Name, Surname,dni,email,Telephone,Cellphone);
+            Client cUpdateClient = new Client(BD.OneClient.Id, Name, Surname, dni, email, Telephone, Cellphone);
             try
             {
-                BD.UpdateClient(cUpdateClient);                
+                BD.UpdateClient(cUpdateClient);
             }
             catch
             {
                 Success = false;
             }
-            
+
             return Success;
         }
         [HttpPost]
-        public bool CreateClient(string Surname="" , string Name="" , int dni = 0, string email = "", int Telephone = 0, int Cellphone = 0, string Town = "", string Address = "", string Province = "", string Leter = "", int Number = 0, int Floor = 0)
+        public bool CreateClient(string Surname = "", string Name = "", int dni = 0, string email = "", int Telephone = 0, int Cellphone = 0, string Town = "", string Address = "", string Province = "", string Leter = "", int Number = 0, int Floor = 0)
         {
             bool Success = true;
             Client NewClient = new Client(Name, Surname, dni, email, Telephone, Cellphone, Town, Address, Province, Leter, Number, Floor);
@@ -118,7 +116,7 @@ namespace AGCS.Controllers
             }
             catch
             {
-                 Success = false;
+                Success = false;
             }
 
             return Success;
@@ -137,7 +135,13 @@ namespace AGCS.Controllers
             }
             return Success;
         }
+        [HttpPost]
+        public bool NewBill()
+        {
+            bool Success = false;
 
+            return Success;
+        }
         // GET: Backend/Create
         public ActionResult Pruebas()
         {

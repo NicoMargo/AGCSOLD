@@ -3,7 +3,7 @@
         let Index = $(this).attr("position");
         $.ajax({
             type: "POST",
-            url: urlGetOne,
+            url: "/Backend/GetDataClient",
             data: { pos: Index },
             success: function (DataJsonClient) {
                 var Data = JSON.parse(DataJsonClient);
@@ -29,7 +29,7 @@
     $("#Submit").click(function () {
         $.ajax({
             type: "POST",
-            url: urlUpdate,
+            url: "/Backend/UpdateClient",
             data: {
                 Surname: $("#modalSurname").val(),
                 Name: $("#modalName").val(),
@@ -58,7 +58,7 @@
          $("#confirm").click(function () {
             $.ajax({
                 type: "DELETE",
-                url: urlDelete,
+                url: "/Backend/DeleteClient",
                 data: { id: Index },
                 success: function () {
                     location.reload();
@@ -74,7 +74,7 @@
         if ($("#modalCreateName").val() !== "" && $("#modalCreateName").val() !== "" && $("#modalCreateDni").val() !== 0) {
             $.ajax({
                 type: "POST",
-                url: urlCreate,
+                url: "/Backend/CreateClient",
                 data: {
                     Surname: $("#modalCreateSurname").val(),
                     Name: $("#modalCreateName").val(),
