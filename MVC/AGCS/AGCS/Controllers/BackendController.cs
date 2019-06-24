@@ -38,7 +38,7 @@ namespace AGCS.Controllers
         public bool UpdateClient(string Surname, string Name, int Dni, string email, int Telephone, int Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
         {
             bool Success = true;
-            Client cUpdateClient = new Client(BD.SelectedClient.Id, Name, Surname,Dni,email,Telephone,Cellphone);
+            Client cUpdateClient = new Client(BD.SelectedClient.Id, Name, Surname,Dni,email, Cellphone, Telephone);
             try
             {
                 BD.UpdateClient(cUpdateClient);                

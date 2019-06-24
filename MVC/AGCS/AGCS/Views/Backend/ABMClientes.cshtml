@@ -1,5 +1,28 @@
-﻿@@using AGCS.Models
-@model AGCS.Models.Client
+﻿
+@{
+    @using AGCS.Models
+    @model AGCS.Models.Client
+    string validInt(int number) {
+        string value;
+        if (number <= 0)
+        {
+            value = "-";
+        }
+        else {
+            value = number.ToString();
+        }
+        return value;
+    }
+
+    string validString(string words)
+    {
+        if (words == "")
+        {
+            words = "-";
+        }
+        return words;
+    }
+}
 <!doctype html>
 <html lang="es">
 
@@ -38,18 +61,18 @@
                             <th style="width:15%;">DNI/CUIT/CUIL</th>
                             <th style="width:10%;">Celular</th>
                             <th style="width:25%;">Email</th>
-                            <th style="width:10%;"></th>
-                            <th style="width:10%;"></th>
+                            <th style="width:10%;">Modificar</th>
+                            <th style="width:10%;">Eliminar</th>
                         </tr>
                         @{
                             for (int i = 0; i < ViewBag.Clients.Count; i++)
                             {
                                 <tr>
-                                    <td>@ViewBag.Clients[i].Surname</td>
-                                    <td>@ViewBag.Clients[i].Name</td>
-                                    <td>@ViewBag.Clients[i].Dni</td>
-                                    <td>@ViewBag.Clients[i].Cellphone</td>
-                                    <td>@ViewBag.Clients[i].Email</td>
+                                    <td>@validString(ViewBag.Clients[i].Surname)</td>
+                                    <td>@validString(ViewBag.Clients[i].Name)</td>
+                                    <td>@validInt(ViewBag.Clients[i].Dni)</td>
+                                    <td>@validInt(ViewBag.Clients[i].Cellphone)</td>
+                                    <td>@validString(ViewBag.Clients[i].Email)</td>
                                     <td><a data-toggle="modal" data-target="#updateClient"><img position="@i" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
                                     <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@i"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
                                 </tr>
@@ -111,7 +134,7 @@
                                 <strong><span>DNI/CUIT/CUIL</span></strong>
                             </div>
                             <input id="modalCreateDni" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateDni">Ingrese un  válido</div>
+                            <div class="validation_msg hidden text-center" id="msgCreateDni">Ingrese un DNI o CUIT válido</div>
                         </div>
                     </div>
                     <div class="row mt-4">
@@ -120,21 +143,21 @@
                                 <strong><span>Nro. Teléfono</span></strong>
                             </div>
                             <input id="modalCreateTelephone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateTelephone">Ingrese un  válido</div>
+                            <div class="validation_msg hidden text-center" id="msgCreateTelephone">Ingrese un teléfono válido</div>
                         </div>
                         <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Celular</span></strong>
                             </div>
                             <input id="modalCreateCellphone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateCellphone">Ingrese un  válido</div>
+                            <div class="validation_msg hidden text-center" id="msgCreateCellphone">Ingrese un nro. celular válido</div>
                         </div>
                         <div class="offset-md-1 col-md-2">
                             <div class="text-center">
                                 <strong><span>Email</span></strong>
                             </div>
                             <input id="modalCreateEmail" class="form-control text-center" type="email">
-                            <div class="validation_msg hidden text-center" id="msgCreateEmail">Ingrese un  válido</div>
+                            <div class="validation_msg hidden text-center" id="msgCreateEmail">Ingrese un email válido</div>
                         </div>
                     </div>
                     <div class="text-center mt-5">
@@ -192,7 +215,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secundary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secundary" id="createCancel" data-dismiss="modal">Cerrar</button>
                     <button class="btn btn-primary" id="newClient">Crear</button>
                 </div>
 
@@ -249,14 +272,14 @@
                                 <strong><span>Nro. Celular</span></strong>
                             </div>
                             <input id="modalUpdateCellphone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgUpdateCellphone">Ingrese un  válido</div>
+                            <div class="validation_msg hidden text-center" id="msgUpdateCellphone">Ingrese un nro. celular válido</div>
                         </div>
                         <div class="offset-md-1 col-md-2">
                             <div class="text-center">
                                 <strong><span>Email</span></strong>
                             </div>
                             <input id="modalUpdateEmail" class="form-control text-center" type="email">
-                            <div class="validation_msg hidden text-center" id="msgUpdateEmail">Ingrese un mail válido</div>
+                            <div class="validation_msg hidden text-center" id="msgUpdateEmail">Ingrese un email válido</div>
                         </div>
                     </div>
                     <div class="text-center mt-5">
@@ -314,8 +337,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secundary" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" id="UpdateSubmit" data-dismiss="modal">Guardar</button>
+                    <button type="button" class="btn btn-secundary" id="updateCancel" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" id="UpdateSubmit">Guardar</button>
                 </div>
             </div>
         </div>

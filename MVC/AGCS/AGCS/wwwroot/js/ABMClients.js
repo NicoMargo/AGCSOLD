@@ -13,7 +13,33 @@ $(document).ready(function () {
         return expectedCondition;
     }
 
+    function inputNormal(id) {
+        $("#modal" + id).removeClass("validation_error");
+        $("#msg" + id).addClass("hidden");
+    }
+
+    function modalNormal(modalType) { //Modal type: create , update
+        inputNormal(modalType +"Surname");
+        inputNormal(modalType +"Name");
+        inputNormal(modalType +"Dni");
+        inputNormal(modalType +"Email");
+        inputNormal(modalType +"Telephone");
+        inputNormal(modalType +"Cellphone");
+        inputNormal(modalType +"Town");
+        inputNormal(modalType +"Address");
+        inputNormal(modalType +"Appartment");
+        inputNormal(modalType +"Number");
+        inputNormal(modalType +"Floor");
+    }
+    function validInt(number) {
+        if (number <= 0) {
+            number = "";
+        }
+        return number;
+    }
+
     $(".imgClientUpdate").click(function () {
+        modalNormal("Update");
         let Index = $(this).attr("position");
         $.ajax({
             type: "POST",
@@ -23,10 +49,10 @@ $(document).ready(function () {
                 var Data = JSON.parse(DataJsonClient);
                 $("#modalUpdateSurname").val(Data.Surname);
                 $("#modalUpdateName").val(Data.Name);
-                $("#modalUpdateDni").val(Data.Dni);
-                $("#modelUpdateEmail").val(Data.Email);
-                $("#modalUpdateTelephone").val(Data.Telephone);
-                $("#modalUpdateCellphone").val(Data.Cellphone);
+                $("#modalUpdateDni").val(validInt(Data.Dni));
+                $("#modalUpdateEmail").val(Data.Email);
+                $("#modalUpdateTelephone").val(validInt(Data.Telephone));
+                $("#modalUpdateCellphone").val(validInt(Data.Cellphone));
                 $("#modalUpdateTown").val(Data.Town);
                 $("#modalUpdateAddress").val(Data.Address);
                 $("#modalUpdateAppartment").val(Data.Leter);
@@ -39,32 +65,42 @@ $(document).ready(function () {
         });
     });
 
+    $("#createClient").click(function () {
+        modalNormal("Create");
+    });
 
     $("#UpdateSubmit").click(function () {
-        $.ajax({
-            type: "POST",
-            url: urlUpdate,
-            data: {
-                Surname:   $("#modalUpdateSurname").val(),
-                Name:      $("#modalUpdateName").val(),
-                dni:       $("#modalUpdateDni").val(),
-                email:     $("#modelUpdateEmail").val(),
-                Telephone: $("#modalUpdateTelephone").val(),
-                Cellphone: $("#modalUpdateCellphone").val(),
-                Town:      $("#modelUpdateTown").val(),
-                Address:   $("#modalUpdateAddress").val(),
-                Province:  1,       
-                Leter:     $("#modalUpdateAppartment").val(),
-                Number:    $("#modalUpdateNumber").val(),
-                Floor:     $("#modalUpdateFloor").val()
-            },                      
-            success: function () {
-                location.reload();
-            },
-            error: function () {
-                alert("ERROR");
-            }
-        });
+        valid = validate("UpdateSurname", $("#modalUpdateSurname").val() !== "");
+        valid = validate("UpdateName", $("#modalUpdateName").val() !== "") && valid;
+        valid = validate("UpdateDni", $("#modalUpdateDni").val() !== "" && $("#modalUpdateDni").val() > 0) && valid;
+
+        if (valid) {
+            $.ajax({
+                type: "POST",
+                url: urlUpdate,
+                data: {
+                    Surname: $("#modalUpdateSurname").val(),
+                    Name: $("#modalUpdateName").val(),
+                    dni: $("#modalUpdateDni").val(),
+                    email: $("#modalUpdateEmail").val(),
+                    Telephone: $("#modalUpdateTelephone").val(),
+                    Cellphone: $("#modalUpdateCellphone").val(),
+                    Town: $("#modalUpdateTown").val(),
+                    Address: $("#modalUpdateAddress").val(),
+                    Province: 1,
+                    Leter: $("#modalUpdateAppartment").val(),
+                    Number: $("#modalUpdateNumber").val(),
+                    Floor: $("#modalUpdateFloor").val()
+                },
+                success: function () {
+                    location.reload();
+                    $("#updateClient").modal("toggle");
+                },
+                error: function () {
+                    alert("ERROR");
+                }
+            });
+        }
     });
 
     $("deleteButton").click(function () {
@@ -87,7 +123,7 @@ $(document).ready(function () {
     $("#newClient").click(function () {
         valid = validate("CreateSurname", $("#modalCreateSurname").val() !== "");
         valid = validate("CreateName", $("#modalCreateName").val() !== "") && valid;
-        valid = validate("CreateDni", $("#modalCreateDni").val() !== "" && $("#modalCreateDni").val() != 0) && valid;
+        valid = validate("CreateDni", $("#modalCreateDni").val() !== "" && $("#modalCreateDni").val() > 0) && valid;
 
         if (valid) {
             $.ajax({
@@ -103,9 +139,9 @@ $(document).ready(function () {
                     town: $("#modalCreateTown").val(),
                     address: $("#modalCreateAddressC").val(),
                     province: 1,
-                    leter: $("#modelCreateAppartment").val(),
-                    number: $("#modelCreateNumber").val(),
-                    floor: $("#modelCreateFloor").val()
+                    leter: $("#modalCreateAppartment").val(),
+                    number: $("#modalCreateNumber").val(),
+                    floor: $("#modalCreateFloor").val()
                 },
                 success: function () {
                     location.reload();
