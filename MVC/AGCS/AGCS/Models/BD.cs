@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
-
 namespace AGCS.Models
 {
     public class BD
@@ -12,6 +11,7 @@ namespace AGCS.Models
         //xd
        //public static string connectionString = "Server=127.0.0.1;User=root;Database=pruebaclientes"; //Anush
         public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
+
         public static List<Client> ListOfClients = new List<Client>();
         public static Client SelectedClient;
         public static int idBusiness = 1;

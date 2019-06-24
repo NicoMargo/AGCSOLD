@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
+<<<<<<< HEAD
 -- Tiempo de generación: 21-06-2019 a las 15:13:29
+=======
+-- Tiempo de generación: 14-06-2019 a las 15:17:21
+>>>>>>> nico
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -74,6 +78,7 @@ DROP PROCEDURE IF EXISTS `spClientUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` INT(20), IN `pEmail` VARCHAR(45), IN `pTelephone` INT, IN `pCellphone` INT)  NO SQL
 if(EXISTS(SELECT clients.idClients from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
 THEN
+<<<<<<< HEAD
 	if(pName != "" and pSurname != "" and pDNI_CUIT > 0 and pDNI_CUIT != ""  )
     then
 		if( pName is not null and pName!= (SELECT clients.Name from clients where clients.idClients = id) ) 
@@ -106,6 +111,39 @@ THEN
 			UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
 		end if;
 	end if;
+=======
+	
+	if( pName is not null and pName!= (SELECT clients.Name from clients where clients.idClients = id) ) 
+    THEN
+    	UPDATE clients set Name = pName WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+    
+	if( pSurname is not null and pSurname != (SELECT clients.Surname from clients where clients.idClients = id)) 
+    THEN
+    	UPDATE clients set clients.Surname = pSurname WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+    
+    if( pDNI_CUIT is not null and pDNI_CUIT != (SELECT clients.DNI_CUIT from clients where clients.idClients = id)) 
+    THEN
+    	UPDATE clients set clients.DNI_CUIT = pDNI_CUIT WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+    
+    if( pEmail is not null and pEmail != (SELECT clients.eMail from clients where clients.idClients = id)) 
+    THEN
+    	UPDATE clients set clients.eMail = pEmail WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+    
+    if( pTelephone is not null and pTelephone != (SELECT clients.Telephone from clients where clients.idClients = id)) 
+    THEN
+    	UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+    
+	if( pCellphone is not null and pCellphone != (SELECT clients.Cellphone from clients where clients.idClients = id)) 
+    THEN
+    	UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+    end if;
+
+>>>>>>> nico
 end if$$
 
 DELIMITER ;
@@ -204,13 +242,18 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idClients`,`Business_idBusiness`),
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+=======
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
+>>>>>>> nico
 
 --
 -- Volcado de datos para la tabla `clients`
 --
 
 INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Cellphone`, `Business_idBusiness`) VALUES
+<<<<<<< HEAD
 (5, 'Carlitos', 'pereza', 2, 'carlomagno@gmail.cim', 30748787, 0, 1),
 (6, 'Don Juan', 'Equisde', 44444555, 'juan@mail.cim', 45678912, 0, 1),
 (7, 'Robot de', 'Prueba', 17, 'c17@patrullaroja.com', NULL, 0, 1),
@@ -222,6 +265,17 @@ INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Tel
 (32, 'Margossian', 'Nicolas', 1, NULL, 1144322258, 1165898555, 1),
 (34, 'a', 'a', 12, 'a', 1, 1, 1),
 (35, 'a', 'a', 1, 'a', 1, 1, 1);
+=======
+(5, 'Carlitos', 'pereza', 0, 'carlomagno@gmail.cim', 30748787, 0, 1),
+(6, 'Don Juan', 'Equisde', 44444555, 'juan@mail.cim', 45678912, 0, 1),
+(7, 'Robot de', 'Prueba', 17, 'c17@patrullaroja.com', NULL, 0, 1),
+(8, 'Yare Yare', 'Dawa', 0, 'bot01@mail.com', 0, 0, 1),
+(22, 'Margosian', '11', 0, NULL, NULL, 111, 1),
+(23, 'test', 'prueba', 123456, NULL, NULL, 43214321, 1),
+(25, 'nombre', 'apellido', 987654321, NULL, NULL, 40005000, 1),
+(26, 'b', 'a', 1, NULL, NULL, NULL, 1),
+(27, 'b', 'a', 1, 'c', 3, 2, 1);
+>>>>>>> nico
 
 -- --------------------------------------------------------
 
