@@ -43,7 +43,7 @@ $(document).ready(function () {
         let Index = $(this).attr("position");
         $.ajax({
             type: "POST",
-            url: urlGetOne,
+            url: "/backend/GetDataClient",
             data: { pos: Index },
             success: function (DataJsonClient) {
                 var Data = JSON.parse(DataJsonClient);
@@ -77,7 +77,7 @@ $(document).ready(function () {
         if (valid) {
             $.ajax({
                 type: "POST",
-                url: urlUpdate,
+                url: "/backend/UpdateClient",
                 data: {
                     Surname: $("#modalUpdateSurname").val(),
                     Name: $("#modalUpdateName").val(),
@@ -108,7 +108,7 @@ $(document).ready(function () {
          $("#confirm").click(function () {
             $.ajax({
                 type: "DELETE",
-                url: urlDelete,
+                url: "/backend/DeleteClient",
                 data: { id: Index },
                 success: function () {
                     location.reload();
@@ -128,7 +128,7 @@ $(document).ready(function () {
         if (valid) {
             $.ajax({
                 type: "POST",
-                url: urlCreate,
+                url: "/backend/CreateClient",
                 data: {
                     surname: $("#modalCreateSurname").val(),
                     name: $("#modalCreateName").val(),
