@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 26-06-2019 a las 01:56:51
+-- Tiempo de generación: 26-06-2019 a las 20:59:56
 -- Versión del servidor: 5.7.23
 -- Versión de PHP: 7.2.10
 
@@ -21,104 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `bd_agcs`
 --
-
-DELIMITER $$
---
--- Procedimientos
---
-DROP PROCEDURE IF EXISTS `spClientDelete`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientDelete` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
-if(EXISTS(SELECT clients.idClients FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
-THEN
-	DELETE from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness;
-end IF$$
-
-DROP PROCEDURE IF EXISTS `spClientGetOne`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetOne` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
-SELECT * FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness$$
-
-DROP PROCEDURE IF EXISTS `spClientInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_CUIT` INT, IN `pEmail` VARCHAR(45), IN `pTelephone` INT, IN `pCellphone` INT)  NO SQL
-if( pIdBusiness > -1 && pName != "" && pSurname != "" && pDNI_CUIT != 0 )
-then
-	insert into clients(clients.Name,clients.Surname,clients.DNI_CUIT,clients.Business_idBusiness) values( pName, pSurname, pDNI_CUIT, pIdBusiness);
-	
-    set @lastId = (select clients.idClients from clients where clients.idClients = LAST_INSERT_ID() and clients.Name = pName and clients.Surname = pSurname and clients.DNI_CUIT = pDNI_CUIT and clients.Business_idBusiness = pIdBusiness);
-	
-    if(@lastId is not null)
-    then
-    
-		if( pEmail is not null  /*and pEmail != (SELECT clients.eMail from clients where clients.idClients = @lastId)*/) 
-		THEN
-			UPDATE clients set clients.eMail = pEmail WHERE clients.idClients = @lastId and clients.Business_idBusiness = pIdBusiness; 
-		end if;
-		
-		if( pTelephone is not null  /*and pTelephone != (SELECT clients.Telephone from clients where clients.idClients = @lastId)*/) 
-		THEN
-			UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = @lastId and clients.Business_idBusiness = pIdBusiness; 
-		end if;
-		
-		if( pCellphone is not null /*and pCellphone != (SELECT clients.Cellphone from clients where clients.idClients = @lastId)*/) 
-		THEN
-			UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = @lastId and clients.Business_idBusiness = pIdBusiness; 
-		end if;
-    
-    end if;
-end if$$
-
-DROP PROCEDURE IF EXISTS `spClientsGet`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientsGet` (IN `pIdBusiness` INT)  NO SQL
-SELECT clients.idClients, clients.Name, clients.Surname, clients.DNI_CUIT, clients.eMail,clients.Cellphone FROM clients where clients.Business_idBusiness = pIdBusiness$$
-
-DROP PROCEDURE IF EXISTS `spClientUpdate`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` INT(20), IN `pEmail` VARCHAR(45), IN `pTelephone` INT, IN `pCellphone` INT)  NO SQL
-if(EXISTS(SELECT clients.idClients from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
-THEN
-	if(pName != "" and pSurname != "" and pDNI_CUIT > 0 and pDNI_CUIT != ""  )
-    then
-		if( pName is not null and pName!= (SELECT clients.Name from clients where clients.idClients = id) ) 
-		THEN
-			UPDATE clients set Name = pName WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
-		end if;
-		
-		if( pSurname is not null and pSurname != (SELECT clients.Surname from clients where clients.idClients = id)) 
-		THEN
-			UPDATE clients set clients.Surname = pSurname WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
-		end if;
-		
-		if( pDNI_CUIT is not null and pDNI_CUIT != (SELECT clients.DNI_CUIT from clients where clients.idClients = id)) 
-		THEN
-			UPDATE clients set clients.DNI_CUIT = pDNI_CUIT WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
-		end if;
-		
-		if( pEmail is not null) 
-		THEN
-			UPDATE clients set clients.eMail = pEmail WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
-		end if;
-		
-		if( pTelephone is not null and pTelephone != (SELECT clients.Telephone from clients where clients.idClients = id)) 
-		THEN
-			UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
-		end if;
-		
-		if( pCellphone is not null and pCellphone != (SELECT clients.Cellphone from clients where clients.idClients = id)) 
-		THEN
-			UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
-		end if;
-	end if;
-end if$$
-
-DROP PROCEDURE IF EXISTS `spProductsGet`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` INT)  BEGIN
-	select * from Products where Products.Business_idBusiness = pIdBusiness;
-END$$
-
-DROP PROCEDURE IF EXISTS `spSalesInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spSalesInsert` ()  BEGIN
-
-END$$
-
-DELIMITER ;
+CREATE DATABASE IF NOT EXISTS `bd_agcs` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `bd_agcs`;
 
 -- --------------------------------------------------------
 
@@ -145,6 +49,52 @@ CREATE TABLE IF NOT EXISTS `address` (
   KEY `fk_Address_Province1_idx` (`Province_idProvince`),
   KEY `fk_Address_Business1_idx` (`Business_idBusiness`),
   KEY `fk_Address_Client1` (`Clients_idClients`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `bills`
+--
+
+DROP TABLE IF EXISTS `bills`;
+CREATE TABLE IF NOT EXISTS `bills` (
+  `idBills` int(11) NOT NULL AUTO_INCREMENT,
+  `DateBill` date DEFAULT NULL,
+  `DNI/CUIT` int(11) DEFAULT NULL,
+  `Employee_Code` int(11) DEFAULT NULL,
+  `IVA_Condition` varchar(45) DEFAULT NULL,
+  `TypeBill` varchar(1) DEFAULT NULL,
+  `Total` int(11) DEFAULT NULL,
+  `Discount` int(11) DEFAULT NULL,
+  `IVA_Recharge` int(11) DEFAULT NULL,
+  `WholeSaler` bit(1) DEFAULT NULL,
+  `Branches_idBranch` int(11) NOT NULL,
+  `Payment_Methods_idPayment_Methods` int(11) NOT NULL,
+  `Macs_idMacs` int(11) NOT NULL,
+  `Business_idBusiness` int(11) NOT NULL,
+  PRIMARY KEY (`idBills`,`Branches_idBranch`,`Payment_Methods_idPayment_Methods`,`Macs_idMacs`,`Business_idBusiness`),
+  KEY `fk_Bills_Branches1_idx` (`Branches_idBranch`) USING BTREE,
+  KEY `fk_Bills_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`) USING BTREE,
+  KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
+  KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `bills_x_products`
+--
+
+DROP TABLE IF EXISTS `bills_x_products`;
+CREATE TABLE IF NOT EXISTS `bills_x_products` (
+  `idBills_X_Products` int(11) NOT NULL AUTO_INCREMENT,
+  `Quantity` int(11) DEFAULT NULL,
+  `Products_idProducts` int(11) NOT NULL,
+  `Bills_idBills` int(11) NOT NULL,
+  PRIMARY KEY (`idBills_X_Products`,`Products_idProducts`,`Bills_idBills`),
+  KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE,
+  KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBills`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -325,52 +275,6 @@ CREATE TABLE IF NOT EXISTS `provinces` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `sales`
---
-
-DROP TABLE IF EXISTS `sales`;
-CREATE TABLE IF NOT EXISTS `sales` (
-  `idSales` int(11) NOT NULL AUTO_INCREMENT,
-  `Date` date DEFAULT NULL,
-  `DNI/CUIT` int(11) DEFAULT NULL,
-  `Employee_Code` int(11) DEFAULT NULL,
-  `IVA_Condition` varchar(45) DEFAULT NULL,
-  `Type` varchar(1) DEFAULT NULL,
-  `Total` int(11) DEFAULT NULL,
-  `Discount` int(11) DEFAULT NULL,
-  `IVA_Recharge` int(11) DEFAULT NULL,
-  `WholeSaler` bit(1) DEFAULT NULL,
-  `Branches_idBranch` int(11) NOT NULL,
-  `Payment_Methods_idPayment_Methods` int(11) NOT NULL,
-  `Macs_idMacs` int(11) NOT NULL,
-  `Business_idBusiness` int(11) NOT NULL,
-  PRIMARY KEY (`idSales`,`Branches_idBranch`,`Payment_Methods_idPayment_Methods`,`Macs_idMacs`,`Business_idBusiness`),
-  KEY `fk_Sales_Branches1_idx` (`Branches_idBranch`) USING BTREE,
-  KEY `fk_Sales_Business1_idx` (`Business_idBusiness`) USING BTREE,
-  KEY `fk_Sales_Macs1_idx` (`Macs_idMacs`) USING BTREE,
-  KEY `fk_Sales_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `sales_x_products`
---
-
-DROP TABLE IF EXISTS `sales_x_products`;
-CREATE TABLE IF NOT EXISTS `sales_x_products` (
-  `idSales_X_Products` int(11) NOT NULL AUTO_INCREMENT,
-  `Quantity` int(11) DEFAULT NULL,
-  `Products_idProducts` int(11) NOT NULL,
-  `Sales_idSales` int(11) NOT NULL,
-  PRIMARY KEY (`idSales_X_Products`,`Products_idProducts`,`Sales_idSales`),
-  KEY `fk_Sales_X_Products_Sales1_idx` (`Sales_idSales`) USING BTREE,
-  KEY `fk_Sales_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `suppliers`
 --
 
@@ -460,6 +364,22 @@ ALTER TABLE `address`
   ADD CONSTRAINT `fk_Address_Province1` FOREIGN KEY (`Province_idProvince`) REFERENCES `provinces` (`idProvince`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
+-- Filtros para la tabla `bills`
+--
+ALTER TABLE `bills`
+  ADD CONSTRAINT `fk_Bills_Branches1` FOREIGN KEY (`Branches_idBranch`) REFERENCES `branches` (`idBranch`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Bills_Business1` FOREIGN KEY (`Business_idBusiness`) REFERENCES `business` (`idBusiness`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Bills_Macs1` FOREIGN KEY (`Macs_idMacs`) REFERENCES `macs` (`idMacs`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Bills_Payment_Methods1` FOREIGN KEY (`Payment_Methods_idPayment_Methods`) REFERENCES `payment_methods` (`idPayment_Methods`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `bills_x_products`
+--
+ALTER TABLE `bills_x_products`
+  ADD CONSTRAINT `fk_Bills_X_Products_Bills1` FOREIGN KEY (`Bills_idBills`) REFERENCES `bills` (`idBills`),
+  ADD CONSTRAINT `fk_Bills_X_Products_Products1` FOREIGN KEY (`Products_idProducts`) REFERENCES `products` (`idProducts`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
 -- Filtros para la tabla `branches`
 --
 ALTER TABLE `branches`
@@ -492,22 +412,6 @@ ALTER TABLE `products`
   ADD CONSTRAINT `fk_Products_Suppliers1` FOREIGN KEY (`Suppliers_idSupplier`) REFERENCES `suppliers` (`idSupplier`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
--- Filtros para la tabla `sales`
---
-ALTER TABLE `sales`
-  ADD CONSTRAINT `fk_Purchases_Branches1` FOREIGN KEY (`Branches_idBranch`) REFERENCES `branches` (`idBranch`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Purchases_Business1` FOREIGN KEY (`Business_idBusiness`) REFERENCES `business` (`idBusiness`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Purchases_Macs1` FOREIGN KEY (`Macs_idMacs`) REFERENCES `macs` (`idMacs`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Purchases_Payment_Methods1` FOREIGN KEY (`Payment_Methods_idPayment_Methods`) REFERENCES `payment_methods` (`idPayment_Methods`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `sales_x_products`
---
-ALTER TABLE `sales_x_products`
-  ADD CONSTRAINT `fk_Purchases_X_Products_Products1` FOREIGN KEY (`Products_idProducts`) REFERENCES `products` (`idProducts`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Purchases_X_Products_Purchases1` FOREIGN KEY (`Sales_idSales`) REFERENCES `sales` (`idSales`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
 -- Filtros para la tabla `suppliers`
 --
 ALTER TABLE `suppliers`
@@ -531,4 +435,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-

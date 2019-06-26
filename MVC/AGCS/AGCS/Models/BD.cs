@@ -8,9 +8,9 @@ namespace AGCS.Models
 {
     public class BD
     {
-        public static string connectionString = "Server=localhost;User=root;Database=bd_agcs;Uid=Jonyloco;Pwd=agcs;"; //Chino
+        //public static string connectionString = "Server=localhost;User=root;Database=bd_agcs;Uid=Jonyloco;Pwd=agcs;"; //Chino
         //public static string connectionString = "Server=127.0.0.1;User=root;Database=pruebaclientes"; //Anush
-        //public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
+        public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
 
         public static List<Client> ListClients = new List<Client>();
         public static List<Product> ListProducts = new List<Product>();
@@ -226,6 +226,20 @@ namespace AGCS.Models
                 catch { }
             }
             Disconect(Connection);
+        }
+
+        //Methods for store procedures of Table Products 
+        public static bool InsertBill(Bill bill)
+        {
+            bool success = false;
+            MySqlConnection Connection = Connect();
+            MySqlCommand CommandConnection = Connection.CreateCommand();
+            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
+            CommandConnection.CommandText = "spBillInsert";
+
+            CommandConnection.ExecuteNonQuery();
+            Disconect(Connection);
+            return success;
         }
     }
 }

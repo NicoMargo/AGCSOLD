@@ -44,9 +44,10 @@ namespace AGCS.Models
             _floor = Floor;
         }
         public Client(string Name, string Surname, int dni, string email, int Telephone, int Cellphone) : base(999, Name, Surname, email, Telephone, Cellphone)
-        {
+        {            
             _dni = dni;
         }
+
         public int Dni { get => _dni; }       
         public string Town { get => _town; }
         public string Address { get => _Address; }
