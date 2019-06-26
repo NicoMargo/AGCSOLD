@@ -21,7 +21,7 @@ namespace AGCS.Controllers
         public ActionResult ABMClientes()
         {
             BD.GetClients(BD.idBusiness);
-            ViewBag.Clients = BD.ListOfClients;
+            ViewBag.Clients = BD.ListClients;
             return View();
         }
         public ActionResult CreateBill()
@@ -85,7 +85,7 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetDataClient(int pos)
         {
-            BD.GetOneClient(BD.ListOfClients[pos].Id, BD.idBusiness);
+            BD.GetOneClient(BD.ListClients[pos].Id, BD.idBusiness);
             string JsonDataClient = JsonConvert.SerializeObject(BD.SelectedClient);
             return Json(JsonDataClient);        
         }
@@ -93,6 +93,7 @@ namespace AGCS.Controllers
         public bool UpdateClient(string Surname, string Name, int Dni, string email, int Telephone, int Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
         {
             bool Success = true;
+            if (email is null) { email = ""; }
             Client cUpdateClient = new Client(BD.SelectedClient.Id, Name, Surname,Dni,email, Cellphone, Telephone);
 
             try
@@ -131,7 +132,7 @@ namespace AGCS.Controllers
             bool Success = true;
             try
             {
-                BD.DeleteClient(BD.ListOfClients[id].Id);
+                BD.DeleteClient(BD.ListClients[id].Id);
             }
             catch
             {

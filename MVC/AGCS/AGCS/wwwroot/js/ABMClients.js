@@ -1,7 +1,6 @@
 ﻿
 
 $(document).ready(function () {
-    print("xd");
     function validate(id,expectedCondition = true) {
         if (!expectedCondition) {
             $("#modal" + id).addClass("validation_error");
