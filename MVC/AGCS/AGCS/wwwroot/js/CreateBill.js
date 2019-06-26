@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var idOfProd, D, T = 0, Items = [];
-    var Product = { id: null, quant: null, iva: 1 };
+    var Product = { Id: null, Quant: null, iva: 1 };
     $("#codProdToEnter").focus();
     $('#codProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -71,8 +71,8 @@
             });         
         } else {
             Product = new Object();
-            Product.id = D.Id;
-            Product.quant = parseInt($("#quantProdToEnter").val());
+            Product.Id = D.Id;
+            Product.Quant = parseInt($("#quantProdToEnter").val());
             Items.push(Product);
             var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><img id="e' + idOfProd + '" class="w-25" src="/images/boton-x.png" alt="Borrar"></td></tr>';
             ProdToEnter.keypress;
