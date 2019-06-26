@@ -8,27 +8,47 @@ namespace AGCS.Models
 {
     public class BD
     {
-        //xd
-       //public static string connectionString = "Server=127.0.0.1;User=root;Database=pruebaclientes"; //Anush
-        public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
+        public static string connectionString = "Server=localhost;User=root;Database=bd_agcs;Uid=Jonyloco;Pwd=agcs;"; //Chino
+        //public static string connectionString = "Server=127.0.0.1;User=root;Database=pruebaclientes"; //Anush
+        //public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
 
         public static List<Client> ListClients = new List<Client>();
         public static List<Product> ListProducts = new List<Product>();
         public static Client SelectedClient;
         public static int idBusiness = 1;
-
+        
         private static string ReadString(MySqlDataReader ConnectionReader, string parameter)
-        {
+        { 
             string result = null;
             try { result = ConnectionReader[parameter].ToString(); } catch { }
             return result;
         }
+
         private static int ReadInt(MySqlDataReader ConnectionReader, string parameter)
-        {
+        {            
             int result = 0;
             try { result = Convert.ToInt32(ConnectionReader[parameter]); } catch { }
             return result;
         }
+
+        private static float ReadFloat(MySqlDataReader ConnectionReader, string parameter)
+        {
+            float result = 0.0f;
+            try { result = Convert.ToSingle(ConnectionReader[parameter]); } catch { }
+            return result;
+        }
+
+        private static bool ReadBool(MySqlDataReader ConnectionReader, string parameter)
+        {
+            bool result = false;
+            try { result = Convert.ToBoolean(ConnectionReader[parameter]); } catch { }
+            return result;
+        }
+        /*
+        private static bool ReadBool<T>(MySqlDataReader ConnectionReader, string parameter)
+        {
+            return (T)Convert.ChangeType(value, typeof(T));
+        }*/
 
         //methods for DB
         public static MySqlConnection Connect()
@@ -191,24 +211,17 @@ namespace AGCS.Models
                 bool age;
                 string code;
                 try
-                {   /*
+                {   
                     id = Convert.ToInt32(ConnectionReader["idProducts"]);
                     description = ReadString(ConnectionReader, "Description");
-                    articleNumber = ReadString(ConnectionReader, "Surname");
-                    cost = ReadInt(ConnectionReader, "DNI_CUIT");
-                    price = ReadString(ConnectionReader, "eMail");
-                    stock = ReadInt(ConnectionReader, "Telephone");
-                    age = ReadInt(ConnectionReader, "Cellphone");
-                    code = ReadInt(ConnectionReader, "Cellphone");
-                    Client client = new Client(id, name, surname, dni, eMail, cellphone);
-                    ListClients.Add(client);
-                    public Product(int id, string description, int price, int stock)
-                    {
-                        _id = id;
-                        _description = description;
-                        _price = price;
-                        _stock = stock;
-                    }*/
+                    articleNumber = ReadInt(ConnectionReader, "Article_Number");
+                    cost = ReadFloat(ConnectionReader, "Cost");
+                    price = ReadFloat(ConnectionReader, "Price");
+                    stock = ReadInt(ConnectionReader, "Stock");
+                    age = ReadBool(ConnectionReader, "Age");
+                    code = ReadString(ConnectionReader, "Code");
+                    Product product= new Product(id, description, price, stock);
+                    ListProducts.Add(product);
                 }
                 catch { }
             }

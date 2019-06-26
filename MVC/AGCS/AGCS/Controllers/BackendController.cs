@@ -144,7 +144,6 @@ namespace AGCS.Controllers
         public bool NewBill()
         {
             bool Success = false;
-
             return Success;
         }
         // GET: Backend/Create
