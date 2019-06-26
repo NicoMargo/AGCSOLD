@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Threading;
-using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using AGCS.Models;
 using Newtonsoft.Json;
@@ -31,6 +26,7 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetProductToEnter(int id)
         {
+            
             Product[] MyProducts;
             MyProducts = new Product[10];
             Product myProduct = new Product(0, "Manga Yakusoku No Neverland N°1", 658, 23);
@@ -140,11 +136,9 @@ namespace AGCS.Controllers
             return Success;
         }
         [HttpPost]
-        public bool NewBill()
+        public void NewBill(object product)
         {
-            bool Success = false;
-
-            return Success;
+            product = null;
         }
         // GET: Backend/Create
         public ActionResult Pruebas()

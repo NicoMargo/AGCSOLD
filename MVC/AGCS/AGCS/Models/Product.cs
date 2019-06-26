@@ -11,6 +11,8 @@ namespace AGCS.Models
         private string _description;
         private int _price;
         private int _stock;
+        private int _quant;
+        private int _iva;
 
         public Product(int id, string description, int price, int stock)
         {
@@ -24,5 +26,7 @@ namespace AGCS.Models
         public string Description { get => _description;}
         public int Price { get => _price;}
         public int Stock { get => _stock;}
+        public int Quant { get => _quant;}
+        public int Iva { get => _iva;}
     }
 }
