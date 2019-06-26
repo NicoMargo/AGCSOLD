@@ -14,12 +14,14 @@ namespace AGCS.Models
         private int _quant;
         private int _iva;
 
-        public Product(int id, string description, int price, int stock)
+        public Product(int id, string description, int price, int stock, int quant, int iva)
         {
             _id = id;
             _description = description;
             _price = price;
             _stock = stock;
+            _quant = quant;
+            _iva = iva;
         }
 
         public int Id { get => _id;}

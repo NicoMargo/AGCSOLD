@@ -6,7 +6,7 @@ using System;
 namespace AGCS.Controllers
 {
     public class BackendController : Controller
-    {        
+    {
         // GET: Backend
         public ActionResult Index()
         {
@@ -27,14 +27,14 @@ namespace AGCS.Controllers
         {            
             Product[] MyProducts;
             MyProducts = new Product[10];
-            Product myProduct = new Product(0, "Manga Yakusoku No Neverland N°1", 658, 23);
-            Product myProduct2 = new Product(1, "Manga Yakusoku No Neverland N°2", 658, 23);
-            Product myProduct3 = new Product(2, "Manga Yakusoku No Neverland N°3", 658, 23);
-            Product myProduct4 = new Product(3, "Manga Yakusoku No Neverland N°4", 658, 23);
-            Product myProduct5 = new Product(4, "Manga Yakusoku No Neverland N°5", 658, 23);
-            Product myProduct6 = new Product(5, "Manga Yakusoku No Neverland N°6", 658, 23);
-            Product myProduct7 = new Product(6, "Manga Yakusoku No Neverland N°7", 658, 23);
-            Product myProduct8 = new Product(7, "Manga Yakusoku No Neverland N°8", 658, 23);
+            Product myProduct = new Product(0, "Manga Yakusoku No Neverland N°1", 658, 23,1,1);
+            Product myProduct2 = new Product(1, "Manga Yakusoku No Neverland N°2", 658, 23,1,1);
+            Product myProduct3 = new Product(2, "Manga Yakusoku No Neverland N°3", 658, 23,1,1);
+            Product myProduct4 = new Product(3, "Manga Yakusoku No Neverland N°4", 658, 23,1,1);
+            Product myProduct5 = new Product(4, "Manga Yakusoku No Neverland N°5", 658, 23,1,1);
+            Product myProduct6 = new Product(5, "Manga Yakusoku No Neverland N°6", 658, 23,1,1);
+            Product myProduct7 = new Product(6, "Manga Yakusoku No Neverland N°7", 658, 23,1,1);
+            Product myProduct8 = new Product(7, "Manga Yakusoku No Neverland N°8", 658, 23,1,1);
             MyProducts[0] = myProduct;
             MyProducts[1] = myProduct2;
             MyProducts[2] = myProduct3;
@@ -133,12 +133,13 @@ namespace AGCS.Controllers
             }
             return Success;
         }
+     
         [HttpPost]
-        public void NewBill(object product)
-        {
-            product = null;
+        public void NewBill(string json)
+        {            
+            List<Product> products = JsonConvert.DeserializeObject<List<Product>>(json);
+         
         }
-        // GET: Backend/Create
         public ActionResult Pruebas()
         {
             return View();
