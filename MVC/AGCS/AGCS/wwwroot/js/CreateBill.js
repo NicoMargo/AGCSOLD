@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var idOfProd, D, T = 0, Items = [];
-    var Product = { id: null, quant: null, iva: null };
+    var Product = { id: null, quant: null, iva: 1 };
     $("#codProdToEnter").focus();
     $('#codProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -40,8 +40,7 @@
                     EnterProductToBill();
                 } else {
                     $("#codProdToEnter").css({ "border": " 0.15rem solid red" });
-                }
-                
+                }                
             } else {
                 $("#quantProdToEnter").css({ "border": " 0.15rem solid red" });
             }
@@ -56,8 +55,8 @@
     }
 
     function EnterProductToBill() {
-        Product.Id = D.id;
-        Product.Quant = parseInt($("#quantProdToEnter").val());
+        Product.id = D.Id;
+        Product.quant = parseInt($("#quantProdToEnter").val());
         Items.push(Product);
         $("#total").empty();
         T += D.Price * parseInt($("#quantProdToEnter").val(), 10);
@@ -79,11 +78,14 @@
         $("#codProdToEnter").focus();
     }
     $("#b").click(function () {
-        console.log(Items);
+        var test = JSON.stringify(Items); 
         $.ajax({
             type: "POST",
             url: "/Backend/NewBill",
-            data: JSON.stringify(Items),
+            //data: {data:test},
+            data: {
+                json: test
+            },
             success: function () {
 
             },
