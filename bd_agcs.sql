@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 26-06-2019 a las 20:59:56
+-- Tiempo de generación: 26-06-2019 a las 22:02:53
 -- Versión del servidor: 5.7.23
 -- Versión de PHP: 7.2.10
 
@@ -21,8 +21,109 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `bd_agcs`
 --
-CREATE DATABASE IF NOT EXISTS `bd_agcs` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `bd_agcs`;
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+DROP PROCEDURE IF EXISTS `spBillsInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillsInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT)  BEGIN
+	Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness) values( pDate, pTotal, pIdBusiness);
+END$$
+
+DROP PROCEDURE IF EXISTS `spClientDelete`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientDelete` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
+if(EXISTS(SELECT clients.idClients FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
+THEN
+	DELETE from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness;
+end IF$$
+
+DROP PROCEDURE IF EXISTS `spClientGetOne`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetOne` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
+SELECT * FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness$$
+
+DROP PROCEDURE IF EXISTS `spClientInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_CUIT` INT, IN `pEmail` VARCHAR(45), IN `pTelephone` INT, IN `pCellphone` INT)  NO SQL
+if( pIdBusiness > -1 && pName != "" && pSurname != "" && pDNI_CUIT != 0 )
+then
+	insert into clients(clients.Name,clients.Surname,clients.DNI_CUIT,clients.Business_idBusiness) values( pName, pSurname, pDNI_CUIT, pIdBusiness);
+	
+    set @lastId = (select clients.idClients from clients where clients.idClients = LAST_INSERT_ID() and clients.Name = pName and clients.Surname = pSurname and clients.DNI_CUIT = pDNI_CUIT and clients.Business_idBusiness = pIdBusiness);
+	
+    if(@lastId is not null)
+    then
+    
+		if( pEmail is not null  /*and pEmail != (SELECT clients.eMail from clients where clients.idClients = @lastId)*/) 
+		THEN
+			UPDATE clients set clients.eMail = pEmail WHERE clients.idClients = @lastId and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pTelephone is not null  /*and pTelephone != (SELECT clients.Telephone from clients where clients.idClients = @lastId)*/) 
+		THEN
+			UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = @lastId and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pCellphone is not null /*and pCellphone != (SELECT clients.Cellphone from clients where clients.idClients = @lastId)*/) 
+		THEN
+			UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = @lastId and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+    
+    end if;
+end if$$
+
+DROP PROCEDURE IF EXISTS `spClientsGet`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientsGet` (IN `pIdBusiness` INT)  NO SQL
+SELECT clients.idClients, clients.Name, clients.Surname, clients.DNI_CUIT, clients.eMail,clients.Cellphone FROM clients where clients.Business_idBusiness = pIdBusiness$$
+
+DROP PROCEDURE IF EXISTS `spClientUpdate`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` INT(20), IN `pEmail` VARCHAR(45), IN `pTelephone` INT, IN `pCellphone` INT)  NO SQL
+if(EXISTS(SELECT clients.idClients from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
+THEN
+	if(pName != "" and pSurname != "" and pDNI_CUIT > 0 and pDNI_CUIT != ""  )
+    then
+		if( pName is not null and pName!= (SELECT clients.Name from clients where clients.idClients = id) ) 
+		THEN
+			UPDATE clients set Name = pName WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pSurname is not null and pSurname != (SELECT clients.Surname from clients where clients.idClients = id)) 
+		THEN
+			UPDATE clients set clients.Surname = pSurname WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pDNI_CUIT is not null and pDNI_CUIT != (SELECT clients.DNI_CUIT from clients where clients.idClients = id)) 
+		THEN
+			UPDATE clients set clients.DNI_CUIT = pDNI_CUIT WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pEmail is not null) 
+		THEN
+			UPDATE clients set clients.eMail = pEmail WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pTelephone is not null and pTelephone != (SELECT clients.Telephone from clients where clients.idClients = id)) 
+		THEN
+			UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pCellphone is not null and pCellphone != (SELECT clients.Cellphone from clients where clients.idClients = id)) 
+		THEN
+			UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+		end if;
+	end if;
+end if$$
+
+DROP PROCEDURE IF EXISTS `spProductGetOne`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetOne` (IN `pCode` INT, IN `pIdBusiness` INT)  BEGIN
+	SELECT * FROM products WHERE (products.Article_Number = pCode or products.CodeProduct = pCode) and products.Business_idBusiness = pIdBusiness;
+END$$
+
+DROP PROCEDURE IF EXISTS `spProductsGet`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` INT)  BEGIN
+	select * from Products where Products.Business_idBusiness = pIdBusiness;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -242,7 +343,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `Price` float DEFAULT NULL,
   `Age` bit(1) DEFAULT NULL,
   `Stock` int(11) DEFAULT NULL,
-  `Code` varchar(100) DEFAULT NULL,
+  `CodeProduct` varchar(100) DEFAULT NULL,
   `Suppliers_idSupplier` int(11) NOT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idProducts`,`Suppliers_idSupplier`,`Business_idBusiness`),
@@ -254,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `products` (
 -- Volcado de datos para la tabla `products`
 --
 
-INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `Age`, `Stock`, `Code`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
+INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
 (1, 1, 'Manga Yakusoku no Neverland Vol 1', 320, NULL, b'1', 10, '1', 3, 1),
 (2, 2, 'Manga Yakusoku no Neverland Vol 2', 320, NULL, b'1', 10, '2', 3, 1),
 (3, 3, 'Manga Yakusoku no Neverland Vol 3', 320, NULL, b'1', 2, '3', 3, 1);
