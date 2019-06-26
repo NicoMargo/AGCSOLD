@@ -1,6 +1,4 @@
-﻿
-
-$(document).ready(function () {
+﻿$(document).ready(function () {
     function validate(id,expectedCondition = true) {
         if (!expectedCondition) {
             $("#modal" + id).addClass("validation_error");
@@ -124,7 +122,6 @@ $(document).ready(function () {
         valid = validate("CreateSurname", $("#modalCreateSurname").val() !== "");
         valid = validate("CreateName", $("#modalCreateName").val() !== "") && valid;
         valid = validate("CreateDni", $("#modalCreateDni").val() !== "" && $("#modalCreateDni").val() > 0) && valid;
-
         if (valid) {
             $.ajax({
                 type: "POST",

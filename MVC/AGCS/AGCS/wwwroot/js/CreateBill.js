@@ -56,16 +56,24 @@
     }
 
     function EnterProductToBill() {
-        Product.id = D.Id;
-        Product.quant = parseInt($("#quantProdToEnter").val());
-        Items.push(Product);
+        
         $("#total").empty();
         T += D.Price * parseInt($("#quantProdToEnter").val(), 10);
         $("#total").append(T);
         if ($("#" + idOfProd).length > 0) {
+            let data = parseInt($("#codProdToEnter").val());
             document.getElementById("q" + idOfProd).value = parseInt($("#quantProdToEnter").val(), 10) + parseInt($("#q" + idOfProd).val(), 10);
 
+            Product.map(function (data) {
+                if (Items.id === data) {
+                    Items.quant += $("#quantProdToEnter").val();
+                }
+            });         
         } else {
+            Product = new Object();
+            Product.id = D.Id;
+            Product.quant = parseInt($("#quantProdToEnter").val());
+            Items.push(Product);
             var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><img id="e' + idOfProd + '" class="w-25" src="/images/boton-x.png" alt="Borrar"></td></tr>';
             ProdToEnter.keypress;
             $("#tableProducts").prepend(ProdToEnter);
