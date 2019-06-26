@@ -15,7 +15,7 @@ namespace AGCS.Controllers
         public ActionResult CRUDClient()
         {
             BD.GetClients(BD.idBusiness);
-            ViewBag.Clients = BD.ListOfClients;
+            ViewBag.Clients = BD.ListClients;
             return View();
         }
         public ActionResult CreateBill()
@@ -23,63 +23,16 @@ namespace AGCS.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult GetProductToEnter(int id)
-        {            
-            Product[] MyProducts;
-            MyProducts = new Product[10];
-            Product myProduct = new Product(0, "Manga Yakusoku No Neverland N°1", 658, 23,1,1);
-            Product myProduct2 = new Product(1, "Manga Yakusoku No Neverland N°2", 658, 23,1,1);
-            Product myProduct3 = new Product(2, "Manga Yakusoku No Neverland N°3", 658, 23,1,1);
-            Product myProduct4 = new Product(3, "Manga Yakusoku No Neverland N°4", 658, 23,1,1);
-            Product myProduct5 = new Product(4, "Manga Yakusoku No Neverland N°5", 658, 23,1,1);
-            Product myProduct6 = new Product(5, "Manga Yakusoku No Neverland N°6", 658, 23,1,1);
-            Product myProduct7 = new Product(6, "Manga Yakusoku No Neverland N°7", 658, 23,1,1);
-            Product myProduct8 = new Product(7, "Manga Yakusoku No Neverland N°8", 658, 23,1,1);
-            MyProducts[0] = myProduct;
-            MyProducts[1] = myProduct2;
-            MyProducts[2] = myProduct3;
-            MyProducts[3] = myProduct4;
-            MyProducts[4] = myProduct5;
-            MyProducts[5] = myProduct6;
-            MyProducts[6] = myProduct7;
-            MyProducts[7] = myProduct8;
-            string JsonDataClient;
-            switch (id)
-            {
-                case 1:
-                    JsonDataClient = JsonConvert.SerializeObject(myProduct);
-                    break;
-                case 2:
-                    JsonDataClient = JsonConvert.SerializeObject(myProduct2);
-                    break;
-                case 3:
-                    JsonDataClient = JsonConvert.SerializeObject(myProduct3);
-                    break;
-                case 4:
-                    JsonDataClient = JsonConvert.SerializeObject(myProduct4);
-                    break;
-                case 5:
-                    JsonDataClient = JsonConvert.SerializeObject(myProduct5);
-                    break;
-                case 6:
-                    JsonDataClient = JsonConvert.SerializeObject(myProduct6);
-                    break;
-                case 7:
-                    JsonDataClient = JsonConvert.SerializeObject(myProduct7);
-                    break;
-                case 8:
-                    JsonDataClient = JsonConvert.SerializeObject(myProduct8);
-                    break;
-                default:
-                    JsonDataClient = JsonConvert.SerializeObject(myProduct);
-                    break;
-            }
+        public JsonResult GetProductToEnter(ulong id)
+        {
+            Product product = BD.GetOneProduct(id);
+            string JsonDataClient = JsonConvert.SerializeObject(product);
             return Json(JsonDataClient);
         }
         [HttpPost]
         public JsonResult GetDataClient(int pos)
         {
-            BD.GetOneClient(BD.ListOfClients[pos].Id, BD.idBusiness);
+            BD.GetOneClient(BD.ListClients[pos].Id, BD.idBusiness);
             string JsonDataClient = JsonConvert.SerializeObject(BD.SelectedClient);
             return Json(JsonDataClient);        
         }
@@ -87,6 +40,7 @@ namespace AGCS.Controllers
         public bool UpdateClient(string Surname, string Name, ulong Dni, string email, ulong Telephone, ulong Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
         {
             bool Success = true;
+            if (email is null) { email = ""; }
             Client cUpdateClient = new Client(BD.SelectedClient.Id, Name, Surname,Dni,email, Cellphone, Telephone);
 
             try
@@ -125,7 +79,7 @@ namespace AGCS.Controllers
             bool Success = true;
             try
             {                
-                BD.DeleteClient(BD.ListOfClients[Convert.ToInt32(id)].Id);
+                BD.DeleteClient(BD.ListClients[Convert.ToInt32(id)].Id);
             }
             catch
             {
@@ -138,7 +92,6 @@ namespace AGCS.Controllers
         public void NewBill(string json)
         {            
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(json);
-         
         }
         public ActionResult Pruebas()
         {

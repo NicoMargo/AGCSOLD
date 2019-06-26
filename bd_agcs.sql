@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.9
+-- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 21-06-2019 a las 15:13:29
--- Versión del servidor: 5.7.21
--- Versión de PHP: 5.6.35
+-- Tiempo de generación: 26-06-2019 a las 22:02:53
+-- Versión del servidor: 5.7.23
+-- Versión de PHP: 7.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -26,6 +26,11 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+DROP PROCEDURE IF EXISTS `spBillsInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillsInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT)  BEGIN
+	Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness) values( pDate, pTotal, pIdBusiness);
+END$$
+
 DROP PROCEDURE IF EXISTS `spClientDelete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientDelete` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
 if(EXISTS(SELECT clients.idClients FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
@@ -108,6 +113,16 @@ THEN
 	end if;
 end if$$
 
+DROP PROCEDURE IF EXISTS `spProductGetOne`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetOne` (IN `pCode` INT, IN `pIdBusiness` INT)  BEGIN
+	SELECT * FROM products WHERE (products.Article_Number = pCode or products.CodeProduct = pCode) and products.Business_idBusiness = pIdBusiness;
+END$$
+
+DROP PROCEDURE IF EXISTS `spProductsGet`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` INT)  BEGIN
+	select * from Products where Products.Business_idBusiness = pIdBusiness;
+END$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -135,6 +150,52 @@ CREATE TABLE IF NOT EXISTS `address` (
   KEY `fk_Address_Province1_idx` (`Province_idProvince`),
   KEY `fk_Address_Business1_idx` (`Business_idBusiness`),
   KEY `fk_Address_Client1` (`Clients_idClients`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `bills`
+--
+
+DROP TABLE IF EXISTS `bills`;
+CREATE TABLE IF NOT EXISTS `bills` (
+  `idBills` int(11) NOT NULL AUTO_INCREMENT,
+  `DateBill` date DEFAULT NULL,
+  `DNI/CUIT` int(11) DEFAULT NULL,
+  `Employee_Code` int(11) DEFAULT NULL,
+  `IVA_Condition` varchar(45) DEFAULT NULL,
+  `TypeBill` varchar(1) DEFAULT NULL,
+  `Total` int(11) DEFAULT NULL,
+  `Discount` int(11) DEFAULT NULL,
+  `IVA_Recharge` int(11) DEFAULT NULL,
+  `WholeSaler` bit(1) DEFAULT NULL,
+  `Branches_idBranch` int(11) NOT NULL,
+  `Payment_Methods_idPayment_Methods` int(11) NOT NULL,
+  `Macs_idMacs` int(11) NOT NULL,
+  `Business_idBusiness` int(11) NOT NULL,
+  PRIMARY KEY (`idBills`,`Branches_idBranch`,`Payment_Methods_idPayment_Methods`,`Macs_idMacs`,`Business_idBusiness`),
+  KEY `fk_Bills_Branches1_idx` (`Branches_idBranch`) USING BTREE,
+  KEY `fk_Bills_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`) USING BTREE,
+  KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
+  KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `bills_x_products`
+--
+
+DROP TABLE IF EXISTS `bills_x_products`;
+CREATE TABLE IF NOT EXISTS `bills_x_products` (
+  `idBills_X_Products` int(11) NOT NULL AUTO_INCREMENT,
+  `Quantity` int(11) DEFAULT NULL,
+  `Products_idProducts` int(11) NOT NULL,
+  `Bills_idBills` int(11) NOT NULL,
+  PRIMARY KEY (`idBills_X_Products`,`Products_idProducts`,`Bills_idBills`),
+  KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE,
+  KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBills`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -184,7 +245,7 @@ CREATE TABLE IF NOT EXISTS `business` (
 
 INSERT INTO `business` (`idBusiness`, `CUIT`, `Name`, `Gross_Income`, `Beginning_of_Activities`, `Logo`, `Signature`, `Type`, `Telephone`) VALUES
 (1, 1234, 'Prueba', 3000, '2019-05-01', 'xdd', 'xdd', 'Mayorista', 1121121),
-(2, 1234, 'Prueba', 3000, '2019-05-01', 'xdd', 'xdd', 'Mayorista', 1121121);
+(2, 4657456, 'Don pepe y sus globos', 8000, '1666-05-01', 'daze', 'xdd', 'Minorista', 1511114444);
 
 -- --------------------------------------------------------
 
@@ -204,7 +265,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idClients`,`Business_idBusiness`),
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
@@ -214,14 +275,14 @@ INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Tel
 (5, 'Carlitos', 'pereza', 2, 'carlomagno@gmail.cim', 30748787, 0, 1),
 (6, 'Don Juan', 'Equisde', 44444555, 'juan@mail.cim', 45678912, 0, 1),
 (7, 'Robot de', 'Prueba', 17, 'c17@patrullaroja.com', NULL, 0, 1),
-(8, 'Yare Yare', 'Dawa', -5, 'bot01@mail.com', 0, 0, 1),
-(22, 'Margosian', '11', 3, NULL, NULL, 111, 1),
+(8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', 113212113, 11231213, 1),
+(22, 'Margosian', '11', 3, 'a', NULL, 111, 1),
 (23, 'test', 'prueba', 123456, NULL, NULL, 43214321, 1),
 (25, 'nombre', 'apellido', 987654321, NULL, NULL, 40005000, 1),
 (29, 'que hace ', 'hola ', 12345, 'mail@mail', 1500000000, 40000000, 1),
 (32, 'Margossian', 'Nicolas', 1, NULL, 1144322258, 1165898555, 1),
 (34, 'a', 'a', 12, 'a', 1, 1, 1),
-(35, 'a', 'a', 1, 'a', 1, 1, 1);
+(37, 'a', 'a', 1, '', 123123123, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -277,17 +338,27 @@ DROP TABLE IF EXISTS `products`;
 CREATE TABLE IF NOT EXISTS `products` (
   `idProducts` int(11) NOT NULL AUTO_INCREMENT,
   `Article_number` int(11) DEFAULT NULL,
-  `Name` varchar(45) DEFAULT NULL,
-  `Cost` int(11) DEFAULT NULL,
+  `Description` varchar(45) DEFAULT NULL,
+  `Cost` float DEFAULT NULL,
+  `Price` float DEFAULT NULL,
   `Age` bit(1) DEFAULT NULL,
   `Stock` int(11) DEFAULT NULL,
-  `Code` int(11) DEFAULT NULL,
+  `CodeProduct` varchar(100) DEFAULT NULL,
   `Suppliers_idSupplier` int(11) NOT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idProducts`,`Suppliers_idSupplier`,`Business_idBusiness`),
   KEY `fk_Products_Suppliers1_idx` (`Suppliers_idSupplier`),
   KEY `fk_Products_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `products`
+--
+
+INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 320, NULL, b'1', 10, '1', 3, 1),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 320, NULL, b'1', 10, '2', 3, 1),
+(3, 3, 'Manga Yakusoku no Neverland Vol 3', 320, NULL, b'1', 2, '3', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -300,52 +371,6 @@ CREATE TABLE IF NOT EXISTS `provinces` (
   `idProvince` int(11) NOT NULL AUTO_INCREMENT,
   `Province` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`idProvince`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `purchases`
---
-
-DROP TABLE IF EXISTS `purchases`;
-CREATE TABLE IF NOT EXISTS `purchases` (
-  `idPurchases` int(11) NOT NULL AUTO_INCREMENT,
-  `Date` date DEFAULT NULL,
-  `DNI/CUIT` int(11) DEFAULT NULL,
-  `Employee_Code` int(11) DEFAULT NULL,
-  `IVA_Condition` varchar(45) DEFAULT NULL,
-  `Type` varchar(1) DEFAULT NULL,
-  `Total` int(11) DEFAULT NULL,
-  `Discount` int(11) DEFAULT NULL,
-  `IVA_Recharge` int(11) DEFAULT NULL,
-  `WholeSaler` bit(1) DEFAULT NULL,
-  `Branches_idBranch` int(11) NOT NULL,
-  `Payment_Methods_idPayment_Methods` int(11) NOT NULL,
-  `Macs_idMacs` int(11) NOT NULL,
-  `Business_idBusiness` int(11) NOT NULL,
-  PRIMARY KEY (`idPurchases`,`Branches_idBranch`,`Payment_Methods_idPayment_Methods`,`Macs_idMacs`,`Business_idBusiness`),
-  KEY `fk_Purchases_Branches1_idx` (`Branches_idBranch`),
-  KEY `fk_Purchases_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`),
-  KEY `fk_Purchases_Macs1_idx` (`Macs_idMacs`),
-  KEY `fk_Purchases_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `purchases_x_products`
---
-
-DROP TABLE IF EXISTS `purchases_x_products`;
-CREATE TABLE IF NOT EXISTS `purchases_x_products` (
-  `idPurchases_X_Products` int(11) NOT NULL AUTO_INCREMENT,
-  `Quantity` int(11) DEFAULT NULL,
-  `Products_idProducts` int(11) NOT NULL,
-  `Purchases_idPurchases` int(11) NOT NULL,
-  PRIMARY KEY (`idPurchases_X_Products`,`Products_idProducts`,`Purchases_idPurchases`),
-  KEY `fk_Purchases_X_Products_Products1_idx` (`Products_idProducts`),
-  KEY `fk_Purchases_X_Products_Purchases1_idx` (`Purchases_idPurchases`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -366,7 +391,17 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `Address` varchar(200) NOT NULL,
   PRIMARY KEY (`idSupplier`,`Business_idBusiness`),
   KEY `fk_Supplier_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `suppliers`
+--
+
+INSERT INTO `suppliers` (`idSupplier`, `Name`, `Surname`, `Telephone`, `Cellphone`, `Factory_Plant`, `Business_idBusiness`, `Address`) VALUES
+(1, 'Aquiles', 'Traigo', 43216543, 13111111, 'Nose q va aK xd', 1, 'En la loma del ort'),
+(2, 'Aquiles', 'Doy', 45678912, 1513317546, 'yo tampoco jaja salu2', 1, 'viste china, bueno doblando a la izquierda'),
+(3, 'Ivrea', NULL, NULL, 154321321, 'EEEEEEEE', 1, 'Cabildo 6000'),
+(4, 'void', NULL, NULL, 154321321, 'EEEEEEEE', 1, 'Cabildo 6000');
 
 -- --------------------------------------------------------
 
@@ -430,6 +465,22 @@ ALTER TABLE `address`
   ADD CONSTRAINT `fk_Address_Province1` FOREIGN KEY (`Province_idProvince`) REFERENCES `provinces` (`idProvince`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
+-- Filtros para la tabla `bills`
+--
+ALTER TABLE `bills`
+  ADD CONSTRAINT `fk_Bills_Branches1` FOREIGN KEY (`Branches_idBranch`) REFERENCES `branches` (`idBranch`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Bills_Business1` FOREIGN KEY (`Business_idBusiness`) REFERENCES `business` (`idBusiness`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Bills_Macs1` FOREIGN KEY (`Macs_idMacs`) REFERENCES `macs` (`idMacs`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Bills_Payment_Methods1` FOREIGN KEY (`Payment_Methods_idPayment_Methods`) REFERENCES `payment_methods` (`idPayment_Methods`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `bills_x_products`
+--
+ALTER TABLE `bills_x_products`
+  ADD CONSTRAINT `fk_Bills_X_Products_Bills1` FOREIGN KEY (`Bills_idBills`) REFERENCES `bills` (`idBills`),
+  ADD CONSTRAINT `fk_Bills_X_Products_Products1` FOREIGN KEY (`Products_idProducts`) REFERENCES `products` (`idProducts`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
 -- Filtros para la tabla `branches`
 --
 ALTER TABLE `branches`
@@ -460,22 +511,6 @@ ALTER TABLE `macs`
 ALTER TABLE `products`
   ADD CONSTRAINT `fk_Products_Business1` FOREIGN KEY (`Business_idBusiness`) REFERENCES `business` (`idBusiness`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Products_Suppliers1` FOREIGN KEY (`Suppliers_idSupplier`) REFERENCES `suppliers` (`idSupplier`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `purchases`
---
-ALTER TABLE `purchases`
-  ADD CONSTRAINT `fk_Purchases_Branches1` FOREIGN KEY (`Branches_idBranch`) REFERENCES `branches` (`idBranch`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Purchases_Business1` FOREIGN KEY (`Business_idBusiness`) REFERENCES `business` (`idBusiness`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Purchases_Macs1` FOREIGN KEY (`Macs_idMacs`) REFERENCES `macs` (`idMacs`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Purchases_Payment_Methods1` FOREIGN KEY (`Payment_Methods_idPayment_Methods`) REFERENCES `payment_methods` (`idPayment_Methods`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `purchases_x_products`
---
-ALTER TABLE `purchases_x_products`
-  ADD CONSTRAINT `fk_Purchases_X_Products_Products1` FOREIGN KEY (`Products_idProducts`) REFERENCES `products` (`idProducts`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Purchases_X_Products_Purchases1` FOREIGN KEY (`Purchases_idPurchases`) REFERENCES `purchases` (`idPurchases`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `suppliers`

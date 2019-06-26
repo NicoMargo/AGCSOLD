@@ -8,28 +8,57 @@ namespace AGCS.Models
 {
     public class BD
     {
-        //xd
-       //public static string connectionString = "Server=127.0.0.1;User=root;Database=pruebaclientes"; //Anush
+        //public static string connectionString = "Server=localhost;User=root;Database=bd_agcs;Uid=Jonyloco;Pwd=agcs;"; //Chino
+        //public static string connectionString = "Server=127.0.0.1;User=root;Database=pruebaclientes"; //Anush
         public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
 
-        public static List<Client> ListOfClients = new List<Client>();
+        public static List<Client> ListClients = new List<Client>();
+        public static List<Product> ListProducts = new List<Product>();
         public static Client SelectedClient;
-        public static uint idBusiness = 1;
 
+        public static uint idBusiness = 1;
+        
         private static string ReadString(MySqlDataReader ConnectionReader, string parameter)
-        {
+        { 
             string result = null;
             try { result = ConnectionReader[parameter].ToString(); } catch { }
             return result;
         }
-        private static ulong ReadInt(MySqlDataReader ConnectionReader, string parameter)
+
+        private static int ReadInt(MySqlDataReader ConnectionReader, string parameter)
+        {
+            int result = 0;
+            try { result = Convert.ToInt32(ConnectionReader[parameter]); } catch { }
+            return result;
+        }
+
+        private static ulong ReadULong(MySqlDataReader ConnectionReader, string parameter)
         {
             ulong result = 0;
             try { result = Convert.ToUInt64(ConnectionReader[parameter]); } catch { }
             return result;
         }
 
-        //Funciones para la bd
+        private static float ReadFloat(MySqlDataReader ConnectionReader, string parameter)
+        {
+            float result = 0.0f;
+            try { result = Convert.ToSingle(ConnectionReader[parameter]); } catch { }
+            return result;
+        }
+
+        private static bool ReadBool(MySqlDataReader ConnectionReader, string parameter)
+        {
+            bool result = false;
+            try { result = Convert.ToBoolean(ConnectionReader[parameter]); } catch { }
+            return result;
+        }
+        /*
+        private static bool ReadBool<T>(MySqlDataReader ConnectionReader, string parameter)
+        {
+            return (T)Convert.ChangeType(value, typeof(T));
+        }*/
+
+        //methods for DB
         public static MySqlConnection Connect()
         {
              MySqlConnection Connection = new MySqlConnection(connectionString);
@@ -41,10 +70,12 @@ namespace AGCS.Models
         {
             Connection.Close();
         }
-        //storeProcedures CLientes
+
+        //Methods for store procedures of Table Clients 
         public static void GetClients(uint idBusiness)
+
         {
-            ListOfClients.Clear();
+            ListClients.Clear();
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
@@ -65,12 +96,12 @@ namespace AGCS.Models
                     id = Convert.ToUInt32(ConnectionReader["idClients"]);
                     name = ReadString(ConnectionReader, "Name");
                     surname = ReadString(ConnectionReader, "Surname");
-                    dni = ReadInt(ConnectionReader, "DNI_CUIT");
+                    dni = ReadULong(ConnectionReader, "DNI_CUIT");
                     eMail = ReadString(ConnectionReader, "eMail");
-                    telephone = ReadInt(ConnectionReader, "Telephone");
-                    cellphone = ReadInt(ConnectionReader, "Cellphone");
+                    telephone = ReadULong(ConnectionReader, "Telephone");
+                    cellphone = ReadULong(ConnectionReader, "Cellphone");
                     Client client = new Client(id, name, surname, dni, eMail,cellphone);
-                    ListOfClients.Add(client);
+                    ListClients.Add(client);
                 }
                 catch { }
             }
@@ -97,10 +128,10 @@ namespace AGCS.Models
                     id = Convert.ToUInt32(ConnectionReader["idClients"]);
                     name = ReadString(ConnectionReader, "Name");
                     surname = ReadString(ConnectionReader, "Surname");
-                    dni = ReadInt(ConnectionReader, "DNI_CUIT");
+                    dni = ReadULong(ConnectionReader, "DNI_CUIT");
                     email = ReadString(ConnectionReader, "eMail");
-                    telephone = ReadInt(ConnectionReader, "Telephone");
-                    cellphone = ReadInt(ConnectionReader, "Cellphone");
+                    telephone = ReadULong(ConnectionReader, "Telephone");
+                    cellphone = ReadULong(ConnectionReader, "Cellphone");
                     client = new Client(id, name, surname, dni, email, cellphone, telephone);                    
                 }
                 catch { }
@@ -167,6 +198,87 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
             CommandConnection.ExecuteNonQuery();
             Disconect(Connection);
+        }
+
+        //Methods for store procedures of Table Products 
+        public static void GetProducts(uint idBusiness)
+        {
+            ListProducts.Clear();
+            MySqlConnection Connection = Connect();
+            MySqlCommand CommandConnection = Connection.CreateCommand();
+            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
+            CommandConnection.CommandText = "spProductsGet";
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
+            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            while (ConnectionReader.Read())
+            {
+                uint id;
+                ulong articleNumber;
+                string description;
+                float cost;
+                float price;
+                int stock;
+                bool age;
+                string code;
+                try
+                {   
+                    id = Convert.ToUInt32(ConnectionReader["idProducts"]);
+                    description = ReadString(ConnectionReader, "Description");
+                    articleNumber = ReadULong(ConnectionReader, "Article_Number");
+                    cost = ReadFloat(ConnectionReader, "Cost");
+                    price = ReadFloat(ConnectionReader, "Price");
+                    stock = ReadInt(ConnectionReader, "Stock");
+                    age = ReadBool(ConnectionReader, "Age");
+                    code = ReadString(ConnectionReader, "Code");
+                    Product product= new Product(id, description, price, stock);
+                    ListProducts.Add(product);
+                }
+                catch { }
+            }
+            Disconect(Connection);
+        }
+        public static Product GetOneProduct(ulong code)
+        {
+            Product product = null;
+            MySqlConnection Connection = Connect();
+            MySqlCommand CommandConnection = Connection.CreateCommand();
+            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
+            CommandConnection.CommandText = "spProductGetOne";
+            CommandConnection.Parameters.AddWithValue("@pCode", code);
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
+            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            if (ConnectionReader.Read())
+            {
+                string description;
+                float price;
+                int stock;
+                uint id;
+                /*Addres info ...*/
+                try
+                {
+                    id = Convert.ToUInt32(ConnectionReader["idProducts"]);
+                    description = ReadString(ConnectionReader, "Description");
+                    price = ReadFloat(ConnectionReader, "Price");
+                    stock = ReadInt(ConnectionReader, "Stock");
+                    product = new Product(id,description,price,stock);
+                }
+                catch { }
+            }
+            Disconect(Connection);
+            return product;
+        }
+        //Methods for store procedures of Table Products 
+        public static bool InsertBill(Bill bill)
+        {
+            bool success = false;
+            MySqlConnection Connection = Connect();
+            MySqlCommand CommandConnection = Connection.CreateCommand();
+            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
+            CommandConnection.CommandText = "spBillInsert";
+
+            CommandConnection.ExecuteNonQuery();
+            Disconect(Connection);
+            return success;
         }
     }
 }
