@@ -7,7 +7,7 @@ namespace AGCS.Models
 {
     public class Client : Person
     {       
-        private int _dni;
+        private ulong _dni;
         private string _town;
         private string _Address;
         private string _province;
@@ -16,13 +16,12 @@ namespace AGCS.Models
         private int _floor;
 
         //Only a few data for ABM client
-        public Client(int id,string name, string surname, int dni, string email, int cellphone ) : base(id,name,surname,email,cellphone)
+        public Client(uint id,string name, string surname, ulong dni, string email, ulong cellphone ) : base(id,name,surname,email,cellphone)
         {          
             _dni = dni;
         }
-
         //Full Client
-        public Client(int id, string Name, string Surname, int dni, string email, int cellphone, int telephone) :base(id,Name,Surname,email,cellphone,telephone)
+        public Client(uint id, string Name, string Surname, ulong dni, string email, ulong cellphone, ulong telephone) :base(id,Name,Surname,email,cellphone,telephone)
         {
             _dni = dni;
             _town = Town;
@@ -33,7 +32,7 @@ namespace AGCS.Models
             _floor = Floor;
         }
         //New Client
-        public Client(string Name, string Surname, int dni, string email, int Telephone, int Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(999, Name, Surname, email, Telephone, Cellphone)
+        public Client(string Name, string Surname, ulong dni, string email, ulong Telephone, ulong Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(999, Name, Surname, email, Telephone, Cellphone)
         {
             _dni = dni;
             _town = Town;
@@ -43,11 +42,11 @@ namespace AGCS.Models
             _number = Number;
             _floor = Floor;
         }
-        public Client(string Name, string Surname, int dni, string email, int Telephone, int Cellphone) : base(999, Name, Surname, email, Telephone, Cellphone)
+        public Client(string Name, string Surname, ulong dni, string email, ulong Telephone, ulong Cellphone) : base(999, Name, Surname, email, Telephone, Cellphone)
         {
             _dni = dni;
         }
-        public int Dni { get => _dni; }       
+        public ulong Dni { get => _dni; }       
         public string Town { get => _town; }
         public string Address { get => _Address; }
         public string Province { get => _province; }

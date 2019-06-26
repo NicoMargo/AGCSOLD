@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using AGCS.Models;
 using Newtonsoft.Json;
-
+using System;
 namespace AGCS.Controllers
 {
     public class BackendController : Controller
-    {
-
+    {        
         // GET: Backend
         public ActionResult Index()
         {
@@ -25,8 +24,7 @@ namespace AGCS.Controllers
         }
         [HttpPost]
         public JsonResult GetProductToEnter(int id)
-        {
-            
+        {            
             Product[] MyProducts;
             MyProducts = new Product[10];
             Product myProduct = new Product(0, "Manga Yakusoku No Neverland N°1", 658, 23);
@@ -86,7 +84,7 @@ namespace AGCS.Controllers
             return Json(JsonDataClient);        
         }
         [HttpPost]
-        public bool UpdateClient(string Surname, string Name, int Dni, string email, int Telephone, int Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
+        public bool UpdateClient(string Surname, string Name, ulong Dni, string email, ulong Telephone, ulong Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
         {
             bool Success = true;
             Client cUpdateClient = new Client(BD.SelectedClient.Id, Name, Surname,Dni,email, Cellphone, Telephone);
@@ -103,7 +101,7 @@ namespace AGCS.Controllers
             return Success;
         }
         [HttpPost]
-        public bool CreateClient(string surname="" , string name="" , int dni = 0, string email = "", int telephone = 0, int cellphone = 0, string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
+        public bool CreateClient(string surname="" , string name="" , ulong dni = 0, string email = "", ulong telephone = 0, ulong cellphone = 0, string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
 
         //? public bool CreateClient(string Surname = "", string Name = "", int dni = 0, string email = "", int Telephone = 0, int Cellphone = 0, string Town = "", string Address = "", string Province = "", string Leter = "", int Number = 0, int Floor = 0)
 
@@ -122,12 +120,12 @@ namespace AGCS.Controllers
             return Success;
         }
         [HttpDelete]
-        public bool DeleteClient(int id)
+        public bool DeleteClient(uint id)
         {
             bool Success = true;
             try
-            {
-                BD.DeleteClient(BD.ListOfClients[id].Id);
+            {                
+                BD.DeleteClient(BD.ListOfClients[Convert.ToInt32(id)].Id);
             }
             catch
             {

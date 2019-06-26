@@ -14,6 +14,7 @@
         }
     });
     function EnterProduct() {
+        $("#descProdToEnter").empty();
         $.ajax({
             type: "POST",
             url: "/Backend/GetProductToEnter",
