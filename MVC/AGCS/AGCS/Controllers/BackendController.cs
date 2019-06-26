@@ -12,7 +12,7 @@ namespace AGCS.Controllers
         {
             return View();
         }
-        public ActionResult ABMClientes()
+        public ActionResult CRUDClient()
         {
             BD.GetClients(BD.idBusiness);
             ViewBag.Clients = BD.ListOfClients;
