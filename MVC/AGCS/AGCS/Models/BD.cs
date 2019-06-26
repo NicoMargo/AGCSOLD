@@ -15,7 +15,8 @@ namespace AGCS.Models
         public static List<Client> ListClients = new List<Client>();
         public static List<Product> ListProducts = new List<Product>();
         public static Client SelectedClient;
-        public static int idBusiness = 1;
+
+        public static uint idBusiness = 1;
         
         private static string ReadString(MySqlDataReader ConnectionReader, string parameter)
         { 
@@ -25,9 +26,16 @@ namespace AGCS.Models
         }
 
         private static int ReadInt(MySqlDataReader ConnectionReader, string parameter)
-        {            
+        {
             int result = 0;
             try { result = Convert.ToInt32(ConnectionReader[parameter]); } catch { }
+            return result;
+        }
+
+        private static ulong ReadULong(MySqlDataReader ConnectionReader, string parameter)
+        {
+            ulong result = 0;
+            try { result = Convert.ToUInt64(ConnectionReader[parameter]); } catch { }
             return result;
         }
 
@@ -62,8 +70,10 @@ namespace AGCS.Models
         {
             Connection.Close();
         }
+
         //Methods for store procedures of Table Clients 
-        public static void GetClients(int idBusiness)
+        public static void GetClients(uint idBusiness)
+
         {
             ListClients.Clear();
             MySqlConnection Connection = Connect();
@@ -74,22 +84,22 @@ namespace AGCS.Models
             MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
             while (ConnectionReader.Read())
             {
-                int id;
+                uint id;
                 string name;
                 string surname;
-                int dni;
+                ulong dni;
                 string eMail;
-                int telephone;
-                int cellphone;
+                ulong telephone;
+                ulong cellphone;
                 try
                 {
-                    id = Convert.ToInt32(ConnectionReader["idClients"]);
+                    id = Convert.ToUInt32(ConnectionReader["idClients"]);
                     name = ReadString(ConnectionReader, "Name");
                     surname = ReadString(ConnectionReader, "Surname");
-                    dni = ReadInt(ConnectionReader, "DNI_CUIT");
+                    dni = ReadULong(ConnectionReader, "DNI_CUIT");
                     eMail = ReadString(ConnectionReader, "eMail");
-                    telephone = ReadInt(ConnectionReader, "Telephone");
-                    cellphone = ReadInt(ConnectionReader, "Cellphone");
+                    telephone = ReadULong(ConnectionReader, "Telephone");
+                    cellphone = ReadULong(ConnectionReader, "Cellphone");
                     Client client = new Client(id, name, surname, dni, eMail,cellphone);
                     ListClients.Add(client);
                 }
@@ -97,8 +107,7 @@ namespace AGCS.Models
             }
             Disconect(Connection);
         }
-
-        public static void GetOneClient(int idClient, int idBusiness)
+        public static void GetOneClient(uint idClient, uint idBusiness)
         {
             Client client = null;
             MySqlConnection Connection = Connect();
@@ -111,17 +120,18 @@ namespace AGCS.Models
             if (ConnectionReader.Read())
             {
                 string name, surname, email;
-                int id, dni, telephone,cellphone;
+                ulong dni, telephone,cellphone;
+                uint id;
                 /*Addres info ...*/
                 try
                 {
-                    id = Convert.ToInt32(ConnectionReader["idClients"]);
+                    id = Convert.ToUInt32(ConnectionReader["idClients"]);
                     name = ReadString(ConnectionReader, "Name");
                     surname = ReadString(ConnectionReader, "Surname");
-                    dni = ReadInt(ConnectionReader, "DNI_CUIT");
+                    dni = ReadULong(ConnectionReader, "DNI_CUIT");
                     email = ReadString(ConnectionReader, "eMail");
-                    telephone = ReadInt(ConnectionReader, "Telephone");
-                    cellphone = ReadInt(ConnectionReader, "Cellphone");
+                    telephone = ReadULong(ConnectionReader, "Telephone");
+                    cellphone = ReadULong(ConnectionReader, "Cellphone");
                     client = new Client(id, name, surname, dni, email, cellphone, telephone);                    
                 }
                 catch { }
@@ -178,7 +188,7 @@ namespace AGCS.Models
 
         }
 
-        public static void DeleteClient(int id)
+        public static void DeleteClient(uint id)
         {
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
@@ -191,7 +201,7 @@ namespace AGCS.Models
         }
 
         //Methods for store procedures of Table Products 
-        public static void GetProducts(int idBusiness)
+        public static void GetProducts(uint idBusiness)
         {
             ListProducts.Clear();
             MySqlConnection Connection = Connect();
@@ -202,8 +212,8 @@ namespace AGCS.Models
             MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
             while (ConnectionReader.Read())
             {
-                int id;
-                int articleNumber;
+                uint id;
+                ulong articleNumber;
                 string description;
                 float cost;
                 float price;
@@ -212,9 +222,9 @@ namespace AGCS.Models
                 string code;
                 try
                 {   
-                    id = Convert.ToInt32(ConnectionReader["idProducts"]);
+                    id = Convert.ToUInt32(ConnectionReader["idProducts"]);
                     description = ReadString(ConnectionReader, "Description");
-                    articleNumber = ReadInt(ConnectionReader, "Article_Number");
+                    articleNumber = ReadULong(ConnectionReader, "Article_Number");
                     cost = ReadFloat(ConnectionReader, "Cost");
                     price = ReadFloat(ConnectionReader, "Price");
                     stock = ReadInt(ConnectionReader, "Stock");
@@ -227,7 +237,36 @@ namespace AGCS.Models
             }
             Disconect(Connection);
         }
-
+        public static Product GetOneProduct(ulong code)
+        {
+            Product product = null;
+            MySqlConnection Connection = Connect();
+            MySqlCommand CommandConnection = Connection.CreateCommand();
+            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
+            CommandConnection.CommandText = "spProductGetOne";
+            CommandConnection.Parameters.AddWithValue("@pCode", code);
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
+            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            if (ConnectionReader.Read())
+            {
+                string description;
+                float price;
+                int stock;
+                uint id;
+                /*Addres info ...*/
+                try
+                {
+                    id = Convert.ToUInt32(ConnectionReader["idProducts"]);
+                    description = ReadString(ConnectionReader, "Description");
+                    price = ReadFloat(ConnectionReader, "Price");
+                    stock = ReadInt(ConnectionReader, "Stock");
+                    product = new Product(id,description,price,stock);
+                }
+                catch { }
+            }
+            Disconect(Connection);
+            return product;
+        }
         //Methods for store procedures of Table Products 
         public static bool InsertBill(Bill bill)
         {

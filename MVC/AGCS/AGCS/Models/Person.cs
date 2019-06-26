@@ -7,14 +7,14 @@ namespace AGCS.Models
 {
     public abstract class Person
     {
-        protected int id;
+        protected uint id;
         protected string name;
         protected string surname;
         protected string email;
-        protected int telephone;
-        protected int cellphone;
+        protected ulong telephone;
+        protected ulong cellphone;
 
-        protected Person(int id, string name, string surname, string email, int cellphone, int telephone)
+        protected Person(uint id, string name, string surname, string email, ulong cellphone, ulong telephone)
         {
             this.id = id;
             this.name = name;
@@ -24,7 +24,7 @@ namespace AGCS.Models
             this.telephone = telephone;
         }
 
-        protected Person(int id, string name, string surname, string email, int cellphone)
+        protected Person(uint id, string name, string surname, string email, ulong cellphone)
         {
             this.id = id;
             this.name = name;
@@ -33,11 +33,11 @@ namespace AGCS.Models
             this.cellphone = cellphone;
         }
 
-        public int Id { get => id;}
+        public uint Id { get => id;}
         public string Name { get => name;}
         public string Surname { get => surname;}
         public string Email { get => email;}
-        public int Telephone { get => telephone;}
-        public int Cellphone { get => cellphone;}
+        public ulong Telephone { get => telephone;}
+        public ulong Cellphone { get => cellphone;}
     }
 }
