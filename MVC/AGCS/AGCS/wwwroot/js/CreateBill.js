@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var idOfProd, D, T = 0, Items = [];
-    var Product = { Id: null, Quant: null, iva: 1 };
+    var Product = { Id: null, Quant: null, iva: 1, Price: null };
     $("#codProdToEnter").focus();
     $('#codProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -15,6 +15,8 @@
     });
     function EnterProduct() {
         $("#descProdToEnter").empty();
+        $("#priceProdToEnter").empty();
+        $("#stockProdToEnter").empty();
         $.ajax({
             type: "POST",
             url: "/Backend/GetProductToEnter",
@@ -35,43 +37,67 @@
     $('#quantProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
-            if ($("#quantProdToEnter").val().length > 0 && $("#quantProdToEnter").val() > 0) {
-                if ($("#codProdToEnter").val().length > 0) {
-                    $("#quantProdToEnter").css({ 'border-color': '#ced4da' });
-                    EnterProductToBill();
+            if (D != null) {
+                if ($("#quantProdToEnter").val().length > 0 && $("#quantProdToEnter").val() > 0) {
+                    if ($("#codProdToEnter").val().length > 0) {
+                        $("#quantProdToEnter").css({ 'border-color': '#ced4da' });
+                        EnterProductToBill();
+                    } else {
+                        $("#codProdToEnter").css({ "border": " 0.15rem solid red" });
+                    }
                 } else {
-                    $("#codProdToEnter").css({ "border": " 0.15rem solid red" });
-                }                
-            } else {
-                $("#quantProdToEnter").css({ "border": " 0.15rem solid red" });
-            }
+                    $("#quantProdToEnter").css({ "border": " 0.15rem solid red" });
+                }
 
+            }
         }
     });
 
     function KeyPressEvent() {
-        $('input[this="quant"]').keydown(function (event) {
-
+        $('input[this="quant"]').keyup(function (event) {
+            let keycode = (event.keyCode ? event.keyCode : event.which);
+            if (((keycode > 47 && keycode < 58) || (keycode > 95 && keycode < 106)) || (keycode == 8)) {
+                let thisId = parseInt($(event.target).attr("id").substr(1),10), i = 0, success = false;
+                do {
+                    if (Items[i].Id === thisId) {
+                        T -= (Items[i].Price * Items[i].Quant);                       
+                        if (!isNaN(parseInt($("#q" + thisId).val(), 10))){
+                            Items[i].Quant = parseInt($("#q" + thisId).val(), 10);
+                        } else{
+                                Items[i].Quant = 0;
+                            }
+                         T += (Items[i].Price * Items[i].Quant)
+                        success = true;
+                    }
+                    i++;
+                } while (!success);
+                $("#total").empty();
+                $("#total").append(T);
+            }
         });
     }
 
     function EnterProductToBill() {
-        
+
         $("#total").empty();
         T += D.Price * parseInt($("#quantProdToEnter").val(), 10);
         $("#total").append(T);
         if ($("#" + idOfProd).length > 0) {
-            let data = parseInt($("#codProdToEnter").val());
+            let data = parseInt($("#codProdToEnter").val(),10), success = false, i = 0;
             document.getElementById("q" + idOfProd).value = parseInt($("#quantProdToEnter").val(), 10) + parseInt($("#q" + idOfProd).val(), 10);
-
-            Product.map(function (data) {
-                if (Items.id === data) {
-                    Items.quant += $("#quantProdToEnter").val();
+            do {
+                if (Items[i].Id === data) {        
+                    Items[i].Quant += parseInt($("#quantProdToEnter").val(), 10);
+                    success = true;
                 }
-            });         
+                i++;
+            } while (!success);
+
+
         } else {
             Product = new Object();
             Product.Id = D.Id;
+            Product.Price = D.Price;
             Product.Quant = parseInt($("#quantProdToEnter").val());
             Items.push(Product);
             var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><img id="e' + idOfProd + '" class="w-25" src="/images/boton-x.png" alt="Borrar"></td></tr>';
