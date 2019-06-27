@@ -7,7 +7,7 @@ namespace AGCS.Models
 {
     public class Bill
     {
-        private int _id;
+        private uint _id;
         private DateTime _date;
         private float _total;
         private List<Product> _products;
@@ -20,6 +20,15 @@ namespace AGCS.Models
 
         public Bill(DateTime date, float total, List<Product> products, float ivaRecharge)
         {
+            _date = date;
+            _total = total;
+            _products = products;
+            _ivaRecharge = ivaRecharge;
+        }
+
+        public Bill(uint id,DateTime date, float total, List<Product> products, float ivaRecharge)
+        {
+            _id = id;
             _date = date;
             _total = total;
             _products = products;
@@ -39,7 +48,7 @@ namespace AGCS.Models
             _ivaRecharge = ivaRecharge;
         }
 
-        public int Id { get => _id; set => _id = value; }
+        public uint Id { get => _id; set => _id = value; }
         public DateTime Date { get => _date; set => _date = value; }
         public float Total { get => _total; set => _total = value; }
         public List<Product> Products { get => _products; set => _products = value; }

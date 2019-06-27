@@ -72,7 +72,7 @@ namespace AGCS.Models
         }
 
         //Methods for store procedures of Table Clients 
-        public static void GetClients(uint idBusiness)
+        public static void GetClients()
 
         {
             ListClients.Clear();
@@ -107,7 +107,7 @@ namespace AGCS.Models
             }
             Disconect(Connection);
         }
-        public static void GetOneClient(uint idClient, uint idBusiness)
+        public static void GetOneClient(uint idClient)
         {
             Client client = null;
             MySqlConnection Connection = Connect();
@@ -201,7 +201,7 @@ namespace AGCS.Models
         }
 
         //Methods for store procedures of Table Products 
-        public static void GetProducts(uint idBusiness)
+        public static void GetProducts()
         {
             ListProducts.Clear();
             MySqlConnection Connection = Connect();
@@ -267,7 +267,7 @@ namespace AGCS.Models
             Disconect(Connection);
             return product;
         }
-        //Methods for store procedures of Table Products 
+        //Methods for store procedures of Table Bills 
         public static bool InsertBill(Bill bill)
         {
             bool success = false;
@@ -275,12 +275,35 @@ namespace AGCS.Models
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
             CommandConnection.CommandText = "spBillInsert";
+            
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
+            CommandConnection.Parameters.AddWithValue("@pDate", bill.Date);
+            CommandConnection.Parameters.AddWithValue("@pTotal", bill.Total);
 
             CommandConnection.ExecuteNonQuery();
+
+            foreach (Product product in bill.Products) {
+                InsertBillXProduct(Connection, bill.Id, product.Id,product.Quant);
+            }
+            
             Disconect(Connection);
             return success;
         }
 
+        //Methods for store procedures of Table Bills
+        public static bool InsertBillXProduct(MySqlConnection connection, uint idBill, uint idProduct,int quantity)
+        {
+            bool success = false;
+            MySqlCommand CommandConnection = connection.CreateCommand();
+            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
+            CommandConnection.CommandText = "spBillXProductInsert";
 
+            CommandConnection.Parameters.AddWithValue("@pIdBill", idBill);
+            CommandConnection.Parameters.AddWithValue("@pIdProduct", idProduct);
+            CommandConnection.Parameters.AddWithValue("@pQuantity", quantity);
+
+            CommandConnection.ExecuteNonQuery();
+            return success;
+        }
     }
 }
