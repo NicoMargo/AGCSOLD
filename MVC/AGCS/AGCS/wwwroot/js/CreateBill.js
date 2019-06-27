@@ -53,7 +53,7 @@
         }
     });
 
-    function KeyPressEvent() {
+    function KeyPressEventQuant() {
         $('input[this="quant"]').keyup(function (event) {
             let keycode = (event.keyCode ? event.keyCode : event.which);
             if (((keycode > 47 && keycode < 58) || (keycode > 95 && keycode < 106)) || (keycode == 8)) {
@@ -77,6 +77,19 @@
         });
     }
 
+
+
+    function ClickeventImg(id) {
+        $("#db"+id).attr("position").click(function () {
+            var Index = $(this).attr("position");
+            $('#' + Index).remove();
+           /* $("#confirm").click(function () {
+                
+            });*/
+        });
+    }
+
+
     function EnterProductToBill() {
 
         $("#total").empty();
@@ -92,18 +105,17 @@
                 }
                 i++;
             } while (!success);
-
-
         } else {
             Product = new Object();
             Product.Id = D.Id;
             Product.Price = D.Price;
             Product.Quant = parseInt($("#quantProdToEnter").val());
             Items.push(Product);
-            var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><img id="e' + idOfProd + '" class="w-25" src="/images/boton-x.png" alt="Borrar"></td></tr>';
+            var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><deleteButton id="db' + idOfProd+'"  position="' + idOfProd + '"> <img data-target="#confirmationModal" data-toggle="modala" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
             ProdToEnter.keypress;
             $("#tableProducts").prepend(ProdToEnter);
-            KeyPressEvent();
+            KeyPressEventQuant();
+            ClickeventImg(idOfProd);
         }
         $("#quantProdToEnter").val("");
         $("#codProdToEnter").val("");

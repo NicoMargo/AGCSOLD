@@ -90,8 +90,14 @@ namespace AGCS.Controllers
      
         [HttpPost]
         public void NewBill(string json)
-        {            
+        {
+            float total = 0;
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(json);
+            foreach (Product product in products) {
+                total += product.Price * product.Quant;
+            }
+            Bill bill = new Bill(DateTime.Today, total, products, 0);
+            BD.InsertBill(bill);
         }
         public ActionResult Pruebas()
         {

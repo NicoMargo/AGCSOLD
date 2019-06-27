@@ -280,13 +280,24 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pDate", bill.Date);
             CommandConnection.Parameters.AddWithValue("@pTotal", bill.Total);
 
-            CommandConnection.ExecuteNonQuery();
-
-            foreach (Product product in bill.Products) {
-                InsertBillXProduct(Connection, bill.Id, product.Id,product.Quant);
+            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            if (ConnectionReader.Read())
+            { 
+                uint id = Convert.ToUInt32(ConnectionReader["idBills"]);
+                ConnectionReader.Close();
+                if (id != 0)
+                {
+                    bill.Id = id;
+                    foreach (Product product in bill.Products)
+                    {
+                        InsertBillXProduct(Connection, bill.Id, product.Id, product.Quant);
+                    }
+                    success = true;
+                }
             }
-            
+
             Disconect(Connection);
+
             return success;
         }
 
