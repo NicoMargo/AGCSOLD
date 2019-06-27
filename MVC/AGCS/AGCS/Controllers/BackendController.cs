@@ -14,7 +14,7 @@ namespace AGCS.Controllers
         }
         public ActionResult CRUDClient()
         {
-            BD.GetClients(BD.idBusiness);
+            BD.GetClients();
             ViewBag.Clients = BD.ListClients;
             return View();
         }
@@ -32,7 +32,7 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetDataClient(int pos)
         {
-            BD.GetOneClient(BD.ListClients[pos].Id, BD.idBusiness);
+            BD.GetOneClient(BD.ListClients[pos].Id);
             string JsonDataClient = JsonConvert.SerializeObject(BD.SelectedClient);
             return Json(JsonDataClient);        
         }
