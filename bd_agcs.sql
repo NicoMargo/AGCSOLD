@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 4.7.9
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 26-06-2019 a las 22:02:53
--- Versión del servidor: 5.7.23
--- Versión de PHP: 7.2.10
+-- Tiempo de generación: 27-06-2019 a las 19:03:33
+-- Versión del servidor: 5.7.21
+-- Versión de PHP: 5.6.35
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -29,6 +29,20 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `spBillsInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillsInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT)  BEGIN
 	Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness) values( pDate, pTotal, pIdBusiness);
+END$$
+
+DROP PROCEDURE IF EXISTS `spBillXProductInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pQuantity` INT, IN `pIdBill` INT, IN `pIdProduct` INT)  BEGIN
+	if /*exists(select products.idProducts from products where products.idProducts = pIdProduct) and*/true # exists(select bills.idBills from bills where bills.idBills = pIdBill)
+    then
+		select 'xd';
+		if(pQuantity >= 0 and pQuantity is not null)
+        then
+			insert into bills_x_products(bills_x_products.Products_idProducts,bills_x_products.Bills_idBills,bills_x_products.Quantity) values(pIdProduct,pIdBill,pQuantity);
+		else
+			insert into bills_x_products(bills_x_products.Products_idProducts,bills_x_products.Bills_idBills,bills_x_products.Quantity) values(pIdProduct,pIdBill,0);
+        end if;
+    end if;
 END$$
 
 DROP PROCEDURE IF EXISTS `spClientDelete`$$
@@ -175,6 +189,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   `Macs_idMacs` int(11) NOT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idBills`,`Branches_idBranch`,`Payment_Methods_idPayment_Methods`,`Macs_idMacs`,`Business_idBusiness`),
+  UNIQUE KEY `idBills` (`idBills`),
   KEY `fk_Bills_Branches1_idx` (`Branches_idBranch`) USING BTREE,
   KEY `fk_Bills_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`) USING BTREE,
   KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
@@ -196,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`,`Products_idProducts`,`Bills_idBills`),
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBills`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -313,7 +328,14 @@ CREATE TABLE IF NOT EXISTS `macs` (
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idMacs`,`Business_idBusiness`),
   KEY `fk_Macs_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `macs`
+--
+
+INSERT INTO `macs` (`idMacs`, `Mac_Address`, `Business_idBusiness`) VALUES
+(1, '192.168.8.16', 1);
 
 -- --------------------------------------------------------
 
@@ -463,15 +485,6 @@ ALTER TABLE `address`
   ADD CONSTRAINT `fk_Address_Client1` FOREIGN KEY (`Clients_idClients`) REFERENCES `clients` (`idClients`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Address_Delivery1` FOREIGN KEY (`Delivery_idDelivery`) REFERENCES `delivery` (`idDelivery`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Address_Province1` FOREIGN KEY (`Province_idProvince`) REFERENCES `provinces` (`idProvince`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `bills`
---
-ALTER TABLE `bills`
-  ADD CONSTRAINT `fk_Bills_Branches1` FOREIGN KEY (`Branches_idBranch`) REFERENCES `branches` (`idBranch`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Bills_Business1` FOREIGN KEY (`Business_idBusiness`) REFERENCES `business` (`idBusiness`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Bills_Macs1` FOREIGN KEY (`Macs_idMacs`) REFERENCES `macs` (`idMacs`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Bills_Payment_Methods1` FOREIGN KEY (`Payment_Methods_idPayment_Methods`) REFERENCES `payment_methods` (`idPayment_Methods`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `bills_x_products`
