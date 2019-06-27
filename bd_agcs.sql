@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.9
+-- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 27-06-2019 a las 19:03:33
--- Versión del servidor: 5.7.21
--- Versión de PHP: 5.6.35
+-- Tiempo de generación: 27-06-2019 a las 21:07:00
+-- Versión del servidor: 5.7.23
+-- Versión de PHP: 7.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -26,16 +26,15 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-DROP PROCEDURE IF EXISTS `spBillsInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillsInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT)  BEGIN
+DROP PROCEDURE IF EXISTS `spBillInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT)  BEGIN
 	Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness) values( pDate, pTotal, pIdBusiness);
 END$$
 
 DROP PROCEDURE IF EXISTS `spBillXProductInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pQuantity` INT, IN `pIdBill` INT, IN `pIdProduct` INT)  BEGIN
-	if /*exists(select products.idProducts from products where products.idProducts = pIdProduct) and*/true # exists(select bills.idBills from bills where bills.idBills = pIdBill)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pIdBill` INT, IN `pIdProduct` INT, IN `pQuantity` INT)  BEGIN
+	if exists(select products.idProducts from products where products.idProducts = pIdProduct) and exists(select bills.idBills from bills where bills.idBills = pIdBill)
     then
-		select 'xd';
 		if(pQuantity >= 0 and pQuantity is not null)
         then
 			insert into bills_x_products(bills_x_products.Products_idProducts,bills_x_products.Bills_idBills,bills_x_products.Quantity) values(pIdProduct,pIdBill,pQuantity);
@@ -194,7 +193,19 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`) USING BTREE,
   KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `bills`
+--
+
+INSERT INTO `bills` (`idBills`, `DateBill`, `DNI/CUIT`, `Employee_Code`, `IVA_Condition`, `TypeBill`, `Total`, `Discount`, `IVA_Recharge`, `WholeSaler`, `Branches_idBranch`, `Payment_Methods_idPayment_Methods`, `Macs_idMacs`, `Business_idBusiness`) VALUES
+(2, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(3, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(4, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(5, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(6, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(7, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -211,7 +222,14 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`,`Products_idProducts`,`Bills_idBills`),
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBills`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `bills_x_products`
+--
+
+INSERT INTO `bills_x_products` (`idBills_X_Products`, `Quantity`, `Products_idProducts`, `Bills_idBills`) VALUES
+(7, 5, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -232,7 +250,14 @@ CREATE TABLE IF NOT EXISTS `branches` (
   PRIMARY KEY (`idBranch`,`Business_idBusiness`,`Province_idProvince`),
   KEY `fk_Branch_Business1_idx` (`Business_idBusiness`),
   KEY `fk_Branch_Province1_idx` (`Province_idProvince`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='	';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='	';
+
+--
+-- Volcado de datos para la tabla `branches`
+--
+
+INSERT INTO `branches` (`idBranch`, `Address`, `District`, `Branch_Name`, `Telephone`, `Postal_Code`, `Business_idBusiness`, `Province_idProvince`) VALUES
+(1, 'Cabildo 6000', 'Belgrano', 'La revistería Cabildo', 1500000000, 4545, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -348,7 +373,14 @@ CREATE TABLE IF NOT EXISTS `payment_methods` (
   `idPayment_Methods` int(11) NOT NULL AUTO_INCREMENT,
   `Method` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idPayment_Methods`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `payment_methods`
+--
+
+INSERT INTO `payment_methods` (`idPayment_Methods`, `Method`) VALUES
+(1, 'BitCoins');
 
 -- --------------------------------------------------------
 
@@ -378,9 +410,9 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 320, NULL, b'1', 10, '1', 3, 1),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 320, NULL, b'1', 10, '2', 3, 1),
-(3, 3, 'Manga Yakusoku no Neverland Vol 3', 320, NULL, b'1', 2, '3', 3, 1);
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 320, 100, b'1', 10, '1', 3, 1),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 320, 200, b'1', 10, '2', 3, 1),
+(3, 3, 'Manga Yakusoku no Neverland Vol 3', 320, 300, b'1', 2, '3', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -393,7 +425,15 @@ CREATE TABLE IF NOT EXISTS `provinces` (
   `idProvince` int(11) NOT NULL AUTO_INCREMENT,
   `Province` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`idProvince`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `provinces`
+--
+
+INSERT INTO `provinces` (`idProvince`, `Province`) VALUES
+(1, 'CABA'),
+(2, 'Buenos Aires');
 
 -- --------------------------------------------------------
 
