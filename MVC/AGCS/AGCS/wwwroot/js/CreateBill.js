@@ -53,7 +53,30 @@
         }
     });
 
-    function KeyPressEventQuant() {
+    function KeyPressEventQuant(idOfProd) {
+
+        $("#q" + idOfProd).click(function () {
+           let success = false,i = 0;
+            do {
+                if (Items[i].Id === idOfProd) {
+                    T -= (Items[i].Price * Items[i].Quant);
+                    if (!isNaN(parseInt($("#q" + idOfProd).val(), 10))) {
+                        Items[i].Quant = parseInt($("#q" + idOfProd).val(), 10);
+                    } else {
+                        Items[i].Quant = 0;
+                    }
+                    T += (Items[i].Price * Items[i].Quant)
+                    success = true;
+                }
+                i++;                
+            } while (!success);
+            $("#total").empty();
+            $("#total").append(T);
+        });
+
+
+
+
         $('input[this="quant"]').keyup(function (event) {
             let keycode = (event.keyCode ? event.keyCode : event.which);
             if (((keycode > 47 && keycode < 58) || (keycode > 95 && keycode < 106)) || (keycode == 8)) {
@@ -118,10 +141,10 @@
             Product.Price = D.Price;
             Product.Quant = parseInt($("#quantProdToEnter").val());
             Items.push(Product);
-            var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><deleteButton id="db' + idOfProd+'"  position="' + idOfProd + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
+            var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><deleteButton id="db' + idOfProd+'"  position="' + idOfProd + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
             ProdToEnter.keypress;
             $("#tableProducts").prepend(ProdToEnter);
-            KeyPressEventQuant();
+            KeyPressEventQuant(idOfProd);
             ClickeventImg(idOfProd);
         }
         $("#quantProdToEnter").val("");

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 4.7.9
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 27-06-2019 a las 22:59:20
--- Versión del servidor: 5.7.23
--- Versión de PHP: 7.2.10
+-- Tiempo de generación: 28-06-2019 a las 15:03:07
+-- Versión del servidor: 5.7.21
+-- Versión de PHP: 5.6.35
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -57,7 +57,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetOne` (IN `id` INT, IN `p
 SELECT * FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness$$
 
 DROP PROCEDURE IF EXISTS `spClientInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_CUIT` INT, IN `pEmail` VARCHAR(45), IN `pTelephone` INT, IN `pCellphone` INT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_CUIT` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` LONG, IN `pCellphone` LONG)  NO SQL
 if( pIdBusiness > -1 && pName != "" && pSurname != "" && pDNI_CUIT != 0 )
 then
 	insert into clients(clients.Name,clients.Surname,clients.DNI_CUIT,clients.Business_idBusiness) values( pName, pSurname, pDNI_CUIT, pIdBusiness);
@@ -90,7 +90,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientsGet` (IN `pIdBusiness` INT
 SELECT clients.idClients, clients.Name, clients.Surname, clients.DNI_CUIT, clients.eMail,clients.Cellphone FROM clients where clients.Business_idBusiness = pIdBusiness$$
 
 DROP PROCEDURE IF EXISTS `spClientUpdate`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` INT(20), IN `pEmail` VARCHAR(45), IN `pTelephone` INT, IN `pCellphone` INT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` LONG, IN `pCellphone` LONG)  NO SQL
 if(EXISTS(SELECT clients.idClients from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
 THEN
 	if(pName != "" and pSurname != "" and pDNI_CUIT > 0 and pDNI_CUIT != ""  )
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`) USING BTREE,
   KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
@@ -211,7 +211,11 @@ INSERT INTO `bills` (`idBills`, `DateBill`, `DNI/CUIT`, `Employee_Code`, `IVA_Co
 (9, '2019-06-27', NULL, NULL, NULL, NULL, 301700, NULL, NULL, NULL, 0, 0, 0, 1),
 (10, '2019-06-27', NULL, NULL, NULL, NULL, 6100, NULL, NULL, NULL, 0, 0, 0, 1),
 (11, '2019-06-27', NULL, NULL, NULL, NULL, 500, NULL, NULL, NULL, 0, 0, 0, 1),
-(12, '2019-06-27', NULL, NULL, NULL, NULL, 3200, NULL, NULL, NULL, 0, 0, 0, 1);
+(12, '2019-06-27', NULL, NULL, NULL, NULL, 3200, NULL, NULL, NULL, 0, 0, 0, 1),
+(13, '2019-06-28', NULL, NULL, NULL, NULL, 14800, NULL, NULL, NULL, 0, 0, 0, 1),
+(14, '2019-06-28', NULL, NULL, NULL, NULL, 14400, NULL, NULL, NULL, 0, 0, 0, 1),
+(15, '2019-06-28', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, 1),
+(16, '2019-06-28', NULL, NULL, NULL, NULL, 6400, NULL, NULL, NULL, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -228,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`,`Products_idProducts`,`Bills_idBills`),
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBills`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills_x_products`
@@ -238,7 +242,13 @@ INSERT INTO `bills_x_products` (`idBills_X_Products`, `Quantity`, `Products_idPr
 (7, 5, 1, 2),
 (8, 10, 1, 12),
 (9, 5, 2, 12),
-(10, 4, 3, 12);
+(10, 4, 3, 12),
+(11, 100, 1, 13),
+(12, 6, 2, 13),
+(13, 12, 3, 13),
+(14, 48, 3, 14),
+(15, 4, 1, 16),
+(16, 30, 2, 16);
 
 -- --------------------------------------------------------
 
@@ -307,29 +317,32 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `idClients` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(45) DEFAULT NULL,
   `Surname` varchar(45) DEFAULT NULL,
-  `DNI_CUIT` int(11) DEFAULT NULL,
+  `DNI_CUIT` bigint(17) DEFAULT NULL,
   `eMail` varchar(45) DEFAULT NULL,
-  `Telephone` int(11) DEFAULT NULL,
-  `Cellphone` int(11) DEFAULT NULL,
+  `Telephone` bigint(20) DEFAULT NULL,
+  `Cellphone` bigint(20) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idClients`,`Business_idBusiness`),
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
 --
 
 INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Cellphone`, `Business_idBusiness`) VALUES
-(7, 'Robot de', 'Prueba', 17, 'c17@patrullaroja.com', NULL, 0, 1),
 (8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', 113212113, 11231213, 1),
 (22, 'Margosian', '11', 3, 'a', NULL, 111, 1),
 (23, 'test', 'prueba', 123456, NULL, NULL, 43214321, 1),
 (25, 'nombre', 'apellido', 987654321, NULL, NULL, 40005000, 1),
-(29, 'que hace ', 'hola ', 12345, 'mail@mail', 1500000000, 40000000, 1),
 (32, 'Margossian', 'Nicolas', 1, NULL, 1144322258, 1165898555, 1),
 (34, 'a', 'a', 12, 'a', 1, 1, 1),
-(37, 'a', 'a', 1, '', 123123123, 1, 1);
+(37, 'a', 'a', 1, '', 123123123, 1, 1),
+(39, 'aaa', 'aaa', 43444, NULL, 1125458, 1154898, 1),
+(40, 'asdf', 'asdf', 3245, 'hola', 2435, 2345, 1),
+(41, '11111111111111', '11111111111111', 111111111, NULL, 0, 0, 1),
+(42, 'a', 'a', 2147483647, NULL, NULL, NULL, 1),
+(43, 'a', 'a', 11111111111111, 'a', 11111111111111, 11111111111111, 1);
 
 -- --------------------------------------------------------
 

@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Facturar";
 }
+
 <div class="col-md-12">
     <div class="content mt-3">
         <div class="animated fadeIn">
@@ -27,7 +28,7 @@
                                     <tr>
                                         <td> <input type="text" id="codProdToEnter" placeholder="Codigo del Producto" class="form-control text-black"></td>
                                         <td id="descProdToEnter"></td>
-                                        <td><input type="number" id="quantProdToEnter" placeholder="Cantidad" class="form-control text-black"></td>
+                                        <td><input type="number" required min="1" id="quantProdToEnter" placeholder="Cantidad" class="form-control text-black"></td>
                                         <td><span id="priceProdToEnter"></span></td>
                                         <td><span id="stockProdToEnter"></span></td>
                                     </tr>
@@ -56,6 +57,7 @@
     </div>
 </div>
 
+
 <!-- Modal Create Beg-->
 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -75,5 +77,5 @@
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="~/lib/Jquery 3.4.1.js" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script src="~/js/CreateBill.js"></script>
+<script crossorigin="anonymous" src="~/js/CreateBill.js"></script>
 
