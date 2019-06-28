@@ -132,20 +132,22 @@
         $("#codProdToEnter").focus();
     }
     $("#b").click(function () {
-        var test = JSON.stringify(Items); 
-        $.ajax({
-            type: "POST",
-            url: "/Backend/NewBill",
-            //data: {data:test},
-            data: {
-                json: test
-            },
-            success: function () {
-
-            },
-            error: function () {
-                alert("ERROR");
-            }
-        });
+        if (Items.length > 0) {
+            var test = JSON.stringify(Items);
+            $.ajax({
+                type: "POST",
+                url: "/Backend/NewBill",
+                data: { json: JSON.stringify(Items) },
+                success: function () {
+                    alert("se facturó");
+                },
+                error: function () {
+                    alert("ERROR");
+                }
+            });
+        } else
+        {
+            alert("ingrese datos a facturar");
+        }
     });
 });
