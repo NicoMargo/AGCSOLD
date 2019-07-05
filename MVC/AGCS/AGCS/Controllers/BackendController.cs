@@ -12,23 +12,19 @@ namespace AGCS.Controllers
         {
             return View();
         }
+        public ActionResult Pruebas()
+        {
+            return View();
+        }
+
+        //Clients
         public ActionResult CRUDClient()
         {
             BD.GetClients();
             ViewBag.Clients = BD.ListClients;
             return View();
         }
-        public ActionResult CreateBill()
-        {
-            return View();
-        }
-        [HttpPost]
-        public JsonResult GetProductToEnter(ulong id)
-        {
-            Product product = BD.GetOneProduct(id);
-            string JsonDataClient = JsonConvert.SerializeObject(product);
-            return Json(JsonDataClient);
-        }
+        
         [HttpPost]
         public JsonResult GetDataClient(int pos)
         {
@@ -54,6 +50,7 @@ namespace AGCS.Controllers
 
             return Success;
         }
+
         [HttpPost]
         public bool CreateClient(string surname="" , string name="" , ulong dni = 0, string email = "", ulong telephone = 0, ulong cellphone = 0, string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
 
@@ -87,16 +84,25 @@ namespace AGCS.Controllers
             }
             return Success;
         }
-     
+        //Facturacion
         [HttpPost]
         public void NewBill(string json)
         {            
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(json);
         }
-        public ActionResult Pruebas()
+
+        public ActionResult CreateBill()
         {
             return View();
         }
-        
+
+        [HttpPost]
+        public JsonResult GetProductToEnter(ulong id)
+        {
+            Product product = BD.GetOneProduct(id);
+            string JsonDataClient = JsonConvert.SerializeObject(product);
+            return Json(JsonDataClient);
+        }
+
     }
 }
