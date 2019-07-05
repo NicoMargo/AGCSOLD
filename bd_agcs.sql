@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 28-06-2019 a las 15:03:07
+-- Tiempo de generación: 05-07-2019 a las 13:20:15
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -27,9 +27,14 @@ DELIMITER $$
 -- Procedimientos
 --
 DROP PROCEDURE IF EXISTS `spBillInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT)  BEGIN
-	Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness) values( pDate, pTotal, pIdBusiness);
-    select bills.idBills from bills where bills.idBills = LAST_INSERT_ID() and bills.DateBill = pDate and bills.Total = ptotal and bills.Business_idBusiness = pIdBusiness;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT, IN `pIdClients` INT)  BEGIN
+	if EXISTS(select clients.idClients from clients where (clients.idClients = pIdClients and pIdBusiness = clients.Business_idBusiness) or (pIdClients = 0))
+    THEN
+		Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness) values( pDate, pTotal, pIdBusiness);
+    	select bills.idBills from bills where bills.idBills = LAST_INSERT_ID() and bills.DateBill = pDate and bills.Total = ptotal and bills.Business_idBusiness = pIdBusiness and bills.Clients_idClients = pIdClients;
+    ELSE
+    	select -1;
+    end if;
 END$$
 
 DROP PROCEDURE IF EXISTS `spBillXProductInsert`$$
@@ -52,8 +57,12 @@ THEN
 	DELETE from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness;
 end IF$$
 
-DROP PROCEDURE IF EXISTS `spClientGetOne`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetOne` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
+DROP PROCEDURE IF EXISTS `spClientGetByDNI`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetByDNI` (IN `pDNI` BIGINT, IN `pIdBusiness` INT)  NO SQL
+select clients.idClients,clients.Name, clients.Surname,clients.Cellphone,clients.eMail from clients where (clients.DNI_CUIT = pDNI and clients.Business_idBusiness = pIdBusiness) or (pDNI = 1 and pDNI = clients.DNI_CUIT and clients.idClients = 0)$$
+
+DROP PROCEDURE IF EXISTS `spClientGetById`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetById` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
 SELECT * FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness$$
 
 DROP PROCEDURE IF EXISTS `spClientInsert`$$
@@ -159,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `address` (
   `Province_idProvince` int(11) NOT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   `Clients_idClients` int(11) NOT NULL,
-  PRIMARY KEY (`idAddress`,`Delivery_idDelivery`,`Province_idProvince`,`Business_idBusiness`),
+  PRIMARY KEY (`idAddress`) USING BTREE,
   KEY `fk_Address_Delivery1_idx` (`Delivery_idDelivery`),
   KEY `fk_Address_Province1_idx` (`Province_idProvince`),
   KEY `fk_Address_Business1_idx` (`Business_idBusiness`),
@@ -176,7 +185,7 @@ DROP TABLE IF EXISTS `bills`;
 CREATE TABLE IF NOT EXISTS `bills` (
   `idBills` int(11) NOT NULL AUTO_INCREMENT,
   `DateBill` date DEFAULT NULL,
-  `DNI/CUIT` int(11) DEFAULT NULL,
+  `Clients_idClients` int(11) DEFAULT NULL,
   `Employee_Code` int(11) DEFAULT NULL,
   `IVA_Condition` varchar(45) DEFAULT NULL,
   `TypeBill` varchar(1) DEFAULT NULL,
@@ -188,34 +197,35 @@ CREATE TABLE IF NOT EXISTS `bills` (
   `Payment_Methods_idPayment_Methods` int(11) NOT NULL,
   `Macs_idMacs` int(11) NOT NULL,
   `Business_idBusiness` int(11) NOT NULL,
-  PRIMARY KEY (`idBills`,`Branches_idBranch`,`Payment_Methods_idPayment_Methods`,`Macs_idMacs`,`Business_idBusiness`),
+  PRIMARY KEY (`idBills`) USING BTREE,
   UNIQUE KEY `idBills` (`idBills`),
   KEY `fk_Bills_Branches1_idx` (`Branches_idBranch`) USING BTREE,
   KEY `fk_Bills_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`) USING BTREE,
   KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
-  KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE
+  KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE,
+  KEY `fk_Bills_Clients1_idx` (`Clients_idClients`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
 --
 
-INSERT INTO `bills` (`idBills`, `DateBill`, `DNI/CUIT`, `Employee_Code`, `IVA_Condition`, `TypeBill`, `Total`, `Discount`, `IVA_Recharge`, `WholeSaler`, `Branches_idBranch`, `Payment_Methods_idPayment_Methods`, `Macs_idMacs`, `Business_idBusiness`) VALUES
-(2, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(3, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(4, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(5, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(6, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(7, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(8, '2019-06-27', NULL, NULL, NULL, NULL, 301700, NULL, NULL, NULL, 0, 0, 0, 1),
-(9, '2019-06-27', NULL, NULL, NULL, NULL, 301700, NULL, NULL, NULL, 0, 0, 0, 1),
-(10, '2019-06-27', NULL, NULL, NULL, NULL, 6100, NULL, NULL, NULL, 0, 0, 0, 1),
-(11, '2019-06-27', NULL, NULL, NULL, NULL, 500, NULL, NULL, NULL, 0, 0, 0, 1),
-(12, '2019-06-27', NULL, NULL, NULL, NULL, 3200, NULL, NULL, NULL, 0, 0, 0, 1),
-(13, '2019-06-28', NULL, NULL, NULL, NULL, 14800, NULL, NULL, NULL, 0, 0, 0, 1),
-(14, '2019-06-28', NULL, NULL, NULL, NULL, 14400, NULL, NULL, NULL, 0, 0, 0, 1),
-(15, '2019-06-28', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, 1),
-(16, '2019-06-28', NULL, NULL, NULL, NULL, 6400, NULL, NULL, NULL, 0, 0, 0, 1);
+INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`, `IVA_Condition`, `TypeBill`, `Total`, `Discount`, `IVA_Recharge`, `WholeSaler`, `Branches_idBranch`, `Payment_Methods_idPayment_Methods`, `Macs_idMacs`, `Business_idBusiness`) VALUES
+(2, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(3, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(4, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(5, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(6, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(7, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(8, '2019-06-27', 0, NULL, NULL, NULL, 301700, NULL, NULL, NULL, 0, 0, 0, 1),
+(9, '2019-06-27', 0, NULL, NULL, NULL, 301700, NULL, NULL, NULL, 0, 0, 0, 1),
+(10, '2019-06-27', 0, NULL, NULL, NULL, 6100, NULL, NULL, NULL, 0, 0, 0, 1),
+(11, '2019-06-27', 0, NULL, NULL, NULL, 500, NULL, NULL, NULL, 0, 0, 0, 1),
+(12, '2019-06-27', 0, NULL, NULL, NULL, 3200, NULL, NULL, NULL, 0, 0, 0, 1),
+(13, '2019-06-28', 0, NULL, NULL, NULL, 14800, NULL, NULL, NULL, 0, 0, 0, 1),
+(14, '2019-06-28', 0, NULL, NULL, NULL, 14400, NULL, NULL, NULL, 0, 0, 0, 1),
+(15, '2019-06-28', 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, 1),
+(16, '2019-06-28', 0, NULL, NULL, NULL, 6400, NULL, NULL, NULL, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -229,7 +239,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   `Quantity` int(11) DEFAULT NULL,
   `Products_idProducts` int(11) NOT NULL,
   `Bills_idBills` int(11) NOT NULL,
-  PRIMARY KEY (`idBills_X_Products`,`Products_idProducts`,`Bills_idBills`),
+  PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBills`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
@@ -266,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `branches` (
   `Postal_Code` int(11) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   `Province_idProvince` int(11) NOT NULL,
-  PRIMARY KEY (`idBranch`,`Business_idBusiness`,`Province_idProvince`),
+  PRIMARY KEY (`idBranch`) USING BTREE,
   KEY `fk_Branch_Business1_idx` (`Business_idBusiness`),
   KEY `fk_Branch_Province1_idx` (`Province_idProvince`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='	';
@@ -322,22 +332,23 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Telephone` bigint(20) DEFAULT NULL,
   `Cellphone` bigint(20) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
-  PRIMARY KEY (`idClients`,`Business_idBusiness`),
+  PRIMARY KEY (`idClients`) USING BTREE,
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
 --
 
 INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Cellphone`, `Business_idBusiness`) VALUES
+(0, 'Consumidor Final', 'Consumidor Final', 1, ' ', NULL, NULL, 1),
 (8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', 113212113, 11231213, 1),
 (22, 'Margosian', '11', 3, 'a', NULL, 111, 1),
 (23, 'test', 'prueba', 123456, NULL, NULL, 43214321, 1),
 (25, 'nombre', 'apellido', 987654321, NULL, NULL, 40005000, 1),
-(32, 'Margossian', 'Nicolas', 1, NULL, 1144322258, 1165898555, 1),
+(32, 'Margossian', 'Nicolas', 5555555, NULL, 1144322258, 1165898555, 1),
 (34, 'a', 'a', 12, 'a', 1, 1, 1),
-(37, 'a', 'a', 1, '', 123123123, 1, 1),
+(37, 'a', 'a', 1111111, '', 123123123, 1, 1),
 (39, 'aaa', 'aaa', 43444, NULL, 1125458, 1154898, 1),
 (40, 'asdf', 'asdf', 3245, 'hola', 2435, 2345, 1),
 (41, '11111111111111', '11111111111111', 111111111, NULL, 0, 0, 1),
@@ -356,7 +367,7 @@ CREATE TABLE IF NOT EXISTS `delivery` (
   `Transportation_Company` varchar(45) DEFAULT NULL,
   `Telephone` int(11) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
-  PRIMARY KEY (`idDelivery`,`Business_idBusiness`),
+  PRIMARY KEY (`idDelivery`) USING BTREE,
   KEY `fk_Delivery_Business1_idx` (`Business_idBusiness`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -371,7 +382,7 @@ CREATE TABLE IF NOT EXISTS `macs` (
   `idMacs` int(11) NOT NULL AUTO_INCREMENT,
   `Mac_Address` varchar(45) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
-  PRIMARY KEY (`idMacs`,`Business_idBusiness`),
+  PRIMARY KEY (`idMacs`) USING BTREE,
   KEY `fk_Macs_Business1_idx` (`Business_idBusiness`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
@@ -420,7 +431,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `CodeProduct` varchar(100) DEFAULT NULL,
   `Suppliers_idSupplier` int(11) NOT NULL,
   `Business_idBusiness` int(11) NOT NULL,
-  PRIMARY KEY (`idProducts`,`Suppliers_idSupplier`,`Business_idBusiness`),
+  PRIMARY KEY (`idProducts`) USING BTREE,
   KEY `fk_Products_Suppliers1_idx` (`Suppliers_idSupplier`),
   KEY `fk_Products_Business1_idx` (`Business_idBusiness`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
@@ -471,7 +482,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `Factory_Plant` varchar(45) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   `Address` varchar(200) NOT NULL,
-  PRIMARY KEY (`idSupplier`,`Business_idBusiness`),
+  PRIMARY KEY (`idSupplier`) USING BTREE,
   KEY `fk_Supplier_Business1_idx` (`Business_idBusiness`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
@@ -502,7 +513,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Surname` varchar(45) DEFAULT NULL,
   `Name_Second` varchar(45) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
-  PRIMARY KEY (`idUser`,`Business_idBusiness`),
+  PRIMARY KEY (`idUser`) USING BTREE,
   KEY `fk_Users_Business1_idx` (`Business_idBusiness`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -527,7 +538,7 @@ CREATE TABLE IF NOT EXISTS `user_extrainfo` (
   `Users_idUsuarios` int(11) NOT NULL,
   `Province_idProvince` int(11) NOT NULL,
   `Payment_Methods_idPayment_Methods` int(11) NOT NULL,
-  PRIMARY KEY (`idUser_ExtraInfo`,`Users_idUsuarios`,`Province_idProvince`,`Payment_Methods_idPayment_Methods`),
+  PRIMARY KEY (`idUser_ExtraInfo`) USING BTREE,
   KEY `fk_User_ExtraInfo_Users1_idx` (`Users_idUsuarios`),
   KEY `fk_User_ExtraInfo_Province1_idx` (`Province_idProvince`),
   KEY `fk_User_ExtraInfo_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`)
@@ -545,6 +556,12 @@ ALTER TABLE `address`
   ADD CONSTRAINT `fk_Address_Client1` FOREIGN KEY (`Clients_idClients`) REFERENCES `clients` (`idClients`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Address_Delivery1` FOREIGN KEY (`Delivery_idDelivery`) REFERENCES `delivery` (`idDelivery`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Address_Province1` FOREIGN KEY (`Province_idProvince`) REFERENCES `provinces` (`idProvince`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `bills`
+--
+ALTER TABLE `bills`
+  ADD CONSTRAINT `bills_ibfk_1` FOREIGN KEY (`Clients_idClients`) REFERENCES `clients` (`idClients`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `bills_x_products`

@@ -28,16 +28,14 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetDataClient(int pos)
         {
-            BD.GetOneClient(BD.ListClients[pos].Id);
+            BD.GetClientById(BD.ListClients[pos].Id);
             string JsonDataClient = JsonConvert.SerializeObject(BD.SelectedClient);
             return Json(JsonDataClient);        
         }
         [HttpPost]
-        public JsonResult GetDataClientById(uint id)
+        public JsonResult GetDataClientByDNI(uint dni)
         {
-            BD.GetOneClient(id);
-            string JsonDataClient = JsonConvert.SerializeObject(BD.SelectedClient);
-            return Json(JsonDataClient);
+            return Json(JsonConvert.SerializeObject(BD.GetClientByDNI(dni)));
         }
         [HttpPost]
         public bool UpdateClient(string Surname, string Name, ulong Dni, string email, ulong Telephone, ulong Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
@@ -93,7 +91,7 @@ namespace AGCS.Controllers
         }
         //Facturacion
         [HttpPost]
-        public void NewBill(string json, uint idClient)
+        public void NewBill(string json, uint dniClient)
         {
             float total = 0;
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(json);
@@ -103,7 +101,8 @@ namespace AGCS.Controllers
                 {
                     total += product.Price * product.Quant;
                 }
-                Bill bill = new Bill(DateTime.Today, total, products, 0, idClient);
+                Bill bill = new Bill(DateTime.Today, total, products, 0, dniClient);
+
                 BD.InsertBill(bill);
             }
         }

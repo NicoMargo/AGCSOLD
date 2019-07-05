@@ -32,7 +32,7 @@ namespace AGCS.Models
             _floor = Floor;
         }
         //New Client
-        public Client(string Name, string Surname, ulong dni, string email, ulong Telephone, ulong Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(999, Name, Surname, email, Telephone, Cellphone)
+        public Client(string Name, string Surname, ulong dni, string email, ulong Telephone, ulong Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(0, Name, Surname, email, Telephone, Cellphone)
         {
             _dni = dni;
             _town = Town;
@@ -42,9 +42,13 @@ namespace AGCS.Models
             _number = Number;
             _floor = Floor;
         }
-        public Client(string Name, string Surname, ulong dni, string email, ulong Telephone, ulong Cellphone) : base(999, Name, Surname, email, Telephone, Cellphone)
+        public Client(string Name, string Surname, ulong dni, string email, ulong Telephone, ulong Cellphone) : base(0, Name, Surname, email, Telephone, Cellphone)
         {
             _dni = dni;
+        }
+
+        public Client(uint id, string Name, string Surname, string email, ulong cellphone) : base(id, Name, Surname, email, cellphone) {
+
         }
         public ulong Dni { get => _dni; }       
         public string Town { get => _town; }

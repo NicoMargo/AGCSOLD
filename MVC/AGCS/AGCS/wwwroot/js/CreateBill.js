@@ -163,11 +163,10 @@
     }
     $("#b").click(function () {
         if (Items.length > 0) {
-            var test = JSON.stringify(Items);
             $.ajax({
                 type: "POST",
                 url: "/Backend/NewBill",
-                data: { json: JSON.stringify(Items) },
+                data: { json: JSON.stringify(Items), dniClient: $("#dni").val() },
                 success: function () {
                     alert("se facturó");
                 },
@@ -183,8 +182,8 @@
     $("#s").click(function () {  
             $.ajax({
                 type: "POST",
-                url: "/Backend/GetDataClientById",
-                data: { id: $("#dni").val() },
+                url: "/Backend/GetDataClientByDNI",
+                data: { dni: $("#dni").val() },
                 success: function (DataJsonClient) {
                     var Data = JSON.parse(DataJsonClient);
                     $("#surname").val(Data.Surname);

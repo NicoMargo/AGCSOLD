@@ -107,13 +107,14 @@ namespace AGCS.Models
             }
             Disconect(Connection);
         }
-        public static void GetOneClient(uint idClient)
+
+        public static void GetClientById(uint idClient)
         {
             Client client = null;
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientGetOne";
+            CommandConnection.CommandText = "spClientGetById";
             CommandConnection.Parameters.AddWithValue("@id", idClient);
             CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
             MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
@@ -138,6 +139,37 @@ namespace AGCS.Models
             }
             Disconect(Connection);
             SelectedClient =  client;
+        }
+
+        public static Client GetClientByDNI(uint DNI)
+        {
+            Client client = null;
+            MySqlConnection Connection = Connect();
+            MySqlCommand CommandConnection = Connection.CreateCommand();
+            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
+            CommandConnection.CommandText = "spClientGetByDNI";
+            CommandConnection.Parameters.AddWithValue("@pDNI", DNI);
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
+            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            if (ConnectionReader.Read())
+            {
+                string name, surname, email;
+                ulong cellphone;
+                uint id;
+                /*Addres info ...*/
+                try
+                {
+                    id = Convert.ToUInt32(ConnectionReader["idClients"]);
+                    name = ReadString(ConnectionReader, "Name");
+                    surname = ReadString(ConnectionReader, "Surname");
+                    email = ReadString(ConnectionReader, "eMail");
+                    cellphone = ReadULong(ConnectionReader, "Cellphone");
+                    client = new Client(id, name, surname, email, cellphone);
+                }
+                catch { }
+            }
+            Disconect(Connection);
+            return client;
         }
 
         public static void InsertClient(Client client)
@@ -279,13 +311,13 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
             CommandConnection.Parameters.AddWithValue("@pDate", bill.Date);
             CommandConnection.Parameters.AddWithValue("@pTotal", bill.Total);
-
+            CommandConnection.Parameters.AddWithValue("@pIdClients", bill.DniClient);
             MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
             if (ConnectionReader.Read())
             { 
                 uint id = Convert.ToUInt32(ConnectionReader["idBills"]);
                 ConnectionReader.Close();
-                if (id != 0)
+                if (id >= 0)
                 {
                     bill.Id = id;
                     foreach (Product product in bill.Products)

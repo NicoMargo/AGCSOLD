@@ -8,7 +8,7 @@ namespace AGCS.Models
     public class Bill
     {
         private uint _id;
-        private uint _idClient;
+        private uint _dniClient;
         private DateTime _date;
         private float _total;
         private List<Product> _products;
@@ -19,13 +19,13 @@ namespace AGCS.Models
         private float _discount;//no
         private float _ivaRecharge;
 
-        public Bill(DateTime date, float total, List<Product> products, float ivaRecharge, uint idClient)
+        public Bill(DateTime date, float total, List<Product> products, float ivaRecharge, uint DniClient)
         {
             _date = date;
             _total = total;
             _products = products;
             _ivaRecharge = ivaRecharge;
-            _idClient = idClient;
+            _dniClient = DniClient;
         }
 
         public Bill(uint id,DateTime date, float total, List<Product> products, float ivaRecharge)
@@ -60,7 +60,7 @@ namespace AGCS.Models
         public bool IsWholeSaler { get => _isWholeSaler; set => _isWholeSaler = value; }
         public float Discount { get => _discount; set => _discount = value; }
         public float IvaRecharge { get => _ivaRecharge; set => _ivaRecharge = value; }
-        public uint IdClient { get => _idClient; set => _idClient = value; }
+        public uint DniClient { get => _dniClient; set => _dniClient = value; }
 
         /*
   `idSales` int(11) NOT NULL AUTO_INCREMENT,
