@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 27-06-2019 a las 21:07:00
+-- Tiempo de generación: 27-06-2019 a las 22:59:20
 -- Versión del servidor: 5.7.23
 -- Versión de PHP: 7.2.10
 
@@ -29,6 +29,7 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `spBillInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT)  BEGIN
 	Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness) values( pDate, pTotal, pIdBusiness);
+    select bills.idBills from bills where bills.idBills = LAST_INSERT_ID() and bills.DateBill = pDate and bills.Total = ptotal and bills.Business_idBusiness = pIdBusiness;
 END$$
 
 DROP PROCEDURE IF EXISTS `spBillXProductInsert`$$
@@ -193,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`) USING BTREE,
   KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
@@ -205,7 +206,12 @@ INSERT INTO `bills` (`idBills`, `DateBill`, `DNI/CUIT`, `Employee_Code`, `IVA_Co
 (4, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
 (5, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
 (6, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(7, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1);
+(7, '2019-06-27', NULL, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
+(8, '2019-06-27', NULL, NULL, NULL, NULL, 301700, NULL, NULL, NULL, 0, 0, 0, 1),
+(9, '2019-06-27', NULL, NULL, NULL, NULL, 301700, NULL, NULL, NULL, 0, 0, 0, 1),
+(10, '2019-06-27', NULL, NULL, NULL, NULL, 6100, NULL, NULL, NULL, 0, 0, 0, 1),
+(11, '2019-06-27', NULL, NULL, NULL, NULL, 500, NULL, NULL, NULL, 0, 0, 0, 1),
+(12, '2019-06-27', NULL, NULL, NULL, NULL, 3200, NULL, NULL, NULL, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -222,14 +228,17 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`,`Products_idProducts`,`Bills_idBills`),
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBills`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills_x_products`
 --
 
 INSERT INTO `bills_x_products` (`idBills_X_Products`, `Quantity`, `Products_idProducts`, `Bills_idBills`) VALUES
-(7, 5, 1, 2);
+(7, 5, 1, 2),
+(8, 10, 1, 12),
+(9, 5, 2, 12),
+(10, 4, 3, 12);
 
 -- --------------------------------------------------------
 
@@ -312,8 +321,6 @@ CREATE TABLE IF NOT EXISTS `clients` (
 --
 
 INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Cellphone`, `Business_idBusiness`) VALUES
-(5, 'Carlitos', 'pereza', 2, 'carlomagno@gmail.cim', 30748787, 0, 1),
-(6, 'Don Juan', 'Equisde', 44444555, 'juan@mail.cim', 45678912, 0, 1),
 (7, 'Robot de', 'Prueba', 17, 'c17@patrullaroja.com', NULL, 0, 1),
 (8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', 113212113, 11231213, 1),
 (22, 'Margosian', '11', 3, 'a', NULL, 111, 1),

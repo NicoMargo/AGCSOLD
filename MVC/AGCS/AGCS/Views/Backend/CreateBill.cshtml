@@ -10,7 +10,7 @@
                     <div class="card">
                         <div class="card-header">
                             <strong class="card-title">Venta <span class="ml-5">Total: </span><span id="total">0</span></strong>
-                            
+
                         </div>
                         <div class="card-body">
                             <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
@@ -45,8 +45,7 @@
                                         <th class="w-8">Eliminar</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tableProducts">                                  
-                                </tbody>
+                                <tbody id="tableProducts"></tbody>
                             </table>
                             <button id="b" class="btn btn-primary col-md-12">Facturar</button>
                         </div>
@@ -57,9 +56,24 @@
     </div>
 </div>
 
+<!-- Modal Create Beg-->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h5 class="modal-title" id="confirmationModal">Esta seguro que quiere eliminar el producto?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="confirm" data-dismiss="modal" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="~/lib/Jquery 3.4.1.js" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script src="~/js/CreateBill.js"></script>
 

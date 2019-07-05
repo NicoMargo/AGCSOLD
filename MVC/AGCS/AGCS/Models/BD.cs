@@ -9,7 +9,7 @@ namespace AGCS.Models
     public class BD
     {
         //public static string connectionString = "Server=localhost;User=root;Database=bd_agcs;Uid=Jonyloco;Pwd=agcs;"; //Chino
-        //public static string connectionString = "Server=127.0.0.1;User=root;Database=pruebaclientes"; //Anush
+       // public static string connectionString = "Server=127.0.0.1;User=root;Database=bd_agcs"; //Anush
         public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
 
         public static List<Client> ListClients = new List<Client>();
@@ -280,13 +280,24 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pDate", bill.Date);
             CommandConnection.Parameters.AddWithValue("@pTotal", bill.Total);
 
-            CommandConnection.ExecuteNonQuery();
-
-            foreach (Product product in bill.Products) {
-                InsertBillXProduct(Connection, bill.Id, product.Id,product.Quant);
+            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            if (ConnectionReader.Read())
+            { 
+                uint id = Convert.ToUInt32(ConnectionReader["idBills"]);
+                ConnectionReader.Close();
+                if (id != 0)
+                {
+                    bill.Id = id;
+                    foreach (Product product in bill.Products)
+                    {
+                        InsertBillXProduct(Connection, bill.Id, product.Id, product.Quant);
+                    }
+                    success = true;
+                }
             }
-            
+
             Disconect(Connection);
+
             return success;
         }
 

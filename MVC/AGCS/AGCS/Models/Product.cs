@@ -36,7 +36,7 @@ namespace AGCS.Models
 
         public Product(uint id, string description, float price, int stock)
         {
-            _id = Convert.ToUInt32(id);
+            _id = id;
             _description = description;
             _price = price;
             _stock = stock;
