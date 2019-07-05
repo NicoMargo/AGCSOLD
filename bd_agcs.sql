@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 05-07-2019 a las 13:20:15
+-- Tiempo de generación: 05-07-2019 a las 14:53:18
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -30,7 +30,7 @@ DROP PROCEDURE IF EXISTS `spBillInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT, IN `pIdClients` INT)  BEGIN
 	if EXISTS(select clients.idClients from clients where (clients.idClients = pIdClients and pIdBusiness = clients.Business_idBusiness) or (pIdClients = 0))
     THEN
-		Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness) values( pDate, pTotal, pIdBusiness);
+		Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness,bills.Clients_idClients) values( pDate, pTotal, pIdBusiness,pIdClients);
     	select bills.idBills from bills where bills.idBills = LAST_INSERT_ID() and bills.DateBill = pDate and bills.Total = ptotal and bills.Business_idBusiness = pIdBusiness and bills.Clients_idClients = pIdClients;
     ELSE
     	select -1;
@@ -38,12 +38,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT
 END$$
 
 DROP PROCEDURE IF EXISTS `spBillXProductInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pIdBill` INT, IN `pIdProduct` INT, IN `pQuantity` INT)  BEGIN
-	if exists(select products.idProducts from products where products.idProducts = pIdProduct) and exists(select bills.idBills from bills where bills.idBills = pIdBill)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pIdBill` INT, IN `pIdProduct` INT, IN `pQuantity` INT, IN `pIdBusiness` INT)  BEGIN
+	if exists(select products.idProducts from products where products.idProducts = pIdProduct and products.Business_idBusiness = pIdBusiness) and exists(select bills.idBills from bills where bills.idBills = pIdBill and bills.Business_idBusiness = pIdBusiness)
     then
-		if(pQuantity >= 0 and pQuantity is not null)
+		if(pQuantity > 0 and pQuantity is not null)
         then
 			insert into bills_x_products(bills_x_products.Products_idProducts,bills_x_products.Bills_idBills,bills_x_products.Quantity) values(pIdProduct,pIdBill,pQuantity);
+            update products set products.Stock = products.Stock - pQuantity where products.idProducts = pIdProduct and products.Business_idBusiness = pIdBusiness;
 		else
 			insert into bills_x_products(bills_x_products.Products_idProducts,bills_x_products.Bills_idBills,bills_x_products.Quantity) values(pIdProduct,pIdBill,0);
         end if;
@@ -193,9 +194,9 @@ CREATE TABLE IF NOT EXISTS `bills` (
   `Discount` int(11) DEFAULT NULL,
   `IVA_Recharge` int(11) DEFAULT NULL,
   `WholeSaler` bit(1) DEFAULT NULL,
-  `Branches_idBranch` int(11) NOT NULL,
-  `Payment_Methods_idPayment_Methods` int(11) NOT NULL,
-  `Macs_idMacs` int(11) NOT NULL,
+  `Branches_idBranch` int(11) DEFAULT NULL,
+  `Payment_Methods_idPayment_Methods` int(11) DEFAULT NULL,
+  `Macs_idMacs` int(11) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idBills`) USING BTREE,
   UNIQUE KEY `idBills` (`idBills`),
@@ -204,7 +205,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE,
   KEY `fk_Bills_Clients1_idx` (`Clients_idClients`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
@@ -225,7 +226,15 @@ INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`
 (13, '2019-06-28', 0, NULL, NULL, NULL, 14800, NULL, NULL, NULL, 0, 0, 0, 1),
 (14, '2019-06-28', 0, NULL, NULL, NULL, 14400, NULL, NULL, NULL, 0, 0, 0, 1),
 (15, '2019-06-28', 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, 1),
-(16, '2019-06-28', 0, NULL, NULL, NULL, 6400, NULL, NULL, NULL, 0, 0, 0, 1);
+(16, '2019-06-28', 0, NULL, NULL, NULL, 6400, NULL, NULL, NULL, 0, 0, 0, 1),
+(17, '2019-07-05', NULL, NULL, NULL, NULL, 1100, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(18, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(19, '2019-07-05', NULL, NULL, NULL, NULL, 100, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(20, '2019-07-05', NULL, NULL, NULL, NULL, 100, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(21, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(22, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(23, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(24, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
