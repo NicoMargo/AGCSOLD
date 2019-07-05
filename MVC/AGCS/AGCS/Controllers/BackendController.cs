@@ -33,6 +33,13 @@ namespace AGCS.Controllers
             return Json(JsonDataClient);        
         }
         [HttpPost]
+        public JsonResult GetDataClientById(uint id)
+        {
+            BD.GetOneClient(id);
+            string JsonDataClient = JsonConvert.SerializeObject(BD.SelectedClient);
+            return Json(JsonDataClient);
+        }
+        [HttpPost]
         public bool UpdateClient(string Surname, string Name, ulong Dni, string email, ulong Telephone, ulong Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
         {
             bool Success = true;
@@ -86,7 +93,7 @@ namespace AGCS.Controllers
         }
         //Facturacion
         [HttpPost]
-        public void NewBill(string json)
+        public void NewBill(string json, uint idClient)
         {
             float total = 0;
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(json);
@@ -96,7 +103,7 @@ namespace AGCS.Controllers
                 {
                     total += product.Price * product.Quant;
                 }
-                Bill bill = new Bill(DateTime.Today, total, products, 0);
+                Bill bill = new Bill(DateTime.Today, total, products, 0, idClient);
                 BD.InsertBill(bill);
             }
         }

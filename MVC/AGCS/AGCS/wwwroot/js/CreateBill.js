@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
     var idOfProd, D, T = 0, Items = [],p;
     var Product = { Id: null, Quant: null, iva: 1, Price: null };
-    $("#codProdToEnter").focus();
+   
     $('#codProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
@@ -33,6 +33,13 @@
                 alert("ERROR");
             }
         });
+    }
+    $("#codProdToEnter").focus();
+    function validInt(number) {
+        if (number <= 0) {
+            number = "";
+        }
+        return number;
     }
     $('#quantProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -172,5 +179,21 @@
         {
             alert("ingrese datos a facturar");
         }
+    });
+    $("#s").click(function () {  
+            $.ajax({
+                type: "POST",
+                url: "/Backend/GetDataClientById",
+                data: { id: $("#dni").val() },
+                success: function (DataJsonClient) {
+                    var Data = JSON.parse(DataJsonClient);
+                    $("#surname").val(Data.Surname);
+                    $("#thisName").val(Data.Name);
+                    $("#cellphone").val(validInt(Data.Cellphone));
+                },
+                error: function () {
+                    alert("ERROR");
+                }
+            });       
     });
 });

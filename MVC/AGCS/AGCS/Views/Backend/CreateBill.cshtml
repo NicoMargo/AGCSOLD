@@ -48,7 +48,6 @@
                                 </thead>
                                 <tbody id="tableProducts"></tbody>
                             </table>
-                            <button id="b" class="btn btn-primary col-md-12">Facturar</button>
                         </div>
                     </div>
                 </div>
@@ -57,6 +56,43 @@
     </div>
 </div>
 
+<div style="margin-top:4rem;" class="col-md-12">
+    <div class="content mt-3">
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Cliente</strong>
+                        </div>
+                        <div class="card-body">
+                            <table id="bootstrap-data-table-export" class="table table-striped">
+                                <thead>
+                                    <tr class="row">
+                                        <th class="col-md-3">DNI/CUIT</th>
+                                        <th class="col-md-3">Nombre</th>
+                                        <th class="col-md-3">Apellido</th>
+                                        <th class="col-md-3">Celular</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="row">
+                                        <td class="col-md-3"> <input type="number" id="dni" min="1" placeholder="DNI/CUIT" class="form-control text-black "></td>
+                                        <td class="col-md-3"> <input disabled type="text" id="thisName" placeholder="Nombre" class="form-control text-black"></td>
+                                        <td class="col-md-3"> <input disabled type="text" id="surname" placeholder="Apellido" class="form-control text-black"></td>
+                                        <td class="col-md-3"> <input disabled type="tel" id="cellphone" placeholder="Celular" class="form-control text-black"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button id="s" class="btn btn-primary col-md-12">Buscar Cliente</button>
+                            <button id="b" class="btn btn-success col-md-12">Facturar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal Create Beg-->
 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -72,10 +108,6 @@
         </div>
     </div>
 </div>
+@section Scripts{<script crossorigin="anonymous" src="~/js/CreateBill.js"></script>}
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="~/lib/Jquery 3.4.1.js" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script crossorigin="anonymous" src="~/js/CreateBill.js"></script>
 
