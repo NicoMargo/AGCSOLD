@@ -186,9 +186,22 @@
                 data: { dni: $("#dni").val() },
                 success: function (DataJsonClient) {
                     var Data = JSON.parse(DataJsonClient);
-                    $("#surname").val(Data.Surname);
-                    $("#thisName").val(Data.Name);
-                    $("#cellphone").val(validInt(Data.Cellphone));
+                    if (Data != null) {
+                        $("#surname").attr('disabled', true);
+                        $("#thisName").attr('disabled', true);
+                        $("#cellphone").attr('disabled', true);
+                        $("#surname").val(Data.Surname);
+                        $("#thisName").val(Data.Name);
+                        $("#cellphone").val(validInt(Data.Cellphone));
+                    } else {
+                        $("#surname").attr('disabled', false);
+                        $("#thisName").attr('disabled', false);
+                        $("#cellphone").attr('disabled', false);
+                        $("#surname").val("");
+                        $("#thisName").val("");
+                        $("#cellphone").val("");
+                    }
+                    
                 },
                 error: function () {
                     alert("ERROR");
