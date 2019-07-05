@@ -28,7 +28,7 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetDataClient(int pos)
         {
-            BD.GetOneClient(BD.ListClients[pos].Id);
+            BD.GetClientById(BD.ListClients[pos].Id);
             string JsonDataClient = JsonConvert.SerializeObject(BD.SelectedClient);
             return Json(JsonDataClient);        
         }
@@ -96,7 +96,7 @@ namespace AGCS.Controllers
                 {
                     total += product.Price * product.Quant;
                 }
-                Bill bill = new Bill(DateTime.Today, total, products, 0);
+                Bill bill = new Bill(DateTime.Today, total, products, 0,0);
                 BD.InsertBill(bill);
             }
         }

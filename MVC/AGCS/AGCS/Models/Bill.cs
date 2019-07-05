@@ -28,13 +28,14 @@ namespace AGCS.Models
             _idClient = idClient;
         }
 
-        public Bill(uint id,DateTime date, float total, List<Product> products, float ivaRecharge)
+        public Bill(uint id,DateTime date, float total, List<Product> products, float ivaRecharge, uint idClient)
         {
             _id = id;
             _date = date;
             _total = total;
             _products = products;
             _ivaRecharge = ivaRecharge;
+            _idClient = idClient;
         }
 
         public Bill( DateTime date, float total, List<Product> products, string type, int employeeCode, string ivaCondition, bool isWholeSaler, float discount, float ivaRecharge)
