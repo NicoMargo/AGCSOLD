@@ -156,7 +156,6 @@ namespace AGCS.Models
                 string name, surname, email;
                 ulong cellphone;
                 uint id;
-                /*Addres info ...*/
                 try
                 {
                     id = Convert.ToUInt32(ConnectionReader["idClients"]);
@@ -344,6 +343,7 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pIdBill", idBill);
             CommandConnection.Parameters.AddWithValue("@pIdProduct", idProduct);
             CommandConnection.Parameters.AddWithValue("@pQuantity", quantity);
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
 
             CommandConnection.ExecuteNonQuery();
             return success;
