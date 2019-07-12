@@ -299,9 +299,13 @@ namespace AGCS.Models
             return product;
         }
         //Methods for store procedures of Table Bills 
-        public static bool InsertBill(Bill bill)
+        public static bool InsertBill(Bill bill, Client ClientBill)
         {
             bool success = false;
+            if(ClientBill.Name != null)
+            {
+                InsertClient(ClientBill);
+            }
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
@@ -310,11 +314,10 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
             CommandConnection.Parameters.AddWithValue("@pDate", bill.Date);
             CommandConnection.Parameters.AddWithValue("@pTotal", bill.Total);
-            CommandConnection.Parameters.AddWithValue("@pDNI", bill.DniClient);
+            CommandConnection.Parameters.AddWithValue("@pDNI", ClientBill.Dni);
             MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
             if (ConnectionReader.Read())
             {
-
                 try
                 {
                     uint id = Convert.ToUInt32(ConnectionReader["idBills"]);

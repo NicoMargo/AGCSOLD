@@ -19,17 +19,17 @@ namespace AGCS.Models
         private int _quant;
         private int _iva;
 
-        public uint Id { get => _id; set => _id = value; }
-        public int ArticleNumber { get => _articleNumber; set => _articleNumber = value; }
-        public string Description { get => _description; set => _description = value; }
-        public float Cost { get => _cost; set => _cost = value; }
-        public float Price { get => _price; set => _price = value; }
-        public int Stock { get => _stock; set => _stock = value; }
-        public bool Age { get => _age; set => _age = value; }
-        public string Code { get => _code; set => _code = value; }
-        public int IdBusiness { get => _idBusiness; set => _idBusiness = value; }
-        public int Quant { get => _quant; set => _quant = value; }
-        public int Iva { get => _iva; set => _iva = value; }
+        public uint Id { get => _id;}
+        public int ArticleNumber { get => _articleNumber;}
+        public string Description { get => _description; }
+        public float Cost { get => _cost; }
+        public float Price { get => _price;}
+        public int Stock { get => _stock; }
+        public bool Age { get => _age;}
+        public string Code { get => _code;}
+        public int IdBusiness { get => _idBusiness;}
+        public int Quant { get => _quant;}
+        public int Iva { get => _iva;}
 
         //private int _idSupplier o Supplier supplier;
 

@@ -15,6 +15,14 @@ namespace AGCS.Models
         private int _number;
         private int _floor;
 
+        public ulong Dni { get => _dni; set => _dni = value;}
+        public string Town { get => _town;}
+        public string Address { get => _Address;}
+        public string Province { get => _province; }
+        public string Leter { get => _leter;}
+        public int Number { get => _number;}
+        public int Floor { get => _floor;}
+
         //Only a few data for ABM client
         public Client(uint id,string name, string surname, ulong dni, string email, ulong cellphone ) : base(id,name,surname,email,cellphone)
         {          
@@ -50,13 +58,13 @@ namespace AGCS.Models
         public Client(uint id, string Name, string Surname, string email, ulong cellphone) : base(id, Name, Surname, email, cellphone) {
 
         }
-        public ulong Dni { get => _dni; }       
-        public string Town { get => _town; }
-        public string Address { get => _Address; }
-        public string Province { get => _province; }
-        public string Leter { get => _leter; }
-        public int Number { get => _number; }
-        public int Floor { get => _floor; }
+        public Client(ulong Dni, string Name, string Surname, ulong Cellphone, ulong Telephone) :base(Name, Surname, Cellphone, Telephone)
+        {
+            _dni = Dni;
+        }
+        public Client() : base()
+        {
 
+        }
     }
 }

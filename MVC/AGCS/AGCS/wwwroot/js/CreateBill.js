@@ -162,12 +162,19 @@
         $("#codProdToEnter").focus();
     }
     $("#b").click(function () {
+        let C = { Dni: $("#dni").val(), Name: null, Surname: null, Cellphone: null };
+        var attr = $('#thisName').attr('disabled');
+        if (attr == undefined) {
+            C.Name = $("#thisName").val();
+            C.Surname = $("#surname").val();
+            C.Cellphone = $("#cellphone").val();
+        }
         if (Items.length > 0) {
             $.ajax({
                 type: "POST",
                 url: "/Backend/NewBill",
                 data: {
-                    json: JSON.stringify(Items), dniClient: $("#dni").val() },
+                    json: JSON.stringify(Items), dniClient: $("#dni").val(), jsonClient: JSON.stringify(C) },
                 success: function (success) {
                     if (success) {
                         alert("se facturó");
