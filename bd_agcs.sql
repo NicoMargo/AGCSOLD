@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 05-07-2019 a las 14:53:18
+-- Tiempo de generación: 05-07-2019 a las 15:03:47
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -27,11 +27,12 @@ DELIMITER $$
 -- Procedimientos
 --
 DROP PROCEDURE IF EXISTS `spBillInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT, IN `pIdClients` INT)  BEGIN
-	if EXISTS(select clients.idClients from clients where (clients.idClients = pIdClients and pIdBusiness = clients.Business_idBusiness) or (pIdClients = 0))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT, IN `pDNI` INT)  BEGIN
+	if EXISTS(select clients.idClients from clients where (clients.DNI_CUIT = pDNI and pIdBusiness = clients.Business_idBusiness) or (pDNI = 1))
     THEN
+    	SET  @idClient = (select clients.idClients from clients where clients.DNI_CUIT = pDNI and clients.Business_idBusiness = pIdBusiness);
 		Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness,bills.Clients_idClients) values( pDate, pTotal, pIdBusiness,pIdClients);
-    	select bills.idBills from bills where bills.idBills = LAST_INSERT_ID() and bills.DateBill = pDate and bills.Total = ptotal and bills.Business_idBusiness = pIdBusiness and bills.Clients_idClients = pIdClients;
+    	select bills.idBills from bills where bills.idBills = LAST_INSERT_ID() and bills.DateBill = pDate and bills.Total = ptotal and bills.Business_idBusiness = pIdBusiness and bills.Clients_idClients = @idClient;
     ELSE
     	select -1;
     end if;
