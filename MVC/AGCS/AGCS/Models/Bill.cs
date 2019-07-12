@@ -10,31 +10,61 @@ namespace AGCS.Models
         private uint _id;
         private uint _dniClient;
         private DateTime _date;
-        private float _total;
         private List<Product> _products;
+        private float _subtotal;
+        private bool _isWholeSaler;//nah
+        private string _ivaCondition;//nee
+        private float _ivaRecharge;
+        private float _discount;
+        private float _total;
         private string _type;//no
         private int _employeeCode;//ni
-        private string _ivaCondition;//nee
-        private bool _isWholeSaler;//nah
-        private float _discount;//no
-        private float _ivaRecharge;
 
-        public Bill(DateTime date, float total, List<Product> products, float ivaRecharge, uint DniClient)
+        private float calculateSubtotal() {
+            float subtotal = 0;
+            
+            if (_products.Count > 0)
+            {
+                foreach (Product product in _products)
+                {
+                    subtotal += product.Price * product.Quant;
+                }
+            }
+            return subtotal;
+        }
+
+        private float calculateTotal()
+        {
+            float total = 0;
+
+            if (_subtotal > 0)
+            {
+                float rechargedSubtotal = _subtotal + _subtotal * IvaRecharge / 100.0f;
+                total = rechargedSubtotal - rechargedSubtotal * Discount / 100.0f;
+            }
+
+            return total;
+        }
+
+        public Bill(DateTime date, List<Product> products, float ivaRecharge, float discount, uint DniClient)
         {
             _date = date;
-            _total = total;
             _products = products;
+            _subtotal = calculateSubtotal();
             _ivaRecharge = ivaRecharge;
+            _discount = discount;
+            _total = calculateTotal();
             _dniClient = DniClient;
         }
 
-        public Bill(uint id,DateTime date, float total, List<Product> products, float ivaRecharge)
+        public Bill(uint id, DateTime date, List<Product> products, float subtotal, float discount, float ivaRecharge, float total)
         {
             _id = id;
             _date = date;
             _total = total;
             _products = products;
             _ivaRecharge = ivaRecharge;
+            _discount = discount;
         }
 
         public Bill( DateTime date, float total, List<Product> products, string type, int employeeCode, string ivaCondition, bool isWholeSaler, float discount, float ivaRecharge)
@@ -49,7 +79,7 @@ namespace AGCS.Models
             _discount = discount;
             _ivaRecharge = ivaRecharge;
         }
-
+        
         public uint Id { get => _id; set => _id = value; }
         public DateTime Date { get => _date; set => _date = value; }
         public float Total { get => _total; set => _total = value; }
