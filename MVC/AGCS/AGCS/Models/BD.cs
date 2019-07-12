@@ -171,7 +171,7 @@ namespace AGCS.Models
             return client;
         }
 
-        public static void InsertClient(Client client)
+        public static bool InsertClient(Client client)
         {
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
@@ -184,16 +184,15 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pEmail", client.Email);
             CommandConnection.Parameters.AddWithValue("@pTelephone", client.Telephone);
             CommandConnection.Parameters.AddWithValue("@pCellphone", client.Cellphone);
-            CommandConnection.Parameters.AddWithValue("@pAddress", "Calle 66306613333");
-            CommandConnection.Parameters.AddWithValue("@pLocality", "");
-            CommandConnection.Parameters.AddWithValue("@pIdProvince", 0);
-            CommandConnection.Parameters.AddWithValue("@pIdDelivery", 0);
-            CommandConnection.Parameters.AddWithValue("@pComments", "");
-
-            CommandConnection.ExecuteNonQuery();
+            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            bool success = false;
+            if (ConnectionReader.Read()) {
+                success = ReadBool(ConnectionReader, "success");
+            }
             Disconect(Connection);
-
+            return success;
         }
+
         public static void UpdateClient(Client client)
         {
             MySqlConnection Connection = Connect();

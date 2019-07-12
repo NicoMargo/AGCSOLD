@@ -91,17 +91,13 @@ namespace AGCS.Controllers
         }
         //Facturacion
         [HttpPost]
-        public bool NewBill(string json, uint dniClient)
+        public bool NewBill(string json, uint dniClient, float recharge, float discount)
         {
-            float total = 0; bool success = false;
+            bool success = false;
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(json);
             if (products.Count > 0)
             {
-                foreach (Product product in products)
-                {
-                    total += product.Price * product.Quant;
-                }
-                Bill bill = new Bill(DateTime.Today, total, products, 0, dniClient);
+                Bill bill = new Bill(DateTime.Today, products, recharge , discount, dniClient);
 
                 success = BD.InsertBill(bill);                
             }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 12-07-2019 a las 11:55:42
+-- Tiempo de generación: 12-07-2019 a las 14:28:22
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -69,7 +69,7 @@ SELECT * FROM clients WHERE clients.idClients = id and clients.Business_idBusine
 
 DROP PROCEDURE IF EXISTS `spClientInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_CUIT` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` LONG, IN `pCellphone` LONG)  NO SQL
-if( pIdBusiness > -1 && pName != "" && pSurname != "" && pDNI_CUIT != 0 )
+if( pIdBusiness > -1 && pName != "" && pSurname != "" && pDNI_CUIT > 1 && not exists(select clients.idClients from cliets where clients.DNI_CUIT = pDNICUIT and clients.idBusiness = pIdBusiness))
 then
 	insert into clients(clients.Name,clients.Surname,clients.DNI_CUIT,clients.Business_idBusiness) values( pName, pSurname, pDNI_CUIT, pIdBusiness);
 	
@@ -92,8 +92,10 @@ then
 		THEN
 			UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = @lastId and clients.Business_idBusiness = pIdBusiness; 
 		end if;
-    
+		select 1 as success; #Insert Success
     end if;
+    else
+		select 0 as success; #Insert Fail
 end if$$
 
 DROP PROCEDURE IF EXISTS `spClientsGet`$$
@@ -116,7 +118,7 @@ THEN
 			UPDATE clients set clients.Surname = pSurname WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
 		end if;
 		
-		if( pDNI_CUIT is not null and pDNI_CUIT != (SELECT clients.DNI_CUIT from clients where clients.idClients = id)) 
+		if( pDNI_CUIT is not null and pDNI_CUIT != (SELECT clients.DNI_CUIT from clients where clients.idClients = id) and not exists(SELECT clients.DNI_CUIT from clients where clients.DNI_CUIT = pDNI_CUIT and clients.Business_idBusiness = pIdBusiness)) 
 		THEN
 			UPDATE clients set clients.DNI_CUIT = pDNI_CUIT WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
 		end if;
@@ -191,10 +193,11 @@ CREATE TABLE IF NOT EXISTS `bills` (
   `Employee_Code` int(11) DEFAULT NULL,
   `IVA_Condition` varchar(45) DEFAULT NULL,
   `TypeBill` varchar(1) DEFAULT NULL,
-  `Total` int(11) DEFAULT NULL,
-  `Discount` int(11) DEFAULT NULL,
-  `IVA_Recharge` int(11) DEFAULT NULL,
+  `Subtotal` float(10,2) DEFAULT '0.00',
+  `Discount` float(5,2) UNSIGNED ZEROFILL DEFAULT '00.00',
+  `IVA_Recharge` float(5,2) UNSIGNED ZEROFILL DEFAULT '00.00',
   `WholeSaler` bit(1) DEFAULT NULL,
+  `Total` float(2,2) DEFAULT '0.00',
   `Branches_idBranch` int(11) DEFAULT NULL,
   `Payment_Methods_idPayment_Methods` int(11) DEFAULT NULL,
   `Macs_idMacs` int(11) DEFAULT NULL,
@@ -212,35 +215,35 @@ CREATE TABLE IF NOT EXISTS `bills` (
 -- Volcado de datos para la tabla `bills`
 --
 
-INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`, `IVA_Condition`, `TypeBill`, `Total`, `Discount`, `IVA_Recharge`, `WholeSaler`, `Branches_idBranch`, `Payment_Methods_idPayment_Methods`, `Macs_idMacs`, `Business_idBusiness`) VALUES
-(2, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(3, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(4, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(5, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(6, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(7, '2019-06-27', 0, NULL, NULL, NULL, 50, NULL, NULL, NULL, 0, 0, 0, 1),
-(8, '2019-06-27', 0, NULL, NULL, NULL, 301700, NULL, NULL, NULL, 0, 0, 0, 1),
-(9, '2019-06-27', 0, NULL, NULL, NULL, 301700, NULL, NULL, NULL, 0, 0, 0, 1),
-(10, '2019-06-27', 0, NULL, NULL, NULL, 6100, NULL, NULL, NULL, 0, 0, 0, 1),
-(11, '2019-06-27', 0, NULL, NULL, NULL, 500, NULL, NULL, NULL, 0, 0, 0, 1),
-(12, '2019-06-27', 0, NULL, NULL, NULL, 3200, NULL, NULL, NULL, 0, 0, 0, 1),
-(13, '2019-06-28', 0, NULL, NULL, NULL, 14800, NULL, NULL, NULL, 0, 0, 0, 1),
-(14, '2019-06-28', 0, NULL, NULL, NULL, 14400, NULL, NULL, NULL, 0, 0, 0, 1),
-(15, '2019-06-28', 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0, 0, 0, 1),
-(16, '2019-06-28', 0, NULL, NULL, NULL, 6400, NULL, NULL, NULL, 0, 0, 0, 1),
-(17, '2019-07-05', NULL, NULL, NULL, NULL, 1100, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(18, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(19, '2019-07-05', NULL, NULL, NULL, NULL, 100, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(20, '2019-07-05', NULL, NULL, NULL, NULL, 100, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(21, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(22, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(23, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(24, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(25, '2019-07-12', 0, NULL, NULL, NULL, 600, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(26, '2019-07-12', 0, NULL, NULL, NULL, 1900, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(27, '2019-07-12', 8, NULL, NULL, NULL, 1400, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(28, '2019-07-12', 8, NULL, NULL, NULL, 600, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(29, '2019-07-12', 8, NULL, NULL, NULL, 900, NULL, NULL, NULL, NULL, NULL, NULL, 1);
+INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`, `IVA_Condition`, `TypeBill`, `Subtotal`, `Discount`, `IVA_Recharge`, `WholeSaler`, `Total`, `Branches_idBranch`, `Payment_Methods_idPayment_Methods`, `Macs_idMacs`, `Business_idBusiness`) VALUES
+(2, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
+(3, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
+(4, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
+(5, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
+(6, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
+(7, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
+(8, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 301700.00, 0, 0, 0, 1),
+(9, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 301700.00, 0, 0, 0, 1),
+(10, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 6100.00, 0, 0, 0, 1),
+(11, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 500.00, 0, 0, 0, 1),
+(12, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 3200.00, 0, 0, 0, 1),
+(13, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 14800.00, 0, 0, 0, 1),
+(14, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 14400.00, 0, 0, 0, 1),
+(15, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.00, 0, 0, 0, 1),
+(16, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 6400.00, 0, 0, 0, 1),
+(17, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 1100.00, NULL, NULL, NULL, 1),
+(18, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 200.00, NULL, NULL, NULL, 1),
+(19, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 100.00, NULL, NULL, NULL, 1),
+(20, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 100.00, NULL, NULL, NULL, 1),
+(21, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 200.00, NULL, NULL, NULL, 1),
+(22, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 200.00, NULL, NULL, NULL, 1),
+(23, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 200.00, NULL, NULL, NULL, 1),
+(24, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 200.00, NULL, NULL, NULL, 1),
+(25, '2019-07-12', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 600.00, NULL, NULL, NULL, 1),
+(26, '2019-07-12', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 1900.00, NULL, NULL, NULL, 1),
+(27, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 1400.00, NULL, NULL, NULL, 1),
+(28, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 600.00, NULL, NULL, NULL, 1),
+(29, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 900.00, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -452,8 +455,8 @@ CREATE TABLE IF NOT EXISTS `products` (
   `idProducts` int(11) NOT NULL AUTO_INCREMENT,
   `Article_number` int(11) DEFAULT NULL,
   `Description` varchar(45) DEFAULT NULL,
-  `Cost` float DEFAULT NULL,
-  `Price` float DEFAULT NULL,
+  `Cost` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
+  `Price` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
   `Age` bit(1) DEFAULT NULL,
   `Stock` int(11) DEFAULT NULL,
   `CodeProduct` varchar(100) DEFAULT NULL,
@@ -469,9 +472,9 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 320, 100, b'1', 1, '1', 3, 1),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 320, 200, b'1', -2, '2', 3, 1),
-(3, 3, 'Manga Yakusoku no Neverland Vol 3', 320, 300, b'1', -5, '3', 3, 1);
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0000320.00, 0000100.00, b'1', 1, '1', 3, 1),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, b'1', -2, '2', 3, 1),
+(3, 3, 'Manga Yakusoku no Neverland Vol 3', 0000320.00, 0000300.00, b'1', -5, '3', 3, 1);
 
 -- --------------------------------------------------------
 
