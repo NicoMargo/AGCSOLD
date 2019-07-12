@@ -313,22 +313,28 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pIdClients", bill.DniClient);
             MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
             if (ConnectionReader.Read())
-            { 
-                uint id = Convert.ToUInt32(ConnectionReader["idBills"]);
-                ConnectionReader.Close();
-                if (id >= 0)
+            {
+
+                try
                 {
-                    bill.Id = id;
-                    foreach (Product product in bill.Products)
+                    uint id = Convert.ToUInt32(ConnectionReader["idBills"]);
+                    ConnectionReader.Close();
+                    if (id >= 0)
                     {
-                        InsertBillXProduct(Connection, bill.Id, product.Id, product.Quant);
+                        bill.Id = id;
+                        foreach (Product product in bill.Products)
+                        {
+                            InsertBillXProduct(Connection, bill.Id, product.Id, product.Quant);
+                        }
+                        success = true;
                     }
-                    success = true;
+                }
+                catch (OverflowException)
+                {
+
                 }
             }
-
             Disconect(Connection);
-
             return success;
         }
 
