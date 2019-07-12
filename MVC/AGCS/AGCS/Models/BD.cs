@@ -310,7 +310,7 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
             CommandConnection.Parameters.AddWithValue("@pDate", bill.Date);
             CommandConnection.Parameters.AddWithValue("@pTotal", bill.Total);
-            CommandConnection.Parameters.AddWithValue("@pIdClients", bill.DniClient);
+            CommandConnection.Parameters.AddWithValue("@pDNI", bill.DniClient);
             MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
             if (ConnectionReader.Read())
             {
@@ -330,9 +330,7 @@ namespace AGCS.Models
                     }
                 }
                 catch (OverflowException)
-                {
-
-                }
+                {}
             }
             Disconect(Connection);
             return success;

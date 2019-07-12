@@ -91,9 +91,9 @@ namespace AGCS.Controllers
         }
         //Facturacion
         [HttpPost]
-        public void NewBill(string json, uint dniClient)
+        public bool NewBill(string json, uint dniClient)
         {
-            float total = 0;
+            float total = 0; bool success = false;
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(json);
             if (products.Count > 0)
             {
@@ -103,8 +103,9 @@ namespace AGCS.Controllers
                 }
                 Bill bill = new Bill(DateTime.Today, total, products, 0, dniClient);
 
-                BD.InsertBill(bill);
+                success = BD.InsertBill(bill);                
             }
+            return success;
         }
 
         public ActionResult CreateBill()

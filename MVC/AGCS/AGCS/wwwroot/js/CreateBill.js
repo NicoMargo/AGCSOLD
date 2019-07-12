@@ -167,8 +167,12 @@
                 type: "POST",
                 url: "/Backend/NewBill",
                 data: { json: JSON.stringify(Items), dniClient: $("#dni").val() },
-                success: function () {
-                    alert("se facturó");
+                success: function (success) {
+                    if (success) {
+                        alert("se facturó");
+                    } else {
+                        alert("hubo un error");
+                    }
                 },
                 error: function () {
                     alert("ERROR");
