@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 05-07-2019 a las 15:03:47
+-- Tiempo de generación: 12-07-2019 a las 11:55:42
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -31,7 +31,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT
 	if EXISTS(select clients.idClients from clients where (clients.DNI_CUIT = pDNI and pIdBusiness = clients.Business_idBusiness) or (pDNI = 1))
     THEN
     	SET  @idClient = (select clients.idClients from clients where clients.DNI_CUIT = pDNI and clients.Business_idBusiness = pIdBusiness);
-		Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness,bills.Clients_idClients) values( pDate, pTotal, pIdBusiness,pIdClients);
+		Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness,bills.Clients_idClients) values( pDate, pTotal, pIdBusiness,@idClient);
     	select bills.idBills from bills where bills.idBills = LAST_INSERT_ID() and bills.DateBill = pDate and bills.Total = ptotal and bills.Business_idBusiness = pIdBusiness and bills.Clients_idClients = @idClient;
     ELSE
     	select -1;
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE,
   KEY `fk_Bills_Clients1_idx` (`Clients_idClients`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
@@ -235,7 +235,12 @@ INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`
 (21, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
 (22, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
 (23, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(24, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1);
+(24, '2019-07-05', NULL, NULL, NULL, NULL, 200, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(25, '2019-07-12', 0, NULL, NULL, NULL, 600, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(26, '2019-07-12', 0, NULL, NULL, NULL, 1900, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(27, '2019-07-12', 8, NULL, NULL, NULL, 1400, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(28, '2019-07-12', 8, NULL, NULL, NULL, 600, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(29, '2019-07-12', 8, NULL, NULL, NULL, 900, NULL, NULL, NULL, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -252,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBills`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills_x_products`
@@ -268,7 +273,20 @@ INSERT INTO `bills_x_products` (`idBills_X_Products`, `Quantity`, `Products_idPr
 (13, 12, 3, 13),
 (14, 48, 3, 14),
 (15, 4, 1, 16),
-(16, 30, 2, 16);
+(16, 30, 2, 16),
+(17, 2, 1, 25),
+(18, 2, 2, 25),
+(19, 2, 1, 26),
+(20, 4, 2, 26),
+(21, 3, 3, 26),
+(22, 1, 1, 27),
+(23, 2, 2, 27),
+(24, 3, 3, 27),
+(25, 2, 1, 28),
+(26, 2, 2, 28),
+(27, 2, 1, 29),
+(28, 2, 2, 29),
+(29, 1, 3, 29);
 
 -- --------------------------------------------------------
 
@@ -451,9 +469,9 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 320, 100, b'1', 10, '1', 3, 1),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 320, 200, b'1', 10, '2', 3, 1),
-(3, 3, 'Manga Yakusoku no Neverland Vol 3', 320, 300, b'1', 2, '3', 3, 1);
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 320, 100, b'1', 1, '1', 3, 1),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 320, 200, b'1', -2, '2', 3, 1),
+(3, 3, 'Manga Yakusoku no Neverland Vol 3', 320, 300, b'1', -5, '3', 3, 1);
 
 -- --------------------------------------------------------
 

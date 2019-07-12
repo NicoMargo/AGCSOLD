@@ -72,7 +72,7 @@
                     } else {
                         Items[i].Quant = 0;
                     }
-                    T += (Items[i].Price * Items[i].Quant)
+                    T += (Items[i].Price * Items[i].Quant);
                     success = true;
                 }
                 i++;                
@@ -86,7 +86,7 @@
 
         $('input[this="quant"]').keyup(function (event) {
             let keycode = (event.keyCode ? event.keyCode : event.which);
-            if (((keycode > 47 && keycode < 58) || (keycode > 95 && keycode < 106)) || (keycode == 8)) {
+            if (((keycode > 47 && keycode < 58) || (keycode > 95 && keycode < 106)) || keycode == 8) {
                 let thisId = parseInt($(event.target).attr("id").substr(1),10), i = 0, success = false;
                 do {
                     if (Items[i].Id === thisId) {
@@ -166,7 +166,8 @@
             $.ajax({
                 type: "POST",
                 url: "/Backend/NewBill",
-                data: { json: JSON.stringify(Items), dniClient: $("#dni").val() },
+                data: {
+                    json: JSON.stringify(Items), dniClient: $("#dni").val() },
                 success: function (success) {
                     if (success) {
                         alert("se facturó");
