@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 12-07-2019 a las 14:28:22
+-- Tiempo de generación: 17-07-2019 a las 17:35:22
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -69,7 +69,7 @@ SELECT * FROM clients WHERE clients.idClients = id and clients.Business_idBusine
 
 DROP PROCEDURE IF EXISTS `spClientInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_CUIT` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` LONG, IN `pCellphone` LONG)  NO SQL
-if( pIdBusiness > -1 && pName != "" && pSurname != "" && pDNI_CUIT > 1 && not exists(select clients.idClients from cliets where clients.DNI_CUIT = pDNICUIT and clients.idBusiness = pIdBusiness))
+if( pIdBusiness > -1 && pName != "" && pSurname != "" && pDNI_CUIT > 1 && not exists(select clients.idClients from clients where clients.DNI_CUIT = pDNI_CUIT and clients.Business_idBusiness = pIdBusiness))
 then
 	insert into clients(clients.Name,clients.Surname,clients.DNI_CUIT,clients.Business_idBusiness) values( pName, pSurname, pDNI_CUIT, pIdBusiness);
 	
@@ -209,41 +209,53 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE,
   KEY `fk_Bills_Clients1_idx` (`Clients_idClients`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
 --
 
 INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`, `IVA_Condition`, `TypeBill`, `Subtotal`, `Discount`, `IVA_Recharge`, `WholeSaler`, `Total`, `Branches_idBranch`, `Payment_Methods_idPayment_Methods`, `Macs_idMacs`, `Business_idBusiness`) VALUES
-(2, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
-(3, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
-(4, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
-(5, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
-(6, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
-(7, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 50.00, 0, 0, 0, 1),
-(8, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 301700.00, 0, 0, 0, 1),
-(9, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 301700.00, 0, 0, 0, 1),
-(10, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 6100.00, 0, 0, 0, 1),
-(11, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 500.00, 0, 0, 0, 1),
-(12, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 3200.00, 0, 0, 0, 1),
-(13, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 14800.00, 0, 0, 0, 1),
-(14, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 14400.00, 0, 0, 0, 1),
+(2, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(3, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(4, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(5, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(6, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(7, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(8, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(9, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(10, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(11, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(12, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(13, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(14, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (15, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.00, 0, 0, 0, 1),
-(16, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 6400.00, 0, 0, 0, 1),
-(17, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 1100.00, NULL, NULL, NULL, 1),
-(18, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 200.00, NULL, NULL, NULL, 1),
-(19, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 100.00, NULL, NULL, NULL, 1),
-(20, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 100.00, NULL, NULL, NULL, 1),
-(21, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 200.00, NULL, NULL, NULL, 1),
-(22, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 200.00, NULL, NULL, NULL, 1),
-(23, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 200.00, NULL, NULL, NULL, 1),
-(24, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 200.00, NULL, NULL, NULL, 1),
-(25, '2019-07-12', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 600.00, NULL, NULL, NULL, 1),
-(26, '2019-07-12', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 1900.00, NULL, NULL, NULL, 1),
-(27, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 1400.00, NULL, NULL, NULL, 1),
-(28, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 600.00, NULL, NULL, NULL, 1),
-(29, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 900.00, NULL, NULL, NULL, 1);
+(16, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
+(17, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(18, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(19, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(20, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(21, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(22, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(23, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(24, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(25, '2019-07-12', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(26, '2019-07-12', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(27, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(28, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(29, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
+(30, '2019-07-17', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 100.00, NULL, NULL, NULL, 1),
+(31, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 100.00, NULL, NULL, NULL, 1),
+(32, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 100.00, NULL, NULL, NULL, 1),
+(33, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 100.00, NULL, NULL, NULL, 1),
+(34, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.00, NULL, NULL, NULL, 1),
+(35, '2019-07-17', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.00, NULL, NULL, NULL, 1),
+(36, '2019-07-17', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.00, NULL, NULL, NULL, 1),
+(37, '2019-07-17', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 700.00, NULL, NULL, NULL, 1),
+(38, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 700.00, NULL, NULL, NULL, 1),
+(39, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 700.00, NULL, NULL, NULL, 1),
+(40, '2019-07-17', 45, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.00, NULL, NULL, NULL, 1),
+(41, '2019-07-17', 46, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 200.00, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -260,7 +272,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBills`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills_x_products`
@@ -289,7 +301,23 @@ INSERT INTO `bills_x_products` (`idBills_X_Products`, `Quantity`, `Products_idPr
 (26, 2, 2, 28),
 (27, 2, 1, 29),
 (28, 2, 2, 29),
-(29, 1, 3, 29);
+(29, 1, 3, 29),
+(30, 1, 1, 30),
+(31, 1, 1, 31),
+(32, 1, 1, 32),
+(33, 1, 1, 33),
+(34, 0, 1, 34),
+(35, 0, 1, 35),
+(36, 0, 1, 36),
+(37, 3, 2, 36),
+(38, 1, 1, 37),
+(39, 3, 2, 37),
+(40, 1, 1, 38),
+(41, 3, 2, 38),
+(42, 1, 1, 39),
+(43, 3, 2, 39),
+(44, 0, 1, 40),
+(45, 2, 1, 41);
 
 -- --------------------------------------------------------
 
@@ -337,13 +365,14 @@ CREATE TABLE IF NOT EXISTS `business` (
   `Type` varchar(45) DEFAULT NULL,
   `Telephone` int(11) DEFAULT NULL,
   PRIMARY KEY (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `business`
 --
 
 INSERT INTO `business` (`idBusiness`, `CUIT`, `Name`, `Gross_Income`, `Beginning_of_Activities`, `Logo`, `Signature`, `Type`, `Telephone`) VALUES
+(0, 43994080, 'AGCS', 0, NULL, 'xd', 'xdddd', NULL, NULL),
 (1, 1234, 'Prueba', 3000, '2019-05-01', 'xdd', 'xdd', 'Mayorista', 1121121),
 (2, 4657456, 'Don pepe y sus globos', 8000, '1666-05-01', 'daze', 'xdd', 'Minorista', 1511114444);
 
@@ -365,14 +394,14 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idClients`) USING BTREE,
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
 --
 
 INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Cellphone`, `Business_idBusiness`) VALUES
-(0, 'Consumidor Final', 'Consumidor Final', 1, ' ', NULL, NULL, 1),
+(0, 'Consumidor Final', 'Consumidor Final', 1, ' ', NULL, NULL, 0),
 (8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', 113212113, 11231213, 1),
 (22, 'Margosian', '11', 3, 'a', NULL, 111, 1),
 (23, 'test', 'prueba', 123456, NULL, NULL, 43214321, 1),
@@ -381,10 +410,10 @@ INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Tel
 (34, 'a', 'a', 12, 'a', 1, 1, 1),
 (37, 'a', 'a', 1111111, '', 123123123, 1, 1),
 (39, 'aaa', 'aaa', 43444, NULL, 1125458, 1154898, 1),
-(40, 'asdf', 'asdf', 3245, 'hola', 2435, 2345, 1),
-(41, '11111111111111', '11111111111111', 111111111, NULL, 0, 0, 1),
+(40, 'asdf8', 'asdf9', 3246, 'hola9', 2436, 2344, 1),
 (42, 'a', 'a', 2147483647, NULL, NULL, NULL, 1),
-(43, 'a', 'a', 11111111111111, 'a', 11111111111111, 11111111111111, 1);
+(45, 'hoola', 'q hace', 555555, NULL, 0, 123213213, 1),
+(46, 'Nicolas', 'Margossian', 43994080, NULL, 0, 111561730659, 1);
 
 -- --------------------------------------------------------
 
@@ -472,8 +501,8 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0000320.00, 0000100.00, b'1', 1, '1', 3, 1),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, b'1', -2, '2', 3, 1),
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0000320.00, 0000100.00, b'1', -8, '1', 3, 1),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, b'1', -14, '2', 3, 1),
 (3, 3, 'Manga Yakusoku no Neverland Vol 3', 0000320.00, 0000300.00, b'1', -5, '3', 3, 1);
 
 -- --------------------------------------------------------
