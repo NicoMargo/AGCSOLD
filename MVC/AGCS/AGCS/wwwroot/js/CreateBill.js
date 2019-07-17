@@ -162,62 +162,79 @@
         $("#codProdToEnter").focus();
     }
     $("#b").click(function () {
-        let C = { Dni: $("#dni").val(), Name: null, Surname: null, Cellphone: null };
-        var attr = $('#thisName').attr('disabled');
-        if (attr == undefined) {
-            C.Name = $("#thisName").val();
-            C.Surname = $("#surname").val();
-            C.Cellphone = $("#cellphone").val();
-        }
-        if (Items.length > 0) {
-            $.ajax({
-                type: "POST",
-                url: "/Backend/NewBill",
-                data: {
-                    json: JSON.stringify(Items), dniClient: $("#dni").val(), jsonClient: JSON.stringify(C) },
-                success: function (success) {
-                    if (success) {
-                        alert("se facturó");
-                    } else {
-                        alert("hubo un error");
+        if ($("#dni").val() != null) {
+            let C = { Dni: $("#dni").val(), Name: null, Surname: null, Cellphone: null };
+            var attr = $('#thisName').attr('disabled');
+            if (attr == undefined) {
+                C.Name = $("#thisName").val();
+                C.Surname = $("#surname").val();
+                C.Cellphone = $("#cellphone").val();
+            }
+            if (Items.length > 0) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Backend/NewBill",
+                    data: {
+                        json: JSON.stringify(Items), dniClient: $("#dni").val(), jsonClient: JSON.stringify(C)
+                    },
+                    success: function (success) {
+                        if (success) {
+                            alert("se facturó");
+                        } else {
+                            alert("hubo un error");
+                        }
+                    },
+                    error: function () {
+                        alert("ERROR");
                     }
-                },
-                error: function () {
-                    alert("ERROR");
-                }
-            });
-        } else
-        {
-            alert("ingrese datos a facturar");
+                });
+            } else {
+                alert("ingrese datos a facturar");
+            }
+        } else {
+
+            var validate = false;
+            var attr = $('#thisName').attr('disabled');
+            var attr2 = $('#thisName').attr('disabled');
+            var attr3 = $('#surname').attr('disabled');
+            var attr4 = $('#cellphone').attr('disabled');
+            if (Attr == undefined || Attr3 == undefined || Attr4 == undefined || attr2 == undefined) {
+           
+                alert("ingrese todo los datos del cliente");
+            } else {
+                alert("ingrese cliente");
+            }
+            
         }
     });
-    $("#s").click(function () {  
-            $.ajax({
-                type: "POST",
-                url: "/Backend/GetDataClientByDNI",
-                data: { dni: $("#dni").val() },
-                success: function (DataJsonClient) {
-                    var Data = JSON.parse(DataJsonClient);
-                    if (Data != null) {
-                        $("#surname").attr('disabled', true);
-                        $("#thisName").attr('disabled', true);
-                        $("#cellphone").attr('disabled', true);
-                        $("#surname").val(Data.Surname);
-                        $("#thisName").val(Data.Name);
-                        $("#cellphone").val(validInt(Data.Cellphone));
-                    } else {
-                        $("#surname").attr('disabled', false);
-                        $("#thisName").attr('disabled', false);
-                        $("#cellphone").attr('disabled', false);
-                        $("#surname").val("");
-                        $("#thisName").val("");
-                        $("#cellphone").val("");
-                    }
+
+    $("#dni").keyup(function () {
+        $.ajax({
+        type: "POST",
+        url: "/Backend/GetDataClientByDNI",
+        data: { dni: $("#dni").val() },
+        success: function (DataJsonClient) {
+            var Data = JSON.parse(DataJsonClient);
+            if (Data != null) {
+                $("#surname").attr('disabled', true);
+                $("#thisName").attr('disabled', true);
+                $("#cellphone").attr('disabled', true);
+                $("#surname").val(Data.Surname);
+                $("#thisName").val(Data.Name);
+                $("#cellphone").val(validInt(Data.Cellphone));
+            } else {
+                $("#surname").attr('disabled', false);
+                $("#thisName").attr('disabled', false);
+                $("#cellphone").attr('disabled', false);
+                $("#surname").val("");
+                $("#thisName").val("");
+                $("#cellphone").val("");
+            }
                     
-                },
-                error: function () {
-                    alert("ERROR");
-                }
-            });       
+        },
+        error: function () {
+            alert("ERROR");
+         }
+         });       
     });
 });
