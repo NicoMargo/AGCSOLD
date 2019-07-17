@@ -94,7 +94,16 @@ namespace AGCS.Controllers
         public bool NewBill(string json, uint dniClient, string jsonClient, float recharge, float discount)
         {
             bool success = false;
-            Client ClientBill = JsonConvert.DeserializeObject<Client>(jsonClient);
+            Client ClientBill = new Client();
+            try
+            {
+                ClientBill = JsonConvert.DeserializeObject<Client>(jsonClient);
+            }
+            catch (Exception)
+            {
+                ClientBill.Dni = dniClient;
+            }
+
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(json);
             if (products.Count > 0)
             {
