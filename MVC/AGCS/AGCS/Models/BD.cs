@@ -9,7 +9,7 @@ namespace AGCS.Models
     public class BD
     {
         //public static string connectionString = "Server=localhost;User=root;Database=bd_agcs;Uid=Jonyloco;Pwd=agcs;"; //Chino
-       // public static string connectionString = "Server=127.0.0.1;User=root;Database=bd_agcs"; //Anush
+       //public static string connectionString = "Server=127.0.0.1;User=root;Database=bd_agcs"; //Anush
         public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
 
         public static List<Client> ListClients = new List<Client>();
