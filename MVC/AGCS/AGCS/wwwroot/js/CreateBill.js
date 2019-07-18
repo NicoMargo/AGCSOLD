@@ -23,11 +23,15 @@
             data: { id: $("#codProdToEnter").val() },
             success: function (DataJsonClient) {
                 D = JSON.parse(DataJsonClient);
-                idOfProd = D.Id;
-                $("#descProdToEnter").append(D.Description);
-                $("#priceProdToEnter").append(D.Price);
-                $("#stockProdToEnter").append(D.Stock);
-                $("#quantProdToEnter").focus();
+                if (D != null) {
+                    idOfProd = D.Id;
+                    $("#descProdToEnter").append(D.Description);
+                    $("#priceProdToEnter").append(D.Price);
+                    $("#stockProdToEnter").append(D.Stock);
+                    $("#quantProdToEnter").focus();
+                } else {
+                    alert("No existe el producto")
+                }
             },
             error: function () {
                 alert("ERROR");
@@ -85,7 +89,6 @@
             if (Items[i].Id === idOfProd) {
                 T -= (Items[i].Price * Items[i].Quant);
                 var hola = parseInt($("#q" + idOfProd).val(), 10);
-                console.log(hola);
                 if ((!isNaN(parseInt($("#q" + idOfProd).val(), 10))) && parseInt($("#q" + idOfProd).val(), 10) >= 0) {
                     Items[i].Quant = parseInt($("#q" + idOfProd).val(), 10);
                 } else {
@@ -168,8 +171,10 @@
         if (validateQuant()) {
             var bool = validate("#thisName");
             bool = bool & validate("#surname");
-            bool = bool & validate("#cellphone");
             bool = bool & validate("#dni");
+            if (parseInt($("#dni").val(), 10) <= 0) {
+                bool = false;
+            }
             if (bool) {
                 if (Items.length > 0) {
                     let C = { Dni: $("#dni").val(), Name: null, Surname: null, Cellphone: null };
