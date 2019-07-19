@@ -15,13 +15,15 @@ namespace AGCS.Models
         private int _number;
         private int _floor;
 
-        public ulong Dni { get => _dni; set => _dni = value;}
-        public string Town { get => _town;}
-        public string Address { get => _Address;}
-        public string Province { get => _province; }
-        public string Leter { get => _leter;}
-        public int Number { get => _number;}
-        public int Floor { get => _floor;}
+        public ulong Dni { get => _dni; set => _dni = value; }
+        public string Town { get => _town; set => _town = value; }
+        public string Address { get => _Address; set => _Address = value; }
+        public string Province { get => _province; set => _province = value; }
+        public string Leter { get => _leter; set => _leter = value; }
+        public int Number { get => _number; set => _number = value; }
+        public int Floor { get => _floor; set => _floor = value; }
+
+
 
         //Only a few data for ABM client
         public Client(uint id,string name, string surname, ulong dni, string email, ulong cellphone ) : base(id,name,surname,email,cellphone)

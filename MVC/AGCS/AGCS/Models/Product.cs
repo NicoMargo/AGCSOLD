@@ -47,6 +47,13 @@ namespace AGCS.Models
         {         
         }
 
+        public Product( uint id, string description,float price, int stock,string code) {
+            _id = id;
+            _description = description;
+            _price = price;
+            _stock = stock;
+            _code = code;
+        }
         public Product(uint id, int articleNumber, string description, float cost, float price, int stock, bool age, string code, int idBusiness, int quant, int iva)
         {
             _id = id;

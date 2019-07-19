@@ -120,9 +120,9 @@ namespace AGCS.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProductToEnter(ulong id)
+        public JsonResult GetProductToEnter(ulong code)
         {
-            Product product = BD.GetOneProduct(id);
+            Product product = BD.GetOneProduct(code);
             string JsonDataClient = JsonConvert.SerializeObject(product);
             return Json(JsonDataClient);
         }

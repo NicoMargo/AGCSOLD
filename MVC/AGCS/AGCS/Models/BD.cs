@@ -283,6 +283,7 @@ namespace AGCS.Models
                 float price;
                 int stock;
                 uint id;
+                string codeProduct;//arreglar
                 /*Addres info ...*/
                 try
                 {
@@ -290,7 +291,8 @@ namespace AGCS.Models
                     description = ReadString(ConnectionReader, "Description");
                     price = ReadFloat(ConnectionReader, "Price");
                     stock = ReadInt(ConnectionReader, "Stock");
-                    product = new Product(id,description,price,stock);
+                    codeProduct = ReadString(ConnectionReader, "CodeProduct");
+                    product = new Product(id,description,price,stock, codeProduct);
                 }
                 catch { }
             }

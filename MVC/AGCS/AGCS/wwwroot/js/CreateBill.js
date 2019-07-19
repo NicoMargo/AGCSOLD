@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var idOfProd, D, T = 0, Items = [], p;
-    var Product = { Id: null, Quant: null, iva: 1, Price: null };
+    var Product = { Id: null, Quant: null, iva: 1, Price: null, Code: null };
 
     $('#codProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -20,7 +20,7 @@
         $.ajax({
             type: "POST",
             url: "/Backend/GetProductToEnter",
-            data: { id: $("#codProdToEnter").val() },
+            data: { code: $("#codProdToEnter").val() },
             success: function (DataJsonClient) {
                 D = JSON.parse(DataJsonClient);
                 if (D != null) {
@@ -30,7 +30,7 @@
                     $("#stockProdToEnter").append(D.Stock);
                     $("#quantProdToEnter").focus();
                 } else {
-                    alert("No existe el producto")
+                    alert("No existe el producto");
                 }
             },
             error: function () {
@@ -88,7 +88,6 @@
         do {
             if (Items[i].Id === idOfProd) {
                 T -= (Items[i].Price * Items[i].Quant);
-                var hola = parseInt($("#q" + idOfProd).val(), 10);
                 if ((!isNaN(parseInt($("#q" + idOfProd).val(), 10))) && parseInt($("#q" + idOfProd).val(), 10) >= 0) {
                     Items[i].Quant = parseInt($("#q" + idOfProd).val(), 10);
                 } else {
@@ -128,10 +127,10 @@
         T += D.Price * parseInt($("#quantProdToEnter").val(), 10);
         $("#total").append(T);
         if ($("#" + idOfProd).length > 0) {
-            let data = parseInt($("#codProdToEnter").val(), 10), success = false, i = 0;
+            let data = $("#codProdToEnter").val(), success = false, i = 0;
             document.getElementById("q" + idOfProd).value = parseInt($("#quantProdToEnter").val(), 10) + parseInt($("#q" + idOfProd).val(), 10);
             do {
-                if (Items[i].Id === data) {
+                if (Items[i].Code == data) {
                     Items[i].Quant += parseInt($("#quantProdToEnter").val(), 10);
                     success = true;
                 }
@@ -142,6 +141,7 @@
             Product.Id = D.Id;
             Product.Price = D.Price;
             Product.Quant = parseInt($("#quantProdToEnter").val());
+            Product.Code = D.Code;
             Items.push(Product);
             var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><deleteButton id="db' + idOfProd + '"  position="' + idOfProd + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
             ProdToEnter.keypress;
