@@ -26,12 +26,12 @@ namespace AGCS.Models
 
 
         //Only a few data for ABM client
-        public Client(uint id,string name, string surname, ulong dni, string email, ulong cellphone ) : base(id,name,surname,email,cellphone)
+        public Client(uint id,string name, string surname, ulong dni, string email, string cellphone ) : base(id,name,surname,email,cellphone)
         {          
             _dni = dni;
         }
         //Full Client
-        public Client(uint id, string Name, string Surname, ulong dni, string email, ulong cellphone, ulong telephone) :base(id,Name,Surname,email,cellphone,telephone)
+        public Client(uint id, string Name, string Surname, ulong dni, string email, string cellphone, string telephone) :base(id,Name,Surname,email,cellphone,telephone)
         {
             _dni = dni;
             _town = Town;
@@ -42,7 +42,7 @@ namespace AGCS.Models
             _floor = Floor;
         }
         //New Client
-        public Client(string Name, string Surname, ulong dni, string email, ulong Telephone, ulong Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(0, Name, Surname, email, Telephone, Cellphone)
+        public Client(string Name, string Surname, ulong dni, string email, string Telephone, string Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(0, Name, Surname, email, Telephone, Cellphone)
         {
             _dni = dni;
             _town = Town;
@@ -52,15 +52,15 @@ namespace AGCS.Models
             _number = Number;
             _floor = Floor;
         }
-        public Client(string Name, string Surname, ulong dni, string email, ulong Telephone, ulong Cellphone) : base(0, Name, Surname, email, Telephone, Cellphone)
+        public Client(string Name, string Surname, ulong dni, string email, string Telephone, string Cellphone) : base(0, Name, Surname, email, Cellphone, Telephone)
         {
             _dni = dni;
         }
 
-        public Client(uint id, string Name, string Surname, string email, ulong cellphone) : base(id, Name, Surname, email, cellphone) {
+        public Client(uint id, string Name, string Surname, string email, string cellphone) : base(id, Name, Surname, email, cellphone) {
 
         }
-        public Client(ulong Dni, string Name, string Surname, ulong Cellphone, ulong Telephone) :base(Name, Surname, Cellphone, Telephone)
+        public Client(ulong Dni, string Name, string Surname, string Cellphone, string Telephone) :base(Name, Surname, Cellphone, Telephone)
         {
             _dni = Dni;
         }

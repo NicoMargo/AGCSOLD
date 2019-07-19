@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 19-07-2019 a las 12:46:18
+-- Tiempo de generación: 19-07-2019 a las 15:14:03
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -68,7 +68,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetById` (IN `id` INT, IN `
 SELECT * FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness$$
 
 DROP PROCEDURE IF EXISTS `spClientInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_CUIT` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` LONG, IN `pCellphone` LONG)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_CUIT` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` VARCHAR(20), IN `pCellphone` VARCHAR(20))  NO SQL
 if( pIdBusiness > -1 && pName != "" && pSurname != "" && pDNI_CUIT > 1 && not exists(select clients.idClients from clients where clients.DNI_CUIT = pDNI_CUIT and clients.Business_idBusiness = pIdBusiness))
 then
 	insert into clients(clients.Name,clients.Surname,clients.DNI_CUIT,clients.Business_idBusiness) values( pName, pSurname, pDNI_CUIT, pIdBusiness);
@@ -103,7 +103,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientsGet` (IN `pIdBusiness` INT
 SELECT clients.idClients, clients.Name, clients.Surname, clients.DNI_CUIT, clients.eMail,clients.Cellphone FROM clients where clients.Business_idBusiness = pIdBusiness$$
 
 DROP PROCEDURE IF EXISTS `spClientUpdate`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` LONG, IN `pCellphone` LONG)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` VARCHAR(20), IN `pCellphone` VARCHAR(20))  NO SQL
 if(EXISTS(SELECT clients.idClients from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
 THEN
 	if(pName != "" and pSurname != "" and pDNI_CUIT > 0 and pDNI_CUIT != ""  )
@@ -270,9 +270,9 @@ INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`
 (53, '2019-07-18', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (54, '2019-07-18', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (55, '2019-07-18', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(56, '2019-07-19', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 2400.00, NULL, NULL, NULL, 1),
-(57, '2019-07-19', 23, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 2400.00, NULL, NULL, NULL, 1),
-(58, '2019-07-19', 23, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 2550.00, NULL, NULL, NULL, 1);
+(56, '2019-07-19', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
+(57, '2019-07-19', 23, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
+(58, '2019-07-19', 23, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -429,32 +429,33 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Surname` varchar(45) DEFAULT NULL,
   `DNI_CUIT` bigint(17) DEFAULT NULL,
   `eMail` varchar(45) DEFAULT NULL,
-  `Telephone` bigint(20) DEFAULT NULL,
-  `Cellphone` bigint(20) DEFAULT NULL,
+  `Telephone` varchar(20) DEFAULT NULL,
+  `Cellphone` varchar(20) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idClients`) USING BTREE,
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
 --
 
 INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Cellphone`, `Business_idBusiness`) VALUES
-(0, 'Consumidor Final', 'Consumidor Final', 1, ' ', 0, 1, 0),
-(8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', 113212113, 11231213, 1),
-(22, 'Margosian', '11', 3, 'a', NULL, 111, 1),
-(23, 'test', 'prueba', 123456, NULL, NULL, 43214321, 1),
-(25, 'nombre', 'apellido', 987654321, NULL, NULL, 40005000, 1),
-(32, 'Margossian', 'Nicolas', 5555555, NULL, 1144322258, 1165898555, 1),
-(34, 'a', 'a', 12, 'a', 1, 1, 1),
-(37, 'a', 'a', 1111111, '', 123123123, 1, 1),
-(39, 'aaa', 'aaa', 43444, NULL, 1125458, 1154898, 1),
-(40, 'asdf8', 'asdf9', 3246, 'hola9', 2436, 2344, 1),
+(0, 'Consumidor Final', 'Consumidor Final', 1, ' ', '0', '1', 0),
+(8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', '113212113', '11231213', 1),
+(22, 'Margosian', '11', 3, 'a', NULL, '111', 1),
+(23, 'test', 'prueba', 123456, NULL, NULL, '43214321', 1),
+(25, 'nombre', 'apellido', 987654321, NULL, NULL, '40005000', 1),
+(32, 'Margossian', 'Nicolas', 5555555, NULL, '1144322258', '1165898555', 1),
+(34, 'a', 'a', 12, 'a', '1', '1', 1),
+(37, 'a', 'a', 1111111, '', '123123123', '1', 1),
+(39, 'aaa', 'aaa', 43444, NULL, '1125458', '1154898', 1),
+(40, 'asdf8', 'asdf9', 3246, 'hola9', '2436', '2344', 1),
 (42, 'a', 'a', 2147483647, NULL, NULL, NULL, 1),
-(45, 'hoola', 'q hace', 555555, NULL, 0, 123213213, 1),
-(46, 'Nicolas', 'Margossian', 43994080, NULL, 0, 111561730659, 1),
-(47, 'nicolas', 'margossian23', 439940804, NULL, 0, 2345, 1);
+(45, 'hoola', 'q hace', 555555, NULL, '0', '123213213', 1),
+(46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 1),
+(47, 'nicolas', 'margossian23', 439940804, NULL, '0', '2345', 1),
+(50, 'fgdñljkasdfgñl', 'sfdajñlk', 132, NULL, '1', '2', 1);
 
 -- --------------------------------------------------------
 

@@ -9,15 +9,53 @@ namespace AGCS.Models
     public class BD
     {
         //public static string connectionString = "Server=localhost;User=root;Database=bd_agcs;Uid=Jonyloco;Pwd=agcs;"; //Chino
-       //public static string connectionString = "Server=127.0.0.1;User=root;Database=bd_agcs"; //Anush
+        //public static string connectionString = "Server=127.0.0.1;User=root;Database=bd_agcs"; //Anush
         public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
+        private static MySqlConnection Connection;
 
         public static List<Client> ListClients = new List<Client>();
         public static List<Product> ListProducts = new List<Product>();
         public static Client SelectedClient;
 
         public static uint idBusiness = 1;
-        
+
+        public static void Connect()
+        {
+            Connection = new MySqlConnection(connectionString);
+            Connection.Open();
+        }
+
+        public static void Disconect()
+        {
+            Connection.Close();
+        }
+
+        private static MySqlDataReader CallProcedureReader(string procedureName, Dictionary<string,object> args) {
+            Connect();
+            MySqlCommand CommandConnection = Connection.CreateCommand();
+            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
+            
+            CommandConnection.CommandText = procedureName;
+            foreach (string arg in args.Keys) {
+                CommandConnection.Parameters.AddWithValue("@"+arg, args[arg]);
+            }
+            return CommandConnection.ExecuteReader();
+        }
+
+        private static int CallNonQuery(string procedureName, Dictionary<string, object> args)
+        {
+            Connect();
+            MySqlCommand CommandConnection = Connection.CreateCommand();
+            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
+
+            CommandConnection.CommandText = procedureName;
+            foreach (string arg in args.Keys)
+            {
+                CommandConnection.Parameters.AddWithValue("@" + arg, args[arg]);
+            }
+            return CommandConnection.ExecuteNonQuery();
+        }
+
         private static string ReadString(MySqlDataReader ConnectionReader, string parameter)
         { 
             string result = null;
@@ -59,29 +97,23 @@ namespace AGCS.Models
         }*/
 
         //methods for DB
-        public static MySqlConnection Connect()
-        {
-             MySqlConnection Connection = new MySqlConnection(connectionString);
-            Connection.Open();
-             return Connection;
-        }
-
-        public static void Disconect(MySqlConnection Connection)
-        {
-            Connection.Close();
-        }
 
         //Methods for store procedures of Table Clients 
         public static void GetClients()
 
         {
             ListClients.Clear();
+            /*
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
             CommandConnection.CommandText = "spClientsGet";
             CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();*/
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pIdBusiness",idBusiness }
+            };
+            MySqlDataReader ConnectionReader = CallProcedureReader("spClientsGet",args);
             while (ConnectionReader.Read())
             {
                 uint id;
@@ -89,8 +121,8 @@ namespace AGCS.Models
                 string surname;
                 ulong dni;
                 string eMail;
-                ulong telephone;
-                ulong cellphone;
+                string telephone;
+                string cellphone;
                 try
                 {
                     id = Convert.ToUInt32(ConnectionReader["idClients"]);
@@ -98,30 +130,38 @@ namespace AGCS.Models
                     surname = ReadString(ConnectionReader, "Surname");
                     dni = ReadULong(ConnectionReader, "DNI_CUIT");
                     eMail = ReadString(ConnectionReader, "eMail");
-                    telephone = ReadULong(ConnectionReader, "Telephone");
-                    cellphone = ReadULong(ConnectionReader, "Cellphone");
+                    telephone = ReadString(ConnectionReader, "Telephone");
+                    cellphone = ReadString(ConnectionReader, "Cellphone");
                     Client client = new Client(id, name, surname, dni, eMail,cellphone);
                     ListClients.Add(client);
                 }
                 catch { }
             }
-            Disconect(Connection);
+            Disconect();
         }
 
         public static void GetClientById(uint idClient)
         {
+            
             Client client = null;
+            /*
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
             CommandConnection.CommandText = "spClientGetById";
             CommandConnection.Parameters.AddWithValue("@id", idClient);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"id", idClient},
+                {"pIdBusiness", idBusiness}
+            };
+            MySqlDataReader ConnectionReader = CallProcedureReader("spClientGetById", args);
+
             if (ConnectionReader.Read())
             {
                 string name, surname, email;
-                ulong dni, telephone,cellphone;
+                ulong dni;
+                string telephone,cellphone;
                 uint id;
                 /*Addres info ...*/
                 try
@@ -131,30 +171,36 @@ namespace AGCS.Models
                     surname = ReadString(ConnectionReader, "Surname");
                     dni = ReadULong(ConnectionReader, "DNI_CUIT");
                     email = ReadString(ConnectionReader, "eMail");
-                    telephone = ReadULong(ConnectionReader, "Telephone");
-                    cellphone = ReadULong(ConnectionReader, "Cellphone");
+                    telephone = ReadString(ConnectionReader, "Telephone");
+                    cellphone = ReadString(ConnectionReader, "Cellphone");
                     client = new Client(id, name, surname, dni, email, cellphone, telephone);                    
                 }
                 catch { }
             }
-            Disconect(Connection);
+            Disconect();
             SelectedClient =  client;
         }
 
         public static Client GetClientByDNI(uint DNI)
         {
             Client client = null;
+            /*
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
             CommandConnection.CommandText = "spClientGetByDNI";
             CommandConnection.Parameters.AddWithValue("@pDNI", DNI);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pDNI", DNI},
+                {"pIdBusiness", idBusiness}
+            };
+            MySqlDataReader ConnectionReader = CallProcedureReader("spClientGetByDNI", args);
+
             if (ConnectionReader.Read())
             {
                 string name, surname, email;
-                ulong cellphone;
+                string cellphone;
                 uint id;
                 try
                 {
@@ -162,17 +208,18 @@ namespace AGCS.Models
                     name = ReadString(ConnectionReader, "Name");
                     surname = ReadString(ConnectionReader, "Surname");
                     email = ReadString(ConnectionReader, "eMail");
-                    cellphone = ReadULong(ConnectionReader, "Cellphone");
+                    cellphone = ReadString(ConnectionReader, "Cellphone");
                     client = new Client(id, name, surname, email, cellphone);
                 }
                 catch { }
             }
-            Disconect(Connection);
+            Disconect();
             return client;
         }
 
         public static bool InsertClient(Client client)
         {
+            /*
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
@@ -183,18 +230,30 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pDNI_CUIT", client.Dni);
             CommandConnection.Parameters.AddWithValue("@pEmail", client.Email);
             CommandConnection.Parameters.AddWithValue("@pTelephone", client.Telephone);
-            CommandConnection.Parameters.AddWithValue("@pCellphone", client.Cellphone);
-            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            CommandConnection.Parameters.AddWithValue("@pCellphone", client.Cellphone);*/
+
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pIdBusiness", idBusiness},
+                {"pName", client.Name},
+                {"pSurname", client.Surname},
+                {"pDNI_CUIT", client.Dni},
+                {"pEmail", client.Email},
+                {"pTelephone", client.Telephone},
+                {"pCellphone", client.Cellphone }
+            };
+            MySqlDataReader ConnectionReader = CallProcedureReader("spClientInsert", args);
+
             bool success = false;
             if (ConnectionReader.Read()) {
                 success = ReadBool(ConnectionReader, "success");
             }
-            Disconect(Connection);
+            Disconect();
             return success;
         }
 
         public static void UpdateClient(Client client)
         {
+            /*
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
@@ -213,33 +272,53 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pidDelivery", 0);
             CommandConnection.Parameters.AddWithValue("@pComments", "");
             */
-            CommandConnection.ExecuteNonQuery();
-            Disconect(Connection);
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"id", client.Id },
+                {"pIdBusiness", idBusiness},
+                {"pName", client.Name},
+                {"pSurname", client.Surname},
+                {"pDNI_CUIT", client.Dni},
+                {"pEmail", client.Email},
+                {"pTelephone", client.Telephone},
+                { "pCellphone", client.Cellphone}
+            };
+            CallNonQuery("spClientUpdate", args);
+            Disconect();
 
         }
 
         public static void DeleteClient(uint id)
         {
-            MySqlConnection Connection = Connect();
+            /*MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
             CommandConnection.CommandText = "spClientDelete";
             CommandConnection.Parameters.AddWithValue("@id", id);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            CommandConnection.ExecuteNonQuery();
-            Disconect(Connection);
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"id", id },
+                {"pIdBusiness", idBusiness},
+            };
+            CallNonQuery("spClientDelete", args);
+            Disconect();
         }
 
         //Methods for store procedures of Table Products 
         public static void GetProducts()
         {
+            /*
             ListProducts.Clear();
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
             CommandConnection.CommandText = "spProductsGet";
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
+
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pIdBusiness", idBusiness}
+            };
+            MySqlDataReader ConnectionReader = CallProcedureReader("spProductsGet", args);
+
             while (ConnectionReader.Read())
             {
                 uint id;
@@ -265,18 +344,25 @@ namespace AGCS.Models
                 }
                 catch { }
             }
-            Disconect(Connection);
+            Disconect();
         }
         public static Product GetOneProduct(ulong code)
         {
             Product product = null;
+            /*
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
             CommandConnection.CommandText = "spProductGetOne";
             CommandConnection.Parameters.AddWithValue("@pCode", code);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
+
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pIdBusiness", idBusiness},
+                {"pCode", code}
+            };
+            MySqlDataReader ConnectionReader = CallProcedureReader("spProductGetOne", args);
+
             if (ConnectionReader.Read())
             {
                 string description;
@@ -296,7 +382,7 @@ namespace AGCS.Models
                 }
                 catch { }
             }
-            Disconect(Connection);
+            Disconect();
             return product;
         }
         //Methods for store procedures of Table Bills 
@@ -307,6 +393,7 @@ namespace AGCS.Models
             {
                 InsertClient(ClientBill);
             }
+            /*
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
@@ -316,7 +403,17 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pDate", bill.Date);
             CommandConnection.Parameters.AddWithValue("@pTotal", bill.Total);
             CommandConnection.Parameters.AddWithValue("@pDNI", ClientBill.Dni);
-            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();
+            */
+
+            Dictionary<string, object> args = new Dictionary<string, object> {
+
+                {"pIdBusiness", idBusiness},
+                {"pDate", bill.Date},
+                {"pTotal", bill.Total},
+                {"pDNI", ClientBill.Dni}
+            };
+            MySqlDataReader ConnectionReader = CallProcedureReader("spBillInsert", args);
+
             if (ConnectionReader.Read())
             {
                 try
@@ -336,7 +433,7 @@ namespace AGCS.Models
                 catch (OverflowException)
                 {}
             }
-            Disconect(Connection);
+            Disconect();
             return success;
         }
 
@@ -344,6 +441,7 @@ namespace AGCS.Models
         public static bool InsertBillXProduct(MySqlConnection connection, uint idBill, uint idProduct,int quantity)
         {
             bool success = false;
+            /*
             MySqlCommand CommandConnection = connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
             CommandConnection.CommandText = "spBillXProductInsert";
@@ -352,8 +450,15 @@ namespace AGCS.Models
             CommandConnection.Parameters.AddWithValue("@pIdProduct", idProduct);
             CommandConnection.Parameters.AddWithValue("@pQuantity", quantity);
             CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
+            */
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pIdBill", idBill},
+                {"pIdProduct", idProduct},
+                {"pQuantity", quantity},
+                {"pIdBusiness", idBusiness },
+            };
+            CallNonQuery("spClientUpdate", args);
 
-            CommandConnection.ExecuteNonQuery();
             return success;
         }
     }

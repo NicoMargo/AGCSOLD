@@ -11,17 +11,17 @@ namespace AGCS.Models
         private string name;
         private string surname;
         private string email;
-        private ulong telephone;
-        private ulong cellphone;
+        private string telephone;
+        private string cellphone;
 
         public uint Id { get => id;  }
         public string Name { get => name; set => name = value; }
         public string Surname { get => surname; set => surname = value; }
         public string Email { get => email; set => email = value; }
-        public ulong Telephone { get => telephone; set => telephone = value; }
-        public ulong Cellphone { get => cellphone; set => cellphone = value; }
+        public string Telephone { get => telephone; set => telephone = value; }
+        public string Cellphone { get => cellphone; set => cellphone = value; }
 
-        protected Person(uint id, string name, string surname, string email, ulong cellphone, ulong telephone)
+        protected Person(uint id, string name, string surname, string email, string cellphone, string telephone)
         {
             this.id = id;
             this.name = name;
@@ -31,7 +31,7 @@ namespace AGCS.Models
             this.telephone = telephone;
         }
 
-        protected Person(uint id, string name, string surname, string email, ulong cellphone)
+        protected Person(uint id, string name, string surname, string email, string cellphone)
         {
             this.id = id;
             this.name = name;
@@ -40,7 +40,7 @@ namespace AGCS.Models
             this.cellphone = cellphone;
         }
 
-        protected Person(string name, string surname, ulong cellphone, ulong telephone)
+        protected Person(string name, string surname, string cellphone, string telephone)
         {
             this.name = name;
             this.surname = surname;
