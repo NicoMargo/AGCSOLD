@@ -13,7 +13,13 @@
     <PackageReference Include="MySql.Data" Version="8.0.16" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="Views\Backend\ProductsCRUD.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Backend\Pruebas.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Clients\ClientsCRUD.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>
