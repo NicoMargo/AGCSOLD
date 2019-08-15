@@ -12,24 +12,29 @@ namespace AGCS.Models
         private string _description;
         private float _cost;
         private float _price;
+        private float _priceW;
         private int _stock;
         private bool _age;
         private string _code;
-        private int _idBusiness;
+        private uint _idBusiness;
         private int _quant;
         private int _iva;
+        private uint _idSupplier;
 
         public uint Id { get => _id; set => _id = value; }
         public int ArticleNumber { get => _articleNumber; set => _articleNumber = value; }
         public string Description { get => _description; set => _description = value; }
         public float Cost { get => _cost; set => _cost = value; }
         public float Price { get => _price; set => _price = value; }
+        public float PriceW { get => _priceW; set => _priceW = value; }
         public int Stock { get => _stock; set => _stock = value; }
         public bool Age { get => _age; set => _age = value; }
         public string Code { get => _code; set => _code = value; }
-        public int IdBusiness { get => _idBusiness; set => _idBusiness = value; }
+        public uint IdBusiness { get => _idBusiness; set => _idBusiness = value; }
         public int Quant { get => _quant; set => _quant = value; }
         public int Iva { get => _iva; set => _iva = value; }
+        public uint IdSupplier { get => _idSupplier; set => _idSupplier = value; }
+
 
 
 
@@ -54,21 +59,20 @@ namespace AGCS.Models
             _stock = stock;
             _code = code;
         }
-        public Product(uint id, int articleNumber, string description, float cost, float price, int stock, bool age, string code, int idBusiness, int quant, int iva)
+
+
+        public Product(uint id, int articleNumber, string description, float cost, float price, float priceW, int stock, string code, uint idBusiness, uint idSupplier)
         {
             _id = id;
             _articleNumber = articleNumber;
             _description = description;
             _cost = cost;
             _price = price;
+            _priceW = priceW;
             _stock = stock;
-            _age = age;
             _code = code;
             _idBusiness = idBusiness;
-            _quant = quant;
-            _iva = iva;
+            _idSupplier = idSupplier;
         }
-
-
     }
 }

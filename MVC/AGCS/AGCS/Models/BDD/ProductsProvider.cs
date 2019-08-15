@@ -9,7 +9,11 @@ namespace AGCS.Models.BDD
     public static class ProductsProvider
     {
         private static List<Product> productsList = new List<Product>();
+        private static Product selectedProduct;
+
+        public static Product SelectedProduct { get => selectedProduct; }
         public static List<Product> ProductsList { get => productsList; }
+
         //Methods for store procedures of Table Products 
         public static void GetProducts(uint idBusiness)
         {
@@ -53,7 +57,8 @@ namespace AGCS.Models.BDD
             }
             Helpers.Disconect();
         }
-        public static Product GetOneProduct(ulong code, uint idBusiness)
+
+        public static Product GetByCodeProduct(ulong code, uint idBusiness)
         {
             Product product = null;
             /*
@@ -68,7 +73,7 @@ namespace AGCS.Models.BDD
                 {"pIdBusiness", idBusiness},
                 {"pCode", code}
             };
-            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetOne", args);
+            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetByCode", args);
 
             if (ConnectionReader.Read())
             {
@@ -93,5 +98,93 @@ namespace AGCS.Models.BDD
             return product;
         }
 
+        public static void GetByIdProduct(uint idProducts, uint idBusiness)
+        {
+            Product product = null;
+
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pIdBusiness", idBusiness},
+                {"pId", idProducts}
+            };
+            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetById", args);
+
+            if (ConnectionReader.Read())
+            {
+                string description;
+                float price,cost,priceW;
+                int stock, articleNumber;                 
+                uint idSupplier;
+
+                string codeProduct;//arreglar
+                /*Addres info ...*/
+                try
+                {
+                    codeProduct = Helpers.ReadString(ConnectionReader, "CodeProduct");
+                    articleNumber = Helpers.ReadInt(ConnectionReader, "Article_number");
+                    description = Helpers.ReadString(ConnectionReader, "Description");
+                    cost = Helpers.ReadFloat(ConnectionReader, "Cost");
+                    price = Helpers.ReadFloat(ConnectionReader, "Price");
+                    priceW = Helpers.ReadFloat(ConnectionReader, "Price_W");
+                    stock = Helpers.ReadInt(ConnectionReader, "Stock");
+                    idSupplier = (uint) Helpers.ReadInt(ConnectionReader, "idSupplier");
+
+                    product = new Product(idProducts, articleNumber, description, cost, price, priceW, stock, codeProduct, idBusiness, idSupplier);
+                }
+                catch { }
+            }
+            Helpers.Disconect();
+            selectedProduct = product;
+        }
+
+        public static bool InsertProduct(Product product, uint idBusiness) {
+            bool bInserted = false;
+            Dictionary<string, object> args = new Dictionary<string, object>
+            {
+                { "pIdBusiness", idBusiness} ,
+                { "pCode", product.Code} ,
+                { "pProduct_Number",product.ArticleNumber } ,
+                { "pDescription",product.Description } ,
+                { "pCost",product.Cost } ,
+                { "pPrice",product.Price } ,
+                { "pPriceW",product.PriceW } ,
+                { "pStock",product.Stock } ,
+                { "pIdSupplier", product.IdSupplier} 
+            };
+            bInserted = (Helpers.CallNonQuery("spProductInsert", args) > 0);
+            Helpers.Disconect();
+            return bInserted;
+        }
+
+        public static void UpdateProduct(Product product, uint idBusiness)
+        {
+            Dictionary<string, object> args = new Dictionary<string, object>
+            {
+                { "pId", product.Id} ,
+                { "pIdBusiness", idBusiness} ,
+                { "pCode", product.Code} ,
+                { "pProduct_Number",product.ArticleNumber } ,
+                { "pDescription",product.Description } ,
+                { "pCost",product.Cost } ,
+                { "pPrice",product.Price } ,
+                { "pPriceW",product.PriceW } ,
+                { "pStock",product.Stock } ,
+                { "pIdSupplier", product.IdSupplier}
+            };
+            Helpers.CallNonQuery("spProductUpdate", args);
+            Helpers.Disconect();
+        }
+
+        public static bool DeleteProduct(uint id, uint idBusiness)
+        {
+            bool bInserted = false;
+            Dictionary<string, object> args = new Dictionary<string, object>
+            {
+                { "pId", id} ,
+                { "pIdBusiness", idBusiness} 
+            };
+            bInserted = (Helpers.CallNonQuery("spProductDelete", args) > 0);
+            Helpers.Disconect();
+            return bInserted;
+        }
     }
 }
