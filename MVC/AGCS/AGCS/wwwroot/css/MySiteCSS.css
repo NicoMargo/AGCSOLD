@@ -2,6 +2,9 @@
     width: 30%;
 }
 
+.updateImage{
+    width: 30%;
+}
 .validation_msg {
     color : red;
 }

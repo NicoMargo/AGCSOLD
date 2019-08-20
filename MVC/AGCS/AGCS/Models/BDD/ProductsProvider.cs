@@ -17,8 +17,9 @@ namespace AGCS.Models.BDD
         //Methods for store procedures of Table Products 
         public static void GetProducts(uint idBusiness)
         {
+            
+            productsList.Clear();
             /*
-            ListProducts.Clear();
             MySqlConnection Connection = Connect();
             MySqlCommand CommandConnection = Connection.CreateCommand();
             CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
@@ -38,19 +39,17 @@ namespace AGCS.Models.BDD
                 float cost;
                 float price;
                 int stock;
-                bool age;
                 string code;
                 try
                 {
                     id = Convert.ToUInt32(ConnectionReader["idProducts"]);
-                    description = Helpers.ReadString(ConnectionReader, "Description");
                     articleNumber = Helpers.ReadULong(ConnectionReader, "Article_Number");
+                    description = Helpers.ReadString(ConnectionReader, "Description");
+                    code = Helpers.ReadString(ConnectionReader, "CodeProduct");
                     cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    age = Helpers.ReadBool(ConnectionReader, "Age");
-                    code = Helpers.ReadString(ConnectionReader, "Code");
-                    Product product = new Product(id, description, price, stock);
+                    Product product = new Product(id, (int) articleNumber,code, description, price, stock);
                     productsList.Add(product);
                 }
                 catch { }
@@ -58,7 +57,7 @@ namespace AGCS.Models.BDD
             Helpers.Disconect();
         }
 
-        public static Product GetByCodeProduct(ulong code, uint idBusiness)
+        public static Product GetProductByCode(ulong code, uint idBusiness)
         {
             Product product = null;
             /*
@@ -98,7 +97,7 @@ namespace AGCS.Models.BDD
             return product;
         }
 
-        public static void GetByIdProduct(uint idProducts, uint idBusiness)
+        public static void GetProductById(uint idProducts, uint idBusiness)
         {
             Product product = null;
 
@@ -112,15 +111,15 @@ namespace AGCS.Models.BDD
             {
                 string description;
                 float price,cost,priceW;
-                int stock, articleNumber;                 
-                uint idSupplier;
+                int stock;
+                uint idSupplier, articleNumber;
 
-                string codeProduct;//arreglar
+                string code;//arreglar
                 /*Addres info ...*/
                 try
                 {
-                    codeProduct = Helpers.ReadString(ConnectionReader, "CodeProduct");
-                    articleNumber = Helpers.ReadInt(ConnectionReader, "Article_number");
+                    code = Helpers.ReadString(ConnectionReader, "CodeProduct");
+                    articleNumber = (uint) Helpers.ReadInt(ConnectionReader, "Article_number");
                     description = Helpers.ReadString(ConnectionReader, "Description");
                     cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
@@ -128,7 +127,7 @@ namespace AGCS.Models.BDD
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
                     idSupplier = (uint) Helpers.ReadInt(ConnectionReader, "idSupplier");
 
-                    product = new Product(idProducts, articleNumber, description, cost, price, priceW, stock, codeProduct, idBusiness, idSupplier);
+                    product = new Product(idProducts, articleNumber, description, cost, price, priceW, stock, code, idSupplier);
                 }
                 catch { }
             }

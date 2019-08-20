@@ -30,11 +30,7 @@ namespace AGCS.Controllers
             string JsonDataClient = JsonConvert.SerializeObject(ClientsProvider.SelectedClient);
             return Json(JsonDataClient);
         }
-        [HttpPost]
-        public JsonResult GetDataClientByDNI(uint dni)
-        {
-            return Json(JsonConvert.SerializeObject(ClientsProvider.GetClientByDNI(dni, Helpers.idBusiness)));
-        }
+
         [HttpPost]
         public bool UpdateClient(string Surname, string Name, ulong Dni, string email, string Telephone, string Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
         {
@@ -73,6 +69,7 @@ namespace AGCS.Controllers
 
             return Success;
         }
+
         [HttpDelete]
         public bool DeleteClient(uint id)
         {
