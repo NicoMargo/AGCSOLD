@@ -3,6 +3,7 @@ using System.Collections.Generic;using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AGCS.Models;
+using AGCS.Models.BDD;
 
 namespace AGCS.Controllers
 {
@@ -10,6 +11,13 @@ namespace AGCS.Controllers
     {
         public IActionResult Index()
         {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Index(string username,string passBuissness, string passUser)
+        {
+            User Loginuser = new User(username, passBuissness, passUser);
+            bool login = LogInProvider.LogIn(Loginuser);
             return View();
         }
 

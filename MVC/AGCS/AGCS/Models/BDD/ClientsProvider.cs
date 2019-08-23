@@ -19,13 +19,7 @@ namespace AGCS.Models.BDD
         public static void GetClients(uint idBusiness)
         {
             clientsList.Clear();
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientsGet";
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();*/
+        
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness",idBusiness }
             };
@@ -60,13 +54,6 @@ namespace AGCS.Models.BDD
         {
 
             Client client = null;
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientGetById";
-            CommandConnection.Parameters.AddWithValue("@id", idClient);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", idClient},
                 {"pIdBusiness", idBusiness}

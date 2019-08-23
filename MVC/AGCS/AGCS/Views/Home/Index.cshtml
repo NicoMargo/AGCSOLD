@@ -4,13 +4,13 @@
 
 <header class="bg-primary text-white">
     <section class="mt-2 jumbotron bg-primary text-center">
-        <form method="post" action="@Url.Action("Index", "Backend")">
+        <form method="post" action="@Url.Action("Index", "Home")">
             <div class="container ">
                 <h3 class="pt-3 jumbotron-heading">Ingrese las Credenciales</h3>
                 <div class="mt-5">
-                    <input type="text" class="w-25 form-control d-inline-block" placeholder="Email">
-                    <input type="password" class="w-25 form-control d-inline-block" placeholder="Contraseña Empresa">
-                    <input type="password" class="w-25 form-control d-inline-block" placeholder="Contraseña Usuario">
+                    <input type="text" name="username" class="w-25 form-control d-inline-block" placeholder="Nombre de usuario">
+                    <input type="password" name="passBuissness" class="w-25 form-control d-inline-block" placeholder="Contraseña Empresa">
+                    <input type="password" name="passUser" class="w-25 form-control d-inline-block" placeholder="Contraseña Usuario">
                 </div>
             </div>
             <div class="container">
