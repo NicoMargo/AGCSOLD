@@ -20,13 +20,13 @@
             <div class="offset-md-9 pt-2">
                 <span class="text-white" id="empresa">Empresa</span>
                 <span class="ml-2 mr-2 text-white">|</span>
-                <span class="text-white" id="usuario">Usuario</span>
+                <span class="text-white" id="usuario">@ViewBag.NameUser;</span>
                 <span class="ml-2 mr-2 text-white">|</span>
                 <img src="~/images/icon-user.png" alt="icono-User" class="w-10 mr-5">
             </div>
         </div>
     </nav>
-    <aside class=" h-750  bg-dark w-5 float-left text-center">
+    <aside class=" h-750 position-fixed bg-dark w-5 float-left text-center">
         <a href=""><img class="mt-4 w-60" src="~/images/camion.png" alt=""></a><br>
         <a href=""><img class="mt-4 w-60" src="~/images/dinero.png" alt=""></a><br>
         <a href=""><img class="mt-4 w-60" src="~/images/clientes.png" alt=""></a><br>
@@ -34,6 +34,9 @@
         <a href=""><img class="mt-4 w-60" src="~/images/diagrama.png" alt=""></a><br>
         <a href=""><img class="mt-4 w-60" src="~/images/ajustes.png" alt=""></a>
     </aside>
+    <div class=" h-750 bg-dark w-5 float-left">
+        
+    </div>
     @RenderBody()
     <footer>
         <p>&copy; 2019 - AGCS</p>

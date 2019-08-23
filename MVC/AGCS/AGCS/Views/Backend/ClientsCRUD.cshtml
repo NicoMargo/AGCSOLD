@@ -35,44 +35,45 @@
 </head>
 
 <body>
+    <div class="container">
+        <div class="content mt-3">
+            <div class="animated fadeIn">
+                <div class="card">
+                    <div class="card-header">
+                        <strong class="card-title">Clientes</strong>
+                    </div>
+                    <div class="card-body">
+                        <input type="text" id="myInput" onkeyup="myFunction();" placeholder="Buscar Cliente">
+                        <button type="button" id="createClient" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
+                            Agregar Cliente
+                        </button>
 
-    <div class="content mt-3">
-        <div class="animated fadeIn">
-            <div class="card">
-                <div class="card-header">
-                    <strong class="card-title">Clientes</strong>
-                </div>
-                <div class="card-body">
-                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar Cliente">
-                    <button type="button" id="createClient" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
-                        Agregar Cliente
-                    </button>
-
-                    <table id="myTable">
-                        <tr class="header">
-                            <th style="width:20%;">Apellido</th>
-                            <th style="width:15%;">Nombre</th>
-                            <th style="width:15%;">DNI/CUIT/CUIL</th>
-                            <th style="width:10%;">Celular</th>
-                            <th style="width:25%;">Email</th>
-                            <th style="width:10%;">Modificar</th>
-                            <th style="width:10%;">Eliminar</th>
-                        </tr>
-                        @{
-                            for (int i = 0; i < ViewBag.Clients.Count; i++)
-                            {
-                                <tr>
-                                    <td>@validString(ViewBag.Clients[i].Surname)</td>
-                                    <td>@validString(ViewBag.Clients[i].Name)</td>
-                                    <td>@validInt(ViewBag.Clients[i].Dni)</td>
-                                    <td>@validString(ViewBag.Clients[i].Cellphone)</td>
-                                    <td>@validString(ViewBag.Clients[i].Email)</td>
-                                    <td><a data-toggle="modal" data-target="#updateClient"><img position="@i" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
-                                    <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@i"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
-                                </tr>
+                        <table id="myTable">
+                            <tr class="header">
+                                <th style="width:20%;">Apellido</th>
+                                <th style="width:15%;">Nombre</th>
+                                <th style="width:15%;">DNI/CUIT/CUIL</th>
+                                <th style="width:10%;">Celular</th>
+                                <th style="width:25%;">Email</th>
+                                <th style="width:10%;">Modificar</th>
+                                <th style="width:10%;">Eliminar</th>
+                            </tr>
+                            @{
+                                for (int i = 0; i < ViewBag.Clients.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@validString(ViewBag.Clients[i].Surname)</td>
+                                        <td>@validString(ViewBag.Clients[i].Name)</td>
+                                        <td>@validInt(ViewBag.Clients[i].Dni)</td>
+                                        <td>@validString(ViewBag.Clients[i].Cellphone)</td>
+                                        <td>@validString(ViewBag.Clients[i].Email)</td>
+                                        <td><a data-toggle="modal" data-target="#updateClient"><img position="@i" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
+                                        <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@i"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
+                                    </tr>
+                                }
                             }
-                        }
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -7,10 +7,11 @@ namespace AGCS.Models
 {
     public class User:Person
     {
+        private uint _id;
         private string _username;
         private string _passBusiness;
         private string _passUser;
-        private ulong _dni;
+        private ulong _dni;        
 
         //Login constructor
         public User(string username, string passBusiness, string passUser)
@@ -18,6 +19,12 @@ namespace AGCS.Models
             _username = username;
             _passBusiness = passBusiness;
             _passUser = passUser;
+        }
+
+        //After Login constructor
+        public User(string Name, string Surname, uint id):base(Name,Surname)
+        {
+            _id = id;
         }
 
 

@@ -47,6 +47,11 @@ namespace AGCS.Models
             this.telephone = telephone;
             this.cellphone = cellphone;
         }
+        protected Person(string name, string surname)
+        {
+            this.name = name;
+            this.surname = surname;
+        }
         protected Person()
         {
 

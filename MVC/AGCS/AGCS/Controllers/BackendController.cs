@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using AGCS.Models;
 using AGCS.Models.BDD;
-
 using Newtonsoft.Json;
 using System;
 namespace AGCS.Controllers
