@@ -245,7 +245,7 @@
                             <div class="text-center">
                                 <strong><span>Nro. de Artículo</span></strong>
                             </div>
-                            <div id="updtNumber">
+                            <div class="updtInput notEmpty validInt" id="updtNumber">
                                 <input  class="form-control text-center" type="text">
                                 <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
                             </div>
@@ -254,7 +254,7 @@
                             <div class="text-center">
                                 <strong><span>Descripción</span></strong>
                             </div>
-                            <div id="updtDescription">
+                            <div class="updtInput notEmpty validString" id="updtDescription">
                                  <input class="form-control text-center" type="text">
                                  <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
                             </div>
@@ -263,7 +263,7 @@
                             <div class="text-center">
                                 <strong><span>Código</span></strong>
                             </div>
-                            <div id="updtCode">
+                            <div class="updtInput notEmpty validString" id="updtCode">
                                  <input class="form-control text-center" type="number" min="0">
                                  <div class="validation_msg hidden text-center">Ingrese un código válido</div>
                             </div>
@@ -274,7 +274,7 @@
                             <div class="text-center">
                                 <strong><span>Costo</span></strong>
                             </div>
-                            <div id="updtCost">
+                            <div class="updtInput notEmpty validFloat" id="updtCost">
                                  <input class="form-control text-center" type="number" min="0" step="0.01">
                                  <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
@@ -283,7 +283,7 @@
                             <div class="text-center">
                                 <strong><span>Precio por Menor</span></strong>
                             </div>
-                           <div id="updtPrice">
+                           <div class="updtInput notEmpty validFloat" id="updtPrice">
                                 <input class="form-control text-center" type="number" min="0" step="0.01">
                                 <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                            </div>
@@ -292,7 +292,7 @@
                             <div class="text-center">
                                 <strong><span>Precio por Mayor</span></strong>
                             </div>
-                           <div id="updtPriceW">
+                           <div class="updtInput notEmpty validFloat" id="updtPriceW">
                                 <input class="form-control text-center"  type="number" min="0" step="0.01" />
                                 <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
@@ -303,7 +303,7 @@
                             <div class="text-center">
                                 <strong><span>Stock</span></strong>
                             </div>
-                            <div id="updtStock">
+                            <div class="updtInput notEmpty validInt" id="updtStock">
                                  <input class="form-control text-center" type="number" step="1">
                                  <div class="validation_msg hidden text-center">Ingrese una cantidad válida</div>
                             </div>
@@ -312,7 +312,7 @@
                             <div class="text-center">
                                 <strong><span>Proveedor</span></strong>
                             </div>
-                            <select id="updtSupplier" class="form-control">
+                            <select class="updtInput notEmpty  form-control" id="updtSupplier">
                                 <option value="1">Aquino lestraigo</option>
                                 <option value="2">vendo todo y me voy</option>
                                 <option value="3">speedwagon</option>

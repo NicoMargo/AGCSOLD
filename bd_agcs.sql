@@ -140,15 +140,118 @@ THEN
 	end if;
 end if$$
 
-DROP PROCEDURE IF EXISTS `spProductGetOne`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetOne` (IN `pCode` LONG, IN `pIdBusiness` INT)  BEGIN
+DROP PROCEDURE IF EXISTS `spProductDelete`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductDelete`(in `pId` int, in `pIdBusiness` int)
+BEGIN
+	delete from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+END
+
+DROP PROCEDURE IF EXISTS `spProductGetByCode`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetByCode`(IN `pCode` LONG, IN `pIdBusiness` INT)
+BEGIN
 	SELECT * FROM products WHERE (/*products.Article_Number = pCode or */products.CodeProduct = pCode) and products.Business_idBusiness = pIdBusiness;
-END$$
+END
+
+DROP PROCEDURE IF EXISTS `spProductGetById`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetById`(IN `pId` LONG, IN `pIdBusiness` INT)
+BEGIN
+	SELECT * FROM products WHERE products.idProducts = pId and products.Business_idBusiness = pIdBusiness;
+END
+
+DROP PROCEDURE IF EXISTS `spProductInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductInsert`(IN `pIdBusiness` INT, IN `pProduct_Number` INT, IN `pCode` varchar(100), IN `pDescription` varchar(50), IN `pCost` float(10,2), IN `pPrice` float(10,2), IN `pPriceW` float(10,2), IN `pStock` int, in `pIdSupplier` int)
+BEGIN
+	if (not exists(select Products.idProducts from Products where Products.Business_idBusiness = pIdBusiness and (Products.CodeProduct = pCode or Products.Article_number = pProduct_Number)))
+    then
+		if exists(select Suppliers.idSupplier from Suppliers where Suppliers.Business_idBusiness = pIdBusiness and Suppliers.idSupplier = pIdSupplier)
+        then
+			if(pProduct_Number > 0)
+            then 
+				insert into Products(Products.Business_idBusiness,Products.Article_number,Products.CodeProduct,Products.Description,Products.Stock,Products.Suppliers_idSupplier) values(pIdBusiness, pProduct_Number, pCode, pDescription, pStock, pIdSupplier);
+                set @lastId = (select Products.idProducts from Products where Products.idProducts = LAST_INSERT_ID());# and Products.Business_idBusiness = pIdBusiness /*and Products.Article_number = pProduct_Number*/ and Products.CodeProduct = pCode and Products.Description = pDescription/* and Products.Stock = pStock*/ and Products.Suppliers_idSupplier = pIdSupplier);
+                if(@lastId is not null)
+                then
+					if(pCost > 0)
+					then
+						Update Products set Products.Cost = pCost where Products.idProducts = @lastId; 
+					end if;
+					if(pPrice > 0)
+					then
+						Update Products set Products.Price = pPrice where Products.idProducts = @lastId; 
+					end if;
+                    if(pPriceW > 0)
+					then
+						Update Products set Products.Price_W = pPriceW where Products.idProducts = @lastId; 
+					end if;
+				end if; #endif lastId is not null 
+			end if;#endif ProductNumber > 0
+        end if;#endif Supplier exists
+	end if;#endif not exists product with same code or product number in the same business
+END
+
 
 DROP PROCEDURE IF EXISTS `spProductsGet`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` INT)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet`(IN `pIdBusiness` INT)
+BEGIN
 	select * from Products where Products.Business_idBusiness = pIdBusiness;
-END$$
+END
+
+DROP PROCEDURE IF EXISTS `spProductUpdate`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate`(IN `pId` INT, IN `pIdBusiness` INT, IN `pProduct_Number` INT, IN `pCode` varchar(100), IN `pDescription` varchar(50), IN `pCost` float, IN `pPrice` float, IN `pPriceW` float, IN `pStock` int, in `pIdSupplier` int)
+BEGIN
+	if exists(select Products.idProducts from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness)
+    then
+		#Product Number
+        if (not exists(select Products.idProducts from Products where Products.Article_Number = pProduct_Number and Products.Business_idBusiness = pIdBusiness) and pProduct_Number > 0 and pProduct_Number is not null )
+        then
+			update Products set Products.Article_number = pProduct_Number where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#Code
+        if (not exists(select Products.idProducts from Products where Products.CodeProduct = pCode and Products.Business_idBusiness = pIdBusiness) and pCode != "" and pCode is not null )
+        then
+			update Products set Products.CodeProduct = pCode where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#Description
+        if (pDescription != (select Products.Description from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and pDescription is not null )
+        then
+			update Products set Products.Description = pDescription where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#Cost
+        if (pCost != (select Products.Cost from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and pCost > 0 and pCost is not null )
+        then
+			update Products set Products.Cost = pCost where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#Price
+        if (pPrice - (select Products.Price from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) != 0 and pPrice > 0 and pPrice is not null)
+        then
+			update Products set Products.Price = pPrice where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#PriceW
+        if (pPriceW - (select Products.Price_W from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) != 0 and pPriceW > 0 and pPriceW is not null)
+        then
+			update Products set Products.Price_W = pPriceW where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#Stock
+        if (pStock != (select Products.Stock from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and pStock is not null)
+        then
+			update Products set Products.Stock = pStock where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+        #Supplier
+        if (pIdSupplier != (select Products.Suppliers_idSupplier from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and exists(select Suppliers.idSupplier from Suppliers where Suppliers.idSupplier = pIdSupplier and Suppliers.Business_idBusiness = pIdBusiness))
+        then
+			update Products set Products.Suppliers_idSupplier = pIdSupplier where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+    end if;
+END
+
 
 DELIMITER ;
 

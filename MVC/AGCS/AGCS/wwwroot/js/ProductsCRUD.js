@@ -1,34 +1,52 @@
 ﻿$(document).ready(function () {
-    function validate(id,expectedCondition = true) {
-        if (!expectedCondition) {
-            $("#modal" + id).addClass("validation_error");
-            $("#msg" + id).removeClass("hidden");
+
+    function validInt(id, expectedCondition = true) {
+        if (!expectedCondition && element.find("input").val > 0 && element.find('input').val != "") {
+            element.find("input").addClass("validation_error");
+            element.getElementByClassName("validation_msg").removeClass("hidden");
         }
         else {
-            $("#modal" + id).removeClass("validation_error");
-            $("#msg" + id).addClass("hidden");
+            element.find("input").removeClass("validation_error");
+            element.getElementByClassName('validation_msg').addClass("hidden");
         }
-        return expectedCondition;
     }
 
-    function inputNormal(id) {
-        $("#modal" + id).removeClass("validation_error");
-        $("#msg" + id).addClass("hidden");
+    function validPositive(id, expectedCondition = true) {
+        if (!expectedCondition && element.find("input").val > 0 && element.find('input').val != "") {
+            element.find("input").addClass("validation_error");
+            element.getElementByClassName("validation_msg").removeClass("hidden");
+        }
+        else {
+            element.find("input").removeClass("validation_error");
+            element.getElementByClassName('validation_msg').addClass("hidden");
+        }
     }
 
-    function modalNormal(modalType) { //Modal type: create , update
-        inputNormal(modalType +"Surname");
-        inputNormal(modalType +"Name");
-        inputNormal(modalType +"Dni");
-        inputNormal(modalType +"Email");
-        inputNormal(modalType +"Telephone");
-        inputNormal(modalType +"Cellphone");
-        inputNormal(modalType +"Town");
-        inputNormal(modalType +"Address");
-        inputNormal(modalType +"Appartment");
-        inputNormal(modalType +"Number");
-        inputNormal(modalType +"Floor");
+    function validString(element, expectedCondition = true) {
+        if (!expectedCondition && element.find("input").val != '' ) {
+            element.find("input").addClass("validation_error");
+            element.getElementByClassName("validation_msg").removeClass("hidden");
+        }
+        else {
+            element.find("input").remove("validation_error");
+            element.getElementByClassName('validation_msg').addClass("hidden");
+        }
     }
+
+    function inputNormal(parentId) {
+        var element = document.getElementById(parentId);
+        element.getElementsByTagName("input")[0].classList.remove("validation_error");
+        element.getElementsByClassName('validation_msg')[0].classList.add("hidden")
+    }
+
+    function normalizeInputs(parentId) { //Modal type: create , update
+        element = document.getElementById(parentId);
+        li = element.getElementsByClassName("updtInput");
+        for (i = 0; i < li.length; i++) {
+            inputNormal(li[i].id);
+        }
+    }
+
     function validInt(number) {
         if (number <= 0) {
             number = "";
@@ -37,7 +55,7 @@
     }
 
     $(".btnProductUpdate").click(function () {
-        modalNormal("Update");
+        normalizeInputs("productUpdate")
         let Index = $(this).attr("position");
         $.ajax({
             type: "POST",
@@ -65,6 +83,7 @@
     });
 
     $("#UpdateSubmit").click(function () {
+
         valid = validate("UpdateSurname", $("#updtSurname").val() !== "");
         valid = validate("UpdateName", $("#updtName").val() !== "") && valid;
         valid = validate("UpdateDni", $("#updtDni").val() !== "" && $("#updtDni").val() > 0) && valid;
