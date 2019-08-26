@@ -23,7 +23,7 @@
     }
 
     function validString(element, expectedCondition = true) {
-        if (!expectedCondition && element.find("input").val != '' ) {
+        if (!expectedCondition && element.find("input").val != '') {
             element.find("input").addClass("validation_error");
             element.getElementByClassName("validation_msg").removeClass("hidden");
         }
@@ -33,6 +33,27 @@
         }
     }
 
+
+    function validateInputs(parentId) {
+        element = document.getElementById(parentId);
+        notEmptyList = element.getElementsByClassName("notEmpty");
+        for (i = 0; i < notEmptyList.length; i++) {
+            validString(notEmptyList[i]);
+        }
+
+        notEmptyList = element.getElementsByClassName("validPositive");
+        for (i = 0; i < notEmptyList.length; i++) {
+            validPositive(notEmptyList[i]);
+        }
+
+        notEmptyList = element.getElementsByClassName("validInt");
+        for (i = 0; i < notEmptyList.length; i++) {
+            validInt(notEmptyList[i]);
+        }
+        
+
+    }
+
     function inputNormal(parentId) {
         var element = document.getElementById(parentId);
         element.getElementsByTagName("input")[0].classList.remove("validation_error");
@@ -40,18 +61,11 @@
     }
 
     function normalizeInputs(parentId) { //Modal type: create , update
-        element = document.getElementById(parentId);
+        var element = document.getElementById(parentId);
         li = element.getElementsByClassName("updtInput");
         for (i = 0; i < li.length; i++) {
             inputNormal(li[i].id);
         }
-    }
-
-    function validInt(number) {
-        if (number <= 0) {
-            number = "";
-        }
-        return number;
     }
 
     $(".btnProductUpdate").click(function () {
@@ -83,10 +97,7 @@
     });
 
     $("#UpdateSubmit").click(function () {
-
-        valid = validate("UpdateSurname", $("#updtSurname").val() !== "");
-        valid = validate("UpdateName", $("#updtName").val() !== "") && valid;
-        valid = validate("UpdateDni", $("#updtDni").val() !== "" && $("#updtDni").val() > 0) && valid;
+        validateInputs("productUpdate")
 
         if (valid) {
             $.ajax({
@@ -131,9 +142,7 @@
     });
 
     $("#newProduct").click(function () {
-        valid = validate("CreateSurname", $("#modalCreateSurname").val() !== "");
-        valid = validate("CreateName", $("#modalCreateName").val() !== "") && valid;
-        valid = validate("CreateDni", $("#modalCreateDni").val() !== "" && $("#modalCreateDni").val() > 0) && valid;
+        validateInputs("productsCreate");
         if (valid) {
             $.ajax({
                 type: "POST",

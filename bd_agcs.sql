@@ -144,19 +144,19 @@ DROP PROCEDURE IF EXISTS `spProductDelete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductDelete`(in `pId` int, in `pIdBusiness` int)
 BEGIN
 	delete from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
-END
+END$$
 
 DROP PROCEDURE IF EXISTS `spProductGetByCode`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetByCode`(IN `pCode` LONG, IN `pIdBusiness` INT)
 BEGIN
 	SELECT * FROM products WHERE (/*products.Article_Number = pCode or */products.CodeProduct = pCode) and products.Business_idBusiness = pIdBusiness;
-END
+END$$
 
 DROP PROCEDURE IF EXISTS `spProductGetById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetById`(IN `pId` LONG, IN `pIdBusiness` INT)
 BEGIN
 	SELECT * FROM products WHERE products.idProducts = pId and products.Business_idBusiness = pIdBusiness;
-END
+END$$
 
 DROP PROCEDURE IF EXISTS `spProductInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductInsert`(IN `pIdBusiness` INT, IN `pProduct_Number` INT, IN `pCode` varchar(100), IN `pDescription` varchar(50), IN `pCost` float(10,2), IN `pPrice` float(10,2), IN `pPriceW` float(10,2), IN `pStock` int, in `pIdSupplier` int)
@@ -187,14 +187,14 @@ BEGIN
 			end if;#endif ProductNumber > 0
         end if;#endif Supplier exists
 	end if;#endif not exists product with same code or product number in the same business
-END
+END$$
 
 
 DROP PROCEDURE IF EXISTS `spProductsGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet`(IN `pIdBusiness` INT)
 BEGIN
 	select * from Products where Products.Business_idBusiness = pIdBusiness;
-END
+END$$
 
 DROP PROCEDURE IF EXISTS `spProductUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate`(IN `pId` INT, IN `pIdBusiness` INT, IN `pProduct_Number` INT, IN `pCode` varchar(100), IN `pDescription` varchar(50), IN `pCost` float, IN `pPrice` float, IN `pPriceW` float, IN `pStock` int, in `pIdSupplier` int)
@@ -250,7 +250,7 @@ BEGIN
         end if;
         
     end if;
-END
+END$$
 
 
 DELIMITER ;

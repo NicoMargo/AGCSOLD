@@ -58,7 +58,7 @@
                 </div>
                 <div class="card-body">
                     <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar Producto">
-                    <button type="button" id="addProduct" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
+                    <button type="button" id="addProduct" class="btn btn-primary w-100" data-toggle="modal" data-target="#productsCreate">
                         Agregar Product
                     </button>
 
@@ -110,7 +110,7 @@
 
 
     <!-- Extra large modal Create-->
-    <div class="modal fade bd-example-modal-xl" id="createClient" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-xl" id="productsCreate" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -119,105 +119,85 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row">
                         <div class="offset-md-1 col-md-2">
                             <div class="text-center">
-                                <strong><span>Apellido</span></strong>
+                                <strong><span>Nro. de Artículo</span></strong>
                             </div>
-                            <input id="modalCreateSurname" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateSurname">Ingrese un apellido válido</div>
+                            <div class="crtInput notEmpty validInt" id="updtNumber">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
+                            </div>
                         </div>
                         <div class="offset-md-1 col-md-3">
                             <div class="text-center">
-                                <strong><span>Nombre</span></strong>
+                                <strong><span>Descripción</span></strong>
                             </div>
-                            <input id="modalCreateName" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateName">Ingrese un nombre válido</div>
+                            <div class="crtInput notEmpty" id="updtDescription">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
+                            </div>
                         </div>
                         <div class="offset-md-1 col-md-2">
                             <div class="text-center">
-                                <strong><span>DNI/CUIT/CUIL</span></strong>
+                                <strong><span>Código</span></strong>
                             </div>
-                            <input id="modalCreateDni" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateDni">Ingrese un DNI o CUIT válido</div>
+                            <div class="crtInput notEmpty" id="updtCode">
+                                <input class="form-control text-center" type="number" min="0">
+                                <div class="validation_msg hidden text-center">Ingrese un código válido</div>
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-4">
                         <div class="offset-md-1 col-md-2">
                             <div class="text-center">
-                                <strong><span>Nro. Teléfono</span></strong>
+                                <strong><span>Costo</span></strong>
                             </div>
-                            <input id="modalCreateTelephone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateTelephone">Ingrese un teléfono válido</div>
+                            <div class="crtInput notEmpty validPositive" id="updtCost">
+                                <input class="form-control text-center" type="number" min="0" step="0.01">
+                                <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
+                            </div>
                         </div>
                         <div class="offset-md-1 col-md-3">
                             <div class="text-center">
-                                <strong><span>Nro. Celular</span></strong>
+                                <strong><span>Precio por Menor</span></strong>
                             </div>
-                            <input id="modalCreateCellphone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateCellphone">Ingrese un nro. celular válido</div>
+                            <div class="crtInput notEmpty validPositive" id="updtPrice">
+                                <input class="form-control text-center" type="number" min="0" step="0.01">
+                                <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
+                            </div>
                         </div>
                         <div class="offset-md-1 col-md-2">
                             <div class="text-center">
-                                <strong><span>Email</span></strong>
+                                <strong><span>Precio por Mayor</span></strong>
                             </div>
-                            <input id="modalCreateEmail" class="form-control text-center" type="email">
-                            <div class="validation_msg hidden text-center" id="msgCreateEmail">Ingrese un email válido</div>
+                            <div class="crtInput notEmpty validPositive" id="updtPriceW">
+                                <input class="form-control text-center" type="number" min="0" step="0.01" />
+                                <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="text-center mt-5">
-                        <h4 class="badge-pill badge-danger">Dirección</h4>
                     </div>
                     <div class="row mt-4">
                         <div class="offset-md-1 col-md-2">
                             <div class="text-center">
-                                <strong><span>Localidad</span></strong>
+                                <strong><span>Stock</span></strong>
                             </div>
-                            <input id="modalCreateTown" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateTown">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-3">
-                            <div class="text-center">
-                                <strong><span>Direccion</span></strong>
+                            <div class="crtInput notEmpty validInt" id="updtStock">
+                                <input class="form-control text-center" type="number" step="1">
+                                <div class="validation_msg hidden text-center">Ingrese una cantidad válida</div>
                             </div>
-                            <input id="modalCreateAddress" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateAddress">Ingrese un  válido</div>
                         </div>
                         <div class="offset-md-1 col-md-2">
                             <div class="text-center">
-                                <strong><span>Provincia</span></strong>
+                                <strong><span>Proveedor</span></strong>
                             </div>
-                            <select class="form-control">
-                                <option value="CABA">CABA</option>
-                                <option value="Buenos Aires">Buenos Aires</option>
-                                <option value="Mendoza">Mendoza</option>
-                                <option value="Santa Fé">Santa Fe</option>
+                            <select class="crtSelect notEmpty  form-control" id="updtSupplier">
+                                <option value="1">Aquino lestraigo</option>
+                                <option value="2">vendo todo y me voy</option>
+                                <option value="3">speedwagon</option>
+                                <option value="4">columna de taopaipai</option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Número</span></strong>
-                            </div>
-                            <input id="modalCreateNumber" class="form-control text-center" type="number">
-                            <div class="validation_msg hidden text-center" id="msgCreateNumber">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-3">
-                            <div class="text-center">
-                                <strong><span>Piso</span></strong>
-                            </div>
-                            <input id="modalCreateFloor" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateFloor">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Letra</span></strong>
-                            </div>
-                            <input id="modalCreateAppartment" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateAppartment">Ingrese un  válido</div>
                         </div>
                     </div>
                 </div>
@@ -254,7 +234,7 @@
                             <div class="text-center">
                                 <strong><span>Descripción</span></strong>
                             </div>
-                            <div class="updtInput notEmpty validString" id="updtDescription">
+                            <div class="updtInput notEmpty" id="updtDescription">
                                  <input class="form-control text-center" type="text">
                                  <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
                             </div>
@@ -263,7 +243,7 @@
                             <div class="text-center">
                                 <strong><span>Código</span></strong>
                             </div>
-                            <div class="updtInput notEmpty validString" id="updtCode">
+                            <div class="updtInput notEmpty" id="updtCode">
                                  <input class="form-control text-center" type="number" min="0">
                                  <div class="validation_msg hidden text-center">Ingrese un código válido</div>
                             </div>
@@ -274,7 +254,7 @@
                             <div class="text-center">
                                 <strong><span>Costo</span></strong>
                             </div>
-                            <div class="updtInput notEmpty validFloat" id="updtCost">
+                            <div class="updtInput notEmpty validPositive" id="updtCost">
                                  <input class="form-control text-center" type="number" min="0" step="0.01">
                                  <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
@@ -283,7 +263,7 @@
                             <div class="text-center">
                                 <strong><span>Precio por Menor</span></strong>
                             </div>
-                           <div class="updtInput notEmpty validFloat" id="updtPrice">
+                           <div class="updtInput notEmpty validPositive" id="updtPrice">
                                 <input class="form-control text-center" type="number" min="0" step="0.01">
                                 <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                            </div>
@@ -292,7 +272,7 @@
                             <div class="text-center">
                                 <strong><span>Precio por Mayor</span></strong>
                             </div>
-                           <div class="updtInput notEmpty validFloat" id="updtPriceW">
+                           <div class="updtInput notEmpty validPositive" id="updtPriceW">
                                 <input class="form-control text-center"  type="number" min="0" step="0.01" />
                                 <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
@@ -312,7 +292,7 @@
                             <div class="text-center">
                                 <strong><span>Proveedor</span></strong>
                             </div>
-                            <select class="updtInput notEmpty  form-control" id="updtSupplier">
+                            <select class="updtSelect notEmpty  form-control" id="updtSupplier">
                                 <option value="1">Aquino lestraigo</option>
                                 <option value="2">vendo todo y me voy</option>
                                 <option value="3">speedwagon</option>
