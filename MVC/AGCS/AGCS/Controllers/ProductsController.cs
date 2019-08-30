@@ -11,6 +11,12 @@ namespace AGCS.Controllers
 {
     public class ProductsController : Controller
     {
+        private float parseFloat(string value) {
+            value = value.Replace('.', ',');
+            float result = 0;
+            Single.TryParse(value, out result);      
+            return result;
+        }
         public IActionResult Index()
         {
             return View();
@@ -21,6 +27,7 @@ namespace AGCS.Controllers
         {
             ProductsProvider.GetProducts(Helpers.idBusiness);
             ViewBag.Products = ProductsProvider.ProductsList;
+            ViewBag.Suppliers = SupplierProvider.GetSuppliersShort(Helpers.idBusiness);
             return View();
         }
 
@@ -33,15 +40,17 @@ namespace AGCS.Controllers
         }
                     
         [HttpPost]
-        public bool UpdateProduct(uint number, string description, string code, float cost, float price, float priceW, int stock, uint idSupplier)
+        public bool UpdateProduct(uint number, string description, string code, string cost, string price, string priceW, int stock, uint idSupplier)
         {
             bool Success = true;
-
-            Product cUpdateProduct = new Product(ProductsProvider.SelectedProduct.Id, number, description, cost, price, priceW, stock, code,/*idSupplier*/1);
+            float fCost = parseFloat(cost);
+            float fPrice = parseFloat(price);
+            float fPriceW = parseFloat(priceW);
+            Product product = new Product(ProductsProvider.SelectedProduct.Id, number, description, fCost, fPrice, fPriceW, stock, code,idSupplier);
 
             try
             {
-                ProductsProvider.UpdateProduct(cUpdateProduct, Helpers.idBusiness);
+                ProductsProvider.UpdateProduct(product, Helpers.idBusiness);
             }
             catch
             {
@@ -51,27 +60,29 @@ namespace AGCS.Controllers
             return Success;
         }
         
-        /*
+        
         [HttpPost]
-        public bool CreateProduct(string surname = "", string name = "", ulong dni = 0, string email = "", string telephone = "", string cellphone = "", string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
-
-        //? public bool CreateProduct(string Surname = "", string Name = "", int dni = 0, string email = "", int Telephone = 0, int Cellphone = 0, string Town = "", string Address = "", string Province = "", string Leter = "", int Number = 0, int Floor = 0)
-
+        public bool CreateProduct(uint number, string description, string code, string cost, string price, string priceW, int stock, uint idSupplier)
         {
-            bool Success = true;
-            Product NewProduct = new Product(name, surname, dni, email, telephone, cellphone);
+            bool success = true;
+            float fCost = parseFloat(cost);
+            float fPrice = parseFloat(price);
+            float fPriceW = parseFloat(priceW);
+
+            Product product = new Product( number, description, fCost, fPrice, fPriceW, stock, code, idSupplier);
+
             try
             {
-                ProductsProvider.InsertProduct(NewProduct, Helpers.idBusiness);
+                success = ProductsProvider.InsertProduct(product, Helpers.idBusiness);
             }
             catch
             {
-                Success = false;
+                success = false;
             }
 
-            return Success;
+            return success;
         }
-    */
+    
 
         [HttpDelete]
         public bool DeleteProduct(uint index)

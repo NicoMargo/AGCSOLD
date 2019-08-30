@@ -1,4 +1,28 @@
 ﻿$(document).ready(function () {
+    $("#searchInput").keyup(
+        function () {
+            var input, filter, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            table = document.getElementById("ProductsTable");
+            rows = table.getElementsByClassName('productRow');
+
+            // Loop through all list items, and hide those who don't match the search query
+            for (i = 0; i < rows.length; i++) {
+                let tdn = rows[i].getElementsByClassName('colNumber')[0];
+                let number = tdn.textContent || tdn.innerText;
+                let tdd = rows[i].getElementsByClassName('colDescription')[0];
+                let desc = tdd.textContent || tdd.innerText;
+                let tdc = rows[i].getElementsByClassName('colCode')[0];
+                let code = tdc.textContent || tdc.innerText;
+                if (number.toUpperCase().indexOf(filter) > -1 || desc.toUpperCase().indexOf(filter) > -1 || code.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    );
 
     function validInt(element, expectedCondition = true) {
         let valid = false;
@@ -45,20 +69,20 @@
     }
 
 
-    function validateInputs(parentId) {
+    function validateInputs(parentId, inputClassname) {
         let valid = true;
         element = document.getElementById(parentId);
-        notEmptyList = element.getElementsByClassName("updtInput notEmpty");
+        notEmptyList = element.getElementsByClassName(inputClassname+" notEmpty");
         for (i = 0; i < notEmptyList.length; i++) {
             valid = validString(notEmptyList[i]) && valid;
         }
 
-        PositivesList = element.getElementsByClassName("updtInput validPositive");
+        PositivesList = element.getElementsByClassName(inputClassname +" validPositive");
         for (i = 0; i < PositivesList.length; i++) {
             valid = validPositive(PositivesList[i]) && valid;
         }
 
-        IntergersList = element.getElementsByClassName("updtInput validInt");
+        IntergersList = element.getElementsByClassName(inputClassname +" validInt");
         for (i = 0; i < IntergersList.length; i++) {
             valid = validInt(IntergersList[i]) && valid;
         }
@@ -72,16 +96,16 @@
         element.getElementsByClassName('validation_msg')[0].classList.add("hidden")
     }
 
-    function normalizeInputs(parentId) { //Modal type: create , update
+    function normalizeInputs(parentId, inputClassname) { //Modal type: create , update
         var element = document.getElementById(parentId);
-        li = element.getElementsByClassName("updtInput");
+        li = element.getElementsByClassName(inputClassname);
         for (i = 0; i < li.length; i++) {
             inputNormal(li[i].id);
         }
     }
 
     $(".btnProductUpdate").click(function () {
-        normalizeInputs("productUpdate")
+        normalizeInputs("productUpdate", "updtInput");
         let Index = $(this).attr("position");
         $.ajax({
             type: "POST",
@@ -96,7 +120,7 @@
                 $("#updtPrice").find("input").val(Data.Price);
                 $("#updtPriceW").find("input").val(Data.PriceW);
                 $("#updtStock").find("input").val(Data.Stock);
-                $("#updtSupplier").find("input").val(Data.idSupplier);
+                $("#updtSupplier").val(Data.IdSupplier);
             },
             error: function () {
                 alert("ERROR");
@@ -104,12 +128,9 @@
         });
     });
 
-    $("#addProduct").click(function () {
-        modalNormal("Create");
-    });
 
     $("#UpdateSubmit").click(function () {
-        if (validateInputs("productUpdate")) {
+        if (validateInputs("productUpdate","updtInput")) {
             $.ajax({
                 type: "POST",
                 url: "/Products/UpdateProduct",
@@ -117,11 +138,11 @@
                     number: parseInt($("#updtNumber").find("input").val()),
                     description: $("#updtDescription").find("input").val(),
                     code: $("#updtCode").find("input").val(),
-                    cost: parseFloat($("#updtCost").find("input").val()),
-                    price: parseFloat($("#updtPrice").find("input").val()),
-                    priceW: parseFloat($("#updtPriceW").find("input").val()),
+                    cost: $("#updtCost").find("input").val(),
+                    price: $("#updtPrice").find("input").val(),
+                    priceW: $("#updtPriceW").find("input").val(),
                     stock: parseInt($("#updtStock").find("input").val()),
-                    idSupplier: parseInt($("#updtSupplier").find("select").val())
+                    idSupplier: parseInt($("#updtSupplier").val())
                 },
                 success: function () {
                     location.reload();
@@ -150,40 +171,33 @@
             });
         });
     });
+    
+    $("#addProduct").click(function () {
+    });
 
     $("#newProduct").click(function () {
-        validateInputs("productsCreate");
-        if (valid) {
+        if (validateInputs("productCreate", "crtInput")) {
             $.ajax({
                 type: "POST",
                 url: "/Products/CreateProduct",
                 data: {
-                    surname: $("#modalCreateSurname").val(),
-                    name: $("#modalCreateName").val(),
-                    dni: $("#modalCreateDni").val(),
-                    email: $("#modalCreateEmail").val(),
-                    telephone: $("#modalCreateTelephone").val(),
-                    cellphone: $("#modalCreateCellphone").val(),
-                    town: $("#modalCreateTown").val(),
-                    address: $("#modalCreateAddressC").val(),
-                    province: 1,
-                    leter: $("#modalCreateAppartment").val(),
-                    number: $("#modalCreateNumber").val(),
-                    floor: $("#modalCreateFloor").val()
+                    number: parseInt($("#crtNumber").find("input").val()),
+                    description: $("#crtDescription").find("input").val(),
+                    code: $("#crtCode").find("input").val(),
+                    cost: parseFloat($("#crtCost").find("input").val()),
+                    price: parseFloat($("#crtPrice").find("input").val()),
+                    priceW: parseFloat($("#crtPriceW").find("input").val()),
+                    stock: parseInt($("#crtStock").find("input").val()),
+                    idSupplier: parseInt($("#crtSupplier").val()) 
                 },
                 success: function () {
                     location.reload();
-                    $("#addProduct").modal("toggle");
+                    $("#productCreate").modal("toggle");
                 },
                 error: function () {
                     alert("ERROR");
                 }
             });
-        }
-        else {
-            if ($("#modalCreateName").val() === "") {
-                $("#modalCreateName").classList.add("validation_error");
-            }
         }
     });
 });

@@ -57,12 +57,12 @@
                     <strong class="card-title">Productos</strong>
                 </div>
                 <div class="card-body">
-                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar Producto">
-                    <button type="button" id="addProduct" class="btn btn-primary w-100" data-toggle="modal" data-target="#productsCreate">
+                    <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Producto">
+                    <button type="button" id="addProduct" class="btn btn-primary w-100" data-toggle="modal" data-target="#productCreate">
                         Agregar Product
                     </button>
 
-                    <table id="myTable">
+                    <table id="ProductsTable" class="CRUDTable">
                         <tr class="header">
                             <th style="width:20%;">Nro. de Producto</th>
                             <th style="width:15%;">Descripción</th>
@@ -75,10 +75,10 @@
                         @{
                             for (int i = 0; i < ViewBag.Products.Count; i++)
                             {
-                                <tr>
-                                    <td>@validInt(ViewBag.Products[i].ArticleNumber)</td>
-                                    <td>@validString(ViewBag.Products[i].Description)</td>
-                                    <td>@validString(ViewBag.Products[i].Code)</td>
+                                <tr class="productRow">
+                                    <td class="colNumber">@validInt(ViewBag.Products[i].ArticleNumber)</td>
+                                    <td class="colDescription">@validString(ViewBag.Products[i].Description)</td>
+                                    <td class="colCode">@validString(ViewBag.Products[i].Code)</td>
                                     <td>@validFloat(ViewBag.Products[i].Price)</td>
                                     <td>@ViewBag.Products[i].Stock</td>
                                     <td><a data-toggle="modal" data-target="#productUpdate"><img position="@i" class="btnProductUpdate updateImage" src="~/images/edit.png" /></a></td>
@@ -110,7 +110,7 @@
 
 
     <!-- Extra large modal Create-->
-    <div class="modal fade bd-example-modal-xl" id="productsCreate" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-xl" id="productCreate" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -126,7 +126,7 @@
                                 <strong><span>Nro. de Artículo</span></strong>
                             </div>
                             <div class="crtInput notEmpty validInt" id="crtNumber">
-                                <input class="form-control text-center" type="text">
+                                <input class="form-control text-center" type="number" min="0" step="1">
                                 <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
                             </div>
                         </div>
@@ -144,7 +144,7 @@
                                 <strong><span>Código</span></strong>
                             </div>
                             <div class="crtInput notEmpty" id="crtCode">
-                                <input class="form-control text-center" type="number" min="0">
+                                <input class="form-control text-center" type="text">
                                 <div class="validation_msg hidden text-center">Ingrese un código válido</div>
                             </div>
                         </div>
@@ -183,7 +183,7 @@
                             <div class="text-center">
                                 <strong><span>Stock</span></strong>
                             </div>
-                            <div class="crtInput notEmpty validInt" id="crtStock">
+                            <div class="crtInput notEmpty" id="crtStock">
                                 <input class="form-control text-center" type="number" step="1">
                                 <div class="validation_msg hidden text-center">Ingrese una cantidad válida</div>
                             </div>
@@ -192,11 +192,14 @@
                             <div class="text-center">
                                 <strong><span>Proveedor</span></strong>
                             </div>
-                            <select class="crtSelect notEmpty  form-control" id="crtSupplier">
-                                <option value="1">Aquino lestraigo</option>
-                                <option value="2">vendo todo y me voy</option>
-                                <option value="3">speedwagon</option>
-                                <option value="4">columna de taopaipai</option>
+                            <select class="crtSelect form-control" id="crtSupplier">
+                                <option value="0">Seleccione una opcion</option>
+                                @{
+                                    foreach (Supplier supplier in ViewBag.Suppliers)
+                                    {
+                                        <option value="@supplier.Id"> @supplier.Name @supplier.Surname</option>
+                                    }
+                                }
                             </select>
                         </div>
                     </div>
@@ -226,7 +229,7 @@
                                 <strong><span>Nro. de Artículo</span></strong>
                             </div>
                             <div class="updtInput notEmpty validInt" id="updtNumber">
-                                <input  class="form-control text-center" type="text">
+                                <input  class="form-control text-center" type="number" min="1" step="1">
                                 <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
                             </div>
                         </div>
@@ -244,7 +247,7 @@
                                 <strong><span>Código</span></strong>
                             </div>
                             <div class="updtInput notEmpty" id="updtCode">
-                                 <input class="form-control text-center" type="number" min="0">
+                                 <input class="form-control text-center" type="text">
                                  <div class="validation_msg hidden text-center">Ingrese un código válido</div>
                             </div>
                         </div>
@@ -292,11 +295,13 @@
                             <div class="text-center">
                                 <strong><span>Proveedor</span></strong>
                             </div>
-                            <select class="updtSelect notEmpty form-control" id="updtSupplier">
-                                <option value="1">Aquino lestraigo</option>
-                                <option value="2">vendo todo y me voy</option>
-                                <option value="3">speedwagon</option>
-                                <option value="4">columna de taopaipai</option>
+                            <select class="updtSelect form-control" id="updtSupplier" value="0">
+                                <option value="0">Seleccione una opcion</option>
+                                @{ 
+                                    foreach (Supplier supplier in ViewBag.Suppliers) {
+                                        <option value="@supplier.Id"> @supplier.Name @supplier.Surname</option>
+                                    }
+                                }
                             </select>
                         </div>
                     </div>

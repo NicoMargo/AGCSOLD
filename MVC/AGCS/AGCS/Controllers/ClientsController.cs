@@ -71,12 +71,12 @@ namespace AGCS.Controllers
         }
 
         [HttpDelete]
-        public bool DeleteClient(uint id)
+        public bool DeleteClient(uint pos)
         {
             bool Success = true;
             try
             {
-                ClientsProvider.DeleteClient(ClientsProvider.ClientsList[Convert.ToInt32(id)].Id, Helpers.idBusiness);
+                ClientsProvider.DeleteClient(ClientsProvider.ClientsList[Convert.ToInt32(pos)].Id, Helpers.idBusiness);
             }
             catch
             {

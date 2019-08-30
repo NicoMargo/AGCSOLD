@@ -7,45 +7,45 @@ namespace AGCS.Models
 {
     public abstract class Person
     {
-        private uint id;
-        private string name;
-        private string surname;
-        private string email;
-        private string telephone;
-        private string cellphone;
+        protected uint _id;
+        protected string _name;
+        protected string _surname;
+        protected string _email;
+        protected string _telephone;
+        protected string _cellphone;
 
-        public uint Id { get => id;  }
-        public string Name { get => name; set => name = value; }
-        public string Surname { get => surname; set => surname = value; }
-        public string Email { get => email; set => email = value; }
-        public string Telephone { get => telephone; set => telephone = value; }
-        public string Cellphone { get => cellphone; set => cellphone = value; }
+        public uint Id { get => _id;  }
+        public string Name { get => _name; set =>_name = value; }
+        public string Surname { get => _surname; set => _surname = value; }
+        public string Email { get => _email; set => _email = value; }
+        public string Telephone { get => _telephone; set => _telephone = value; }
+        public string Cellphone { get => _cellphone; set => _cellphone = value; }
 
         protected Person(uint id, string name, string surname, string email, string cellphone, string telephone)
         {
-            this.id = id;
-            this.name = name;
-            this.surname = surname;
-            this.email = email;
-            this.cellphone = cellphone;
-            this.telephone = telephone;
+            this._id = id;
+            this._name = name;
+            this._surname = surname;
+            this._email = email;
+            this._cellphone = cellphone;
+            this._telephone = telephone;
         }
 
         protected Person(uint id, string name, string surname, string email, string cellphone)
         {
-            this.id = id;
-            this.name = name;
-            this.surname = surname;
-            this.email = email;
-            this.cellphone = cellphone;
+            this._id = id;
+            this._name = name;
+            this._surname = surname;
+            this._email = email;
+            this._cellphone = cellphone;
         }
 
         protected Person(string name, string surname, string cellphone, string telephone)
         {
-            this.name = name;
-            this.surname = surname;
-            this.telephone = telephone;
-            this.cellphone = cellphone;
+            this._name = name;
+            this._surname = surname;
+            this._telephone = telephone;
+            this._cellphone = cellphone;
         }
         protected Person()
         {

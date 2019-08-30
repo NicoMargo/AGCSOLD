@@ -19,12 +19,6 @@ namespace AGCS.Models.BDD
         {
             
             productsList.Clear();
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spProductsGet";
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
 
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", idBusiness}
@@ -60,13 +54,6 @@ namespace AGCS.Models.BDD
         public static Product GetProductByCode(ulong code, uint idBusiness)
         {
             Product product = null;
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spProductGetOne";
-            CommandConnection.Parameters.AddWithValue("@pCode", code);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
 
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", idBusiness},
@@ -123,9 +110,9 @@ namespace AGCS.Models.BDD
                     description = Helpers.ReadString(ConnectionReader, "Description");
                     cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
-                    priceW = Helpers.ReadFloat(ConnectionReader, "Price_W");
+                    priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    idSupplier = (uint) Helpers.ReadInt(ConnectionReader, "idSupplier");
+                    idSupplier = (uint) Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier");
 
                     product = new Product(idProducts, articleNumber, description, cost, price, priceW, stock, code, idSupplier);
                 }

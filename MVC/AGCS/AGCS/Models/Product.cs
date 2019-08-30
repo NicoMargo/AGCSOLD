@@ -82,5 +82,17 @@ namespace AGCS.Models
             _code = code;
             _idSupplier = idSupplier;
         }
+
+        public Product(uint articleNumber, string description, float cost, float price, float priceW, int stock, string code, uint idSupplier)
+        {
+            _articleNumber = (int)articleNumber;
+            _description = description;
+            _cost = cost;
+            _price = price;
+            _priceW = priceW;
+            _stock = stock;
+            _code = code;
+            _idSupplier = idSupplier;
+        }
     }
 }
