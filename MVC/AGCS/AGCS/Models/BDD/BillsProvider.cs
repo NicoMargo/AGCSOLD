@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 
 namespace AGCS.Models.BDD
@@ -14,19 +15,8 @@ namespace AGCS.Models.BDD
             bool success = false;
             if (ClientBill.Name != null)
             {
-                ClientsProvider.InsertClient(ClientBill, Helpers.idBusiness);
+                ClientsProvider.InsertClient(ClientBill, Session.GetSUInt32("businessId"));
             }
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spBillInsert";
-            
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            CommandConnection.Parameters.AddWithValue("@pDate", bill.Date);
-            CommandConnection.Parameters.AddWithValue("@pTotal", bill.Total);
-            CommandConnection.Parameters.AddWithValue("@pDNI", ClientBill.Dni);
-            */
 
             Dictionary<string, object> args = new Dictionary<string, object> {
 
@@ -63,17 +53,7 @@ namespace AGCS.Models.BDD
         //Methods for store procedures of Table Bills
         public static bool InsertBillXProduct(uint idBill, uint idProduct, int quantity, uint idBusiness)
         {
-            bool success = false;
-            /*
-            MySqlCommand CommandConnection = connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spBillXProductInsert";
-
-            CommandConnection.Parameters.AddWithValue("@pIdBill", idBill);
-            CommandConnection.Parameters.AddWithValue("@pIdProduct", idProduct);
-            CommandConnection.Parameters.AddWithValue("@pQuantity", quantity);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            */
+            bool success = false;          
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBill", idBill},
                 {"pIdProduct", idProduct},

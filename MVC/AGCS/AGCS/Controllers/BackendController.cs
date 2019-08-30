@@ -4,13 +4,18 @@ using AGCS.Models;
 using AGCS.Models.BDD;
 using Newtonsoft.Json;
 using System;
+using Microsoft.AspNetCore.Http;
+
 namespace AGCS.Controllers
 {
     public class BackendController : Controller
     {
         // GET: Backend
         public ActionResult Index()
-        {
+        {           
+            
+            ViewBag.Name =  Session.GetSString("username");
+            ViewBag.NameB = Session.GetSString("business");
             return View();
         }
         public ActionResult Pruebas()
@@ -38,7 +43,7 @@ namespace AGCS.Controllers
             {
                 Bill bill = new Bill(DateTime.Today, products, recharge , discount, dniClient);
                 
-                success = BillsProvider.InsertBill(bill, ClientBill, Helpers.idBusiness);
+                success = BillsProvider.InsertBill(bill, ClientBill, Session.GetSUInt32("business"));
             }
             return success;
         }
@@ -51,7 +56,7 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetProductToEnter(ulong code)
         {
-            Product product = ProductsProvider.GetByCodeProduct(code, Helpers.idBusiness);
+            Product product = ProductsProvider.GetByCodeProduct(code, Session.GetSUInt32("businessId"));
             string JsonDataClient = JsonConvert.SerializeObject(product);
             return Json(JsonDataClient);
         }
@@ -59,7 +64,7 @@ namespace AGCS.Controllers
         
         public ActionResult ProductsCRUD()
         {
-            ClientsProvider.GetClients(Helpers.idBusiness);
+            ClientsProvider.GetClients(Session.GetSUInt32("businessId"));
             ViewBag.Clients = ClientsProvider.ClientsList;
             return View();
         }

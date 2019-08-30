@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AGCS.Models;
 using AGCS.Models.BDD;
 using Newtonsoft.Json;
@@ -18,7 +15,7 @@ namespace AGCS.Controllers
         //Clients
         public ActionResult ClientsCRUD()
         {
-            ClientsProvider.GetClients(Helpers.idBusiness);
+            ClientsProvider.GetClients(Session.GetSUInt32("businessId"));
             ViewBag.Clients = ClientsProvider.ClientsList;
             return View();
         }
@@ -26,14 +23,14 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetDataClient(int pos)
         {
-            ClientsProvider.GetClientById(ClientsProvider.ClientsList[pos].Id, Helpers.idBusiness);
+            ClientsProvider.GetClientById(ClientsProvider.ClientsList[pos].Id, Session.GetSUInt32("businessId"));
             string JsonDataClient = JsonConvert.SerializeObject(ClientsProvider.SelectedClient);
             return Json(JsonDataClient);
         }
         [HttpPost]
         public JsonResult GetDataClientByDNI(uint dni)
         {
-            return Json(JsonConvert.SerializeObject(ClientsProvider.GetClientByDNI(dni, Helpers.idBusiness)));
+            return Json(JsonConvert.SerializeObject(ClientsProvider.GetClientByDNI(dni, Session.GetSUInt32("businessId"))));
         }
         [HttpPost]
         public bool UpdateClient(string Surname, string Name, ulong Dni, string email, string Telephone, string Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
@@ -44,7 +41,7 @@ namespace AGCS.Controllers
 
             try
             {
-                ClientsProvider.UpdateClient(cUpdateClient, Helpers.idBusiness);
+                ClientsProvider.UpdateClient(cUpdateClient, Session.GetSUInt32("businessId"));
             }
             catch
             {
@@ -64,7 +61,7 @@ namespace AGCS.Controllers
             Client NewClient = new Client(name, surname, dni, email, telephone, cellphone);
             try
             {
-                ClientsProvider.InsertClient(NewClient, Helpers.idBusiness);
+                ClientsProvider.InsertClient(NewClient, Session.GetSUInt32("businessId"));
             }
             catch
             {
@@ -79,7 +76,7 @@ namespace AGCS.Controllers
             bool Success = true;
             try
             {
-                ClientsProvider.DeleteClient(ClientsProvider.ClientsList[Convert.ToInt32(id)].Id, Helpers.idBusiness);
+                ClientsProvider.DeleteClient(ClientsProvider.ClientsList[Convert.ToInt32(id)].Id, Session.GetSUInt32("businessId"));
             }
             catch
             {

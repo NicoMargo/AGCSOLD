@@ -8,16 +8,13 @@ namespace AGCS.Models
     public class User:Person
     {
         private uint _id;
-        private string _username;
         private string _passBusiness;
         private string _passUser;
-        private ulong _dni;        
+        private ulong _dni;  
 
         //Login constructor
-        public User(string username, string passBusiness, string passUser)
+        public User(string email, string passUser):base(email)
         {
-            _username = username;
-            _passBusiness = passBusiness;
             _passUser = passUser;
         }
 
@@ -38,7 +35,6 @@ namespace AGCS.Models
             _dni = dni;
         }*/
 
-        public string Username { get => _username; set => _username = value; }
         public string PassBusiness { get => _passBusiness; set => _passBusiness = value; }
         public string PassUser { get => _passUser; set => _passUser = value; }
         public ulong Dni { get => _dni; set => _dni = value; }

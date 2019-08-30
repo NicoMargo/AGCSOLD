@@ -11,8 +11,6 @@ namespace AGCS.Controllers
     public class HomeController : Controller
     {
         const string SessionUserName = "";
-        const string SessionBuisnessId = "";
-        const string SessionBuisnessName = "";
         public ActionResult _Layout()
         {
             ViewBag.NameUser = HttpContext.Session.GetString(SessionUserName);
@@ -23,9 +21,9 @@ namespace AGCS.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Index(string username,string passBuissness, string passUser)
+        public ActionResult Index(string email, string passUser)
         {
-            User Loginuser = new User(username, passBuissness, passUser);
+            User Loginuser = new User(email,passUser);
             Business LoginBusiness;
             Object[] Objects = LogInProvider.LogIn(Loginuser);
             LoginBusiness = (Business)Objects[0];
@@ -34,10 +32,10 @@ namespace AGCS.Controllers
             {
                 if (Loginuser.Name != null)
                 {
-                    
-                    HttpContext.Session.SetString(SessionUserName, Loginuser.Name+" "+Loginuser.Surname);
-                    HttpContext.Session.SetString(SessionBuisnessName, LoginBusiness.Name);
-                    HttpContext.Session.SetInt32(SessionBuisnessId, Convert.ToInt32(LoginBusiness.Id));
+                    Session.SHC = HttpContext;
+                    HttpContext.Session.SetString("username", Loginuser.Name+" "+Loginuser.Surname);                    
+                    HttpContext.Session.SetString("business", LoginBusiness.Name);
+                    HttpContext.Session.SetInt32("businessId", Convert.ToInt32(LoginBusiness.Id));
                     return RedirectToAction("Index", "Backend");
                 }
                 else

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
 namespace AGCS.Models.BDD
@@ -14,8 +12,6 @@ namespace AGCS.Models.BDD
         private static MySqlConnection Connection;
 
         public static List<Product> ListProducts = new List<Product>();
-
-        public const uint idBusiness = 1;
 
         public static void Connect()
         {

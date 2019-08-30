@@ -18,9 +18,9 @@
                 <h1 class="pl-5 offset-md-1 text-white float-left">AGCS</h1>
             </a>
             <div class="offset-md-9 pt-2">
-                <span class="text-white" id="empresa">Empresa</span>
+                <span class="text-white" id="empresa">@Session.GetSString("business")</span>
                 <span class="ml-2 mr-2 text-white">|</span>
-                <span class="text-white" id="usuario">@ViewBag.NameUser;</span>
+                <span class="text-white" id="usuario">@Session.GetSString("username")</span>
                 <span class="ml-2 mr-2 text-white">|</span>
                 <img src="~/images/icon-user.png" alt="icono-User" class="w-10 mr-5">
             </div>

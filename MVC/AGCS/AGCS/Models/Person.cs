@@ -52,6 +52,12 @@ namespace AGCS.Models
             this.name = name;
             this.surname = surname;
         }
+
+        //Login Constructor
+        protected Person(string email)
+        {
+            this.email = email;
+        }
         protected Person()
         {
 

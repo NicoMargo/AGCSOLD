@@ -11,18 +11,17 @@ namespace AGCS.Models.BDD
         public static Object[] LogIn(User user)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pUsername",user.Username},
-                {"pPassBusiness",user.PassBusiness},
-                {"pPassUser",user.PassUser},
+                {"Email",user.Email},
+                {"Password",user.PassUser}
             };
-            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spLogin", args);
+            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spUserLogin", args);
             Object[] TwoObjects = new Object[2];
             if (ConnectionReader.Read())
             {                
                 try
                 {
                     User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Convert.ToUInt32(ConnectionReader["idUser"]));
-                    Business DataBuisness = new Business(Convert.ToUInt32(ConnectionReader["idBusiness"]), Helpers.ReadString(ConnectionReader, "NameB"));
+                    Business DataBuisness = new Business(Convert.ToUInt32(ConnectionReader["idBusiness"]) , Helpers.ReadString(ConnectionReader, "NameB"));
                     TwoObjects[0] = DataBuisness;
                     TwoObjects[1] = DataUser;
                 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 19-07-2019 a las 15:14:03
+-- Tiempo de generación: 30-08-2019 a las 15:34:07
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -140,15 +140,124 @@ THEN
 	end if;
 end if$$
 
-DROP PROCEDURE IF EXISTS `spProductGetOne`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetOne` (IN `pCode` LONG, IN `pIdBusiness` INT)  BEGIN
+DROP PROCEDURE IF EXISTS `spProductDelete`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductDelete` (IN `pId` INT, IN `pIdBusiness` INT)  BEGIN
+	delete from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+END$$
+
+DROP PROCEDURE IF EXISTS `spProductGetByCode`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetByCode` (IN `pCode` LONG, IN `pIdBusiness` INT)  BEGIN
 	SELECT * FROM products WHERE (/*products.Article_Number = pCode or */products.CodeProduct = pCode) and products.Business_idBusiness = pIdBusiness;
+END$$
+
+DROP PROCEDURE IF EXISTS `spProductGetById`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetById` (IN `pId` LONG, IN `pIdBusiness` INT)  BEGIN
+	SELECT * FROM products WHERE products.idProducts = pId and products.Business_idBusiness = pIdBusiness;
+END$$
+
+DROP PROCEDURE IF EXISTS `spProductInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductInsert` (IN `pIdBusiness` INT, IN `pProduct_Number` INT, IN `pCode` VARCHAR(100), IN `pDescription` VARCHAR(50), IN `pCost` FLOAT(10,2), IN `pPrice` FLOAT(10,2), IN `pPriceW` FLOAT(10,2), IN `pStock` INT, IN `pIdSupplier` INT)  BEGIN
+	if (not exists(select Products.idProducts from Products where Products.Business_idBusiness = pIdBusiness and (Products.CodeProduct = pCode or Products.Article_number = pProduct_Number)))
+    then
+		if exists(select Suppliers.idSupplier from Suppliers where Suppliers.Business_idBusiness = pIdBusiness and Suppliers.idSupplier = pIdSupplier)
+        then
+			if(pProduct_Number > 0)
+            then 
+				insert into Products(Products.Business_idBusiness,Products.Article_number,Products.CodeProduct,Products.Description,Products.Stock,Products.Suppliers_idSupplier) values(pIdBusiness, pProduct_Number, pCode, pDescription, pStock, pIdSupplier);
+                set @lastId = (select Products.idProducts from Products where Products.idProducts = LAST_INSERT_ID());# and Products.Business_idBusiness = pIdBusiness /*and Products.Article_number = pProduct_Number*/ and Products.CodeProduct = pCode and Products.Description = pDescription/* and Products.Stock = pStock*/ and Products.Suppliers_idSupplier = pIdSupplier);
+                if(@lastId is not null)
+                then
+					if(pCost > 0)
+					then
+						Update Products set Products.Cost = pCost where Products.idProducts = @lastId; 
+					end if;
+					if(pPrice > 0)
+					then
+						Update Products set Products.Price = pPrice where Products.idProducts = @lastId; 
+					end if;
+                    if(pPriceW > 0)
+					then
+						Update Products set Products.Price_W = pPriceW where Products.idProducts = @lastId; 
+					end if;
+				end if; #endif lastId is not null 
+			end if;#endif ProductNumber > 0
+        end if;#endif Supplier exists
+	end if;#endif not exists product with same code or product number in the same business
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductsGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` INT)  BEGIN
 	select * from Products where Products.Business_idBusiness = pIdBusiness;
 END$$
+
+DROP PROCEDURE IF EXISTS `spProductUpdate`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN `pIdBusiness` INT, IN `pProduct_Number` INT, IN `pCode` VARCHAR(100), IN `pDescription` VARCHAR(50), IN `pCost` FLOAT, IN `pPrice` FLOAT, IN `pPriceW` FLOAT, IN `pStock` INT, IN `pIdSupplier` INT)  BEGIN
+	if exists(select Products.idProducts from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness)
+    then
+		#Product Number
+        if (not exists(select Products.idProducts from Products where Products.Article_Number = pProduct_Number and Products.Business_idBusiness = pIdBusiness) and pProduct_Number > 0 and pProduct_Number is not null )
+        then
+			update Products set Products.Article_number = pProduct_Number where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#Code
+        if (not exists(select Products.idProducts from Products where Products.CodeProduct = pCode and Products.Business_idBusiness = pIdBusiness) and pCode != "" and pCode is not null )
+        then
+			update Products set Products.CodeProduct = pCode where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#Description
+        if (pDescription != (select Products.Description from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and pDescription is not null )
+        then
+			update Products set Products.Description = pDescription where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#Cost
+        if (pCost != (select Products.Cost from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and pCost > 0 and pCost is not null )
+        then
+			update Products set Products.Cost = pCost where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#Price
+        if (pPrice - (select Products.Price from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) != 0 and pPrice > 0 and pPrice is not null)
+        then
+			update Products set Products.Price = pPrice where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#PriceW
+        if (pPriceW - (select Products.Price_W from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) != 0 and pPriceW > 0 and pPriceW is not null)
+        then
+			update Products set Products.Price_W = pPriceW where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+		#Stock
+        if (pStock != (select Products.Stock from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and pStock is not null)
+        then
+			update Products set Products.Stock = pStock where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+        #Supplier
+        if (pIdSupplier != (select Products.Suppliers_idSupplier from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and exists(select Suppliers.idSupplier from Suppliers where Suppliers.idSupplier = pIdSupplier and Suppliers.Business_idBusiness = pIdBusiness))
+        then
+			update Products set Products.Suppliers_idSupplier = pIdSupplier where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+        end if;
+        
+    end if;
+END$$
+
+DROP PROCEDURE IF EXISTS `spUserLogin`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserLogin` (IN `Email` VARCHAR(320), IN `Password` VARCHAR(200))  SELECT users.Name, users.Surname, users.idUser, business.idBusiness, business.Name as NameB from users INNER JOIN business ON business.idBusiness = users.Business_idBusiness where Email = users.eMail and md5(Password) = users.Password$$
+
+DROP PROCEDURE IF EXISTS `spUserRegister`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserRegister` (IN `eMail` VARCHAR(320), IN `UserPassword` VARCHAR(200), IN `Name` VARCHAR(150), IN `idBusiness` INT(11), IN `Surname` VARCHAR(150))  NO SQL
+if not EXISTS(SELECT idUser from users where users.eMail = eMail and users.Business_idBusiness = idBusiness)
+THEN
+	insert into users(users.eMail,users.Password,users.Name,users.Surname, users.Business_idBusiness)values(eMail,MD5(UserPassword), Name,Surname,idBusiness);
+	select 1;
+    
+    ELSE
+    select 0;
+end if$$
 
 DELIMITER ;
 
@@ -443,18 +552,18 @@ CREATE TABLE IF NOT EXISTS `clients` (
 INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Cellphone`, `Business_idBusiness`) VALUES
 (0, 'Consumidor Final', 'Consumidor Final', 1, ' ', '0', '1', 0),
 (8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', '113212113', '11231213', 1),
-(22, 'Margosian', '11', 3, 'a', NULL, '111', 1),
+(22, 'Margosian', '11', 3, 'a', NULL, '111', 2),
 (23, 'test', 'prueba', 123456, NULL, NULL, '43214321', 1),
 (25, 'nombre', 'apellido', 987654321, NULL, NULL, '40005000', 1),
-(32, 'Margossian', 'Nicolas', 5555555, NULL, '1144322258', '1165898555', 1),
+(32, 'Margossian', 'Nicolas', 5555555, NULL, '1144322258', '1165898555', 2),
 (34, 'a', 'a', 12, 'a', '1', '1', 1),
 (37, 'a', 'a', 1111111, '', '123123123', '1', 1),
 (39, 'aaa', 'aaa', 43444, NULL, '1125458', '1154898', 1),
 (40, 'asdf8', 'asdf9', 3246, 'hola9', '2436', '2344', 1),
 (42, 'a', 'a', 2147483647, NULL, NULL, NULL, 1),
-(45, 'hoola', 'q hace', 555555, NULL, '0', '123213213', 1),
-(46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 1),
-(47, 'nicolas', 'margossian23', 439940804, NULL, '0', '2345', 1),
+(45, 'hoola', 'q hace', 555555, NULL, '0', '123213213', 2),
+(46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 2),
+(47, 'nicolas', 'margossian23', 439940804, NULL, '0', '2345', 2),
 (50, 'fgdñljkasdfgñl', 'sfdajñlk', 132, NULL, '1', '2', 1);
 
 -- --------------------------------------------------------
@@ -618,7 +727,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idUser`) USING BTREE,
   KEY `fk_Users_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `users`
+--
+
+INSERT INTO `users` (`idUser`, `eMail`, `Password`, `Code`, `Admin`, `Name`, `Surname`, `Name_Second`, `Business_idBusiness`) VALUES
+(3, 'admin@admin', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'admin', 'admin', NULL, 1),
+(5, 'nico@nico', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'Nicolas', 'Margossian', NULL, 2);
 
 -- --------------------------------------------------------
 
