@@ -37,7 +37,7 @@ namespace AGCS.Controllers
         {
             bool Success = true;
 
-            Product cUpdateProduct = new Product(ProductsProvider.SelectedProduct.Id, number, description, cost, price, priceW, stock, code,idSupplier);
+            Product cUpdateProduct = new Product(ProductsProvider.SelectedProduct.Id, number, description, cost, price, priceW, stock, code,/*idSupplier*/1);
 
             try
             {

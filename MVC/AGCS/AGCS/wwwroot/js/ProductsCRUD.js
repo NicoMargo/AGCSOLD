@@ -1,56 +1,68 @@
 ﻿$(document).ready(function () {
 
-    function validInt(id, expectedCondition = true) {
-        if (!expectedCondition && element.find("input").val > 0 && element.find('input').val != "") {
-            element.find("input").addClass("validation_error");
-            element.getElementByClassName("validation_msg").removeClass("hidden");
+    function validInt(element, expectedCondition = true) {
+        let valid = false;
+        let value = element.getElementsByTagName("input")[0].value;
+        if (!(expectedCondition && value > 0 && value != "")) {
+            element.getElementsByTagName("input")[0].classList.add("validation_error");
+            element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
         }
         else {
-            element.find("input").removeClass("validation_error");
-            element.getElementByClassName('validation_msg').addClass("hidden");
+            element.getElementsByTagName("input")[0].classList.remove("validation_error");
+            element.getElementsByClassName('validation_msg')[0].classList.add("hidden");
+            valid = true;
         }
+        return valid;
     }
 
-    function validPositive(id, expectedCondition = true) {
-        if (!expectedCondition && element.find("input").val > 0 && element.find('input').val != "") {
-            element.find("input").addClass("validation_error");
-            element.getElementByClassName("validation_msg").removeClass("hidden");
+    function validPositive(element, expectedCondition = true) {
+        let valid = false;
+        let value = element.getElementsByTagName("input")[0].value;
+        if (!(expectedCondition && value > 0 && value != "")) {
+            element.getElementsByTagName("input")[0].classList.add("validation_error");
+            element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
         }
         else {
-            element.find("input").removeClass("validation_error");
-            element.getElementByClassName('validation_msg').addClass("hidden");
+            element.getElementsByTagName("input")[0].classList.remove("validation_error");
+            element.getElementsByClassName('validation_msg')[0].classList.add("hidden");
+            valid = true;
         }
+        return valid;
     }
 
     function validString(element, expectedCondition = true) {
-        if (!expectedCondition && element.find("input").val != '') {
-            element.find("input").addClass("validation_error");
-            element.getElementByClassName("validation_msg").removeClass("hidden");
+        let valid = false;
+        if (!(expectedCondition && element.getElementsByTagName("input")[0].value != '')) {
+            element.getElementsByTagName("input")[0].classList.add("validation_error");
+            element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
         }
-        else {
-            element.find("input").remove("validation_error");
-            element.getElementByClassName('validation_msg').addClass("hidden");
+        else {          
+            element.getElementsByTagName("input")[0].classList.remove("validation_error");
+            element.getElementsByClassName('validation_msg')[0].classList.add("hidden");
+            valid = true;
         }
+        return valid;
     }
 
 
     function validateInputs(parentId) {
+        let valid = true;
         element = document.getElementById(parentId);
-        notEmptyList = element.getElementsByClassName("notEmpty");
+        notEmptyList = element.getElementsByClassName("updtInput notEmpty");
         for (i = 0; i < notEmptyList.length; i++) {
-            validString(notEmptyList[i]);
+            valid = validString(notEmptyList[i]) && valid;
         }
 
-        notEmptyList = element.getElementsByClassName("validPositive");
-        for (i = 0; i < notEmptyList.length; i++) {
-            validPositive(notEmptyList[i]);
+        PositivesList = element.getElementsByClassName("updtInput validPositive");
+        for (i = 0; i < PositivesList.length; i++) {
+            valid = validPositive(PositivesList[i]) && valid;
         }
 
-        notEmptyList = element.getElementsByClassName("validInt");
-        for (i = 0; i < notEmptyList.length; i++) {
-            validInt(notEmptyList[i]);
+        IntergersList = element.getElementsByClassName("updtInput validInt");
+        for (i = 0; i < IntergersList.length; i++) {
+            valid = validInt(IntergersList[i]) && valid;
         }
-        
+        return valid;
 
     }
 
@@ -79,10 +91,10 @@
                 var Data = JSON.parse(DataJsonClient);
                 $("#updtNumber").find("input").val(Data.ArticleNumber);
                 $("#updtDescription").find("input").val(Data.Description);
-                $("#updtCode").find("input").val(validInt(Data.Code));
+                $("#updtCode").find("input").val(Data.Code);
                 $("#updtCost").find("input").val(Data.Cost);
-                $("#updtPrice").find("input").val(validInt(Data.Price));
-                $("#updtPriceW").find("input").val(validInt(Data.PriceW));
+                $("#updtPrice").find("input").val(Data.Price);
+                $("#updtPriceW").find("input").val(Data.PriceW);
                 $("#updtStock").find("input").val(Data.Stock);
                 $("#updtSupplier").find("input").val(Data.idSupplier);
             },
@@ -97,21 +109,19 @@
     });
 
     $("#UpdateSubmit").click(function () {
-        validateInputs("productUpdate")
-
-        if (valid) {
+        if (validateInputs("productUpdate")) {
             $.ajax({
                 type: "POST",
                 url: "/Products/UpdateProduct",
                 data: {
-                    number: $("#updtSurname").val(),
-                    description: $("#updtName").val(),
-                    code: $("#updtTown").val(),
-                    cost: $("#updtDni").val(),
-                    price: $("#updtEmail").val(),
-                    priceW: $("#updtTelephone").val(),
-                    stock: $("#updtCellphone").val(),
-                    idSupplier: $("#updtAddress").val()
+                    number: parseInt($("#updtNumber").find("input").val()),
+                    description: $("#updtDescription").find("input").val(),
+                    code: $("#updtCode").find("input").val(),
+                    cost: parseFloat($("#updtCost").find("input").val()),
+                    price: parseFloat($("#updtPrice").find("input").val()),
+                    priceW: parseFloat($("#updtPriceW").find("input").val()),
+                    stock: parseInt($("#updtStock").find("input").val()),
+                    idSupplier: parseInt($("#updtSupplier").find("select").val())
                 },
                 success: function () {
                     location.reload();
@@ -172,7 +182,7 @@
         }
         else {
             if ($("#modalCreateName").val() === "") {
-                $("#modalCreateName").addClass("validation_error");
+                $("#modalCreateName").classList.add("validation_error");
             }
         }
     });
