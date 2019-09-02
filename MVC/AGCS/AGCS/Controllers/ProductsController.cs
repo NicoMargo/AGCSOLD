@@ -87,17 +87,33 @@ namespace AGCS.Controllers
         [HttpDelete]
         public bool DeleteProduct(uint index)
         {
-            bool Success = true;
+            bool success = true;
             try
             {
                 ProductsProvider.DeleteProduct(ProductsProvider.ProductsList[Convert.ToInt32(index)].Id, Helpers.idBusiness);
             }
             catch
             {
-                Success = false;
+                success = false;
             }
-            return Success;
+            return success;
         }
 
+        [HttpPost]
+        public bool UpdateStock(uint pos, int stock)
+        {
+            bool success = true;      
+
+            try
+            {
+                success = ProductsProvider.UpdateStock(ProductsProvider.ProductsList[(int)pos].Id,stock, Helpers.idBusiness);
+            }
+            catch
+            {
+                success = false;
+            }
+
+            return success;
+        }
     }
 }

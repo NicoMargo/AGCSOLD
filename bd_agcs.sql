@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 30-08-2019 a las 15:13:26
+-- Tiempo de generación: 02-09-2019 a las 19:01:26
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -188,6 +188,11 @@ END$$
 DROP PROCEDURE IF EXISTS `spProductsGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` INT)  BEGIN
 	select * from Products where Products.Business_idBusiness = pIdBusiness;
+END$$
+
+DROP PROCEDURE IF EXISTS `spProductStockUpdate`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductStockUpdate` (IN `pIdProducts` INT, IN `pIdBusiness` INT, IN `pStock` INT)  BEGIN
+	update products set products.stock = pStock where products.idProducts = pIdProducts and products.Business_idBusiness = pIdBusiness;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductUpdate`$$
@@ -642,8 +647,8 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 50, '1', 3, 1),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -55, '2', 3, 1),
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 5, '1', 3, 1),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1),
 (3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1),
 (4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1),
 (7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, 32, '434', 1, 1),

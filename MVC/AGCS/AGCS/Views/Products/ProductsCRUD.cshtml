@@ -64,11 +64,11 @@
 
                     <table id="ProductsTable" class="CRUDTable">
                         <tr class="header">
-                            <th style="width:20%;">Nro. de Producto</th>
-                            <th style="width:15%;">Descripción</th>
+                            <th style="width:5%;">Nro. de Producto</th>
+                            <th style="width:30%;">Descripción</th>
                             <th style="width:15%;">Código de Producto</th>
                             <th style="width:10%;">Precio</th>
-                            <th style="width:25%;">Stock</th>
+                            <th style="width:20%;">Stock</th>
                             <th style="width:10%;">Modificar</th>
                             <th style="width:10%;">Eliminar</th>
                         </tr>
@@ -80,7 +80,7 @@
                                     <td class="colDescription">@validString(ViewBag.Products[i].Description)</td>
                                     <td class="colCode">@validString(ViewBag.Products[i].Code)</td>
                                     <td>@validFloat(ViewBag.Products[i].Price)</td>
-                                    <td>@ViewBag.Products[i].Stock</td>
+                                    <td><input value=@ViewBag.Products[i].Stock type="number" step="1" class="form-control text-center" style="width:100px"/> <img position="@i"  class="btnStockUpdt" src="~/images/submit.png" style="width:50px"/> </td>
                                     <td><a data-toggle="modal" data-target="#productUpdate"><img position="@i" class="btnProductUpdate updateImage" src="~/images/edit.png" /></a></td>
                                     <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@i"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
                                 </tr>

@@ -200,4 +200,23 @@
             });
         }
     });
+
+    $(".btnStockUpdt").click(function () {
+        let Index = $(this).attr("position");
+        $.ajax({
+            type: "POST",
+            url: "/Products/UpdateStock",
+            data: {
+                pos: parseInt(Index),
+                stock: parseInt($(this).parent().find("input").val())
+            },
+            success: function () {
+                location.reload();
+                $("#productUpdate").modal("toggle");
+            },
+            error: function () {
+                alert("ERROR");
+            }
+        });
+    });
 });

@@ -172,5 +172,18 @@ namespace AGCS.Models.BDD
             Helpers.Disconect();
             return bInserted;
         }
+
+        public static bool UpdateStock(uint idProducts, int stock, uint idBusiness)
+        {
+            Dictionary<string, object> args = new Dictionary<string, object>
+            {
+                { "pIdProducts", idProducts },
+                { "pIdBusiness", idBusiness} ,
+                { "pStock", stock } 
+            };
+            bool success = (Helpers.CallNonQuery("spProductStockUpdate", args) > 0);
+            Helpers.Disconect();
+            return success;
+        }
     }
 }
