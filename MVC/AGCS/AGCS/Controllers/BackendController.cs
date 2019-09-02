@@ -56,7 +56,7 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetProductToEnter(ulong code)
         {
-            Product product = ProductsProvider.GetByCodeProduct(code, Session.GetSUInt32("businessId"));
+            Product product = ProductsProvider.GetByCodeProduct(code);
             string JsonDataClient = JsonConvert.SerializeObject(product);
             return Json(JsonDataClient);
         }
@@ -66,6 +66,16 @@ namespace AGCS.Controllers
         {
             ClientsProvider.GetClients(Session.GetSUInt32("businessId"));
             ViewBag.Clients = ClientsProvider.ClientsList;
+            return View();
+        }
+        public ActionResult UsersCRUD()
+        {
+
+            return View();
+        }
+        public ActionResult Configuration()
+        {
+
             return View();
         }
 

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio 15
+# Visual Studio 15
 VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AGCS", "AGCS\AGCS.csproj", "{3366E17C-676D-4A9E-89C0-287E18C57F3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AGCS", "AGCS\AGCS.csproj", "{3366E17C-676D-4A9E-89C0-287E18C57F3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

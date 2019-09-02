@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 
 namespace AGCS.Models.BDD
@@ -38,7 +35,7 @@ namespace AGCS.Models.BDD
                         bill.Id = id;
                         foreach (Product product in bill.Products)
                         {
-                            InsertBillXProduct(bill.Id, product.Id, product.Quant, idBusiness);
+                            InsertBillXProduct(bill.Id, product.Id, product.Quant);
                         }
                         success = true;
                     }
@@ -51,14 +48,14 @@ namespace AGCS.Models.BDD
         }
 
         //Methods for store procedures of Table Bills
-        public static bool InsertBillXProduct(uint idBill, uint idProduct, int quantity, uint idBusiness)
+        public static bool InsertBillXProduct(uint idBill, uint idProduct, int quantity)
         {
             bool success = false;          
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBill", idBill},
                 {"pIdProduct", idProduct},
                 {"pQuantity", quantity},
-                {"pIdBusiness", idBusiness },
+                {"pIdBusiness", Session.GetSUInt32("buisnessId") },
             };
             Helpers.CallNonQuery("spBillXProductInsert", args);
 
