@@ -38,10 +38,10 @@
         }
         return number;
     }
-
+    var Index;
     $(".imgClientUpdate").click(function () {
         modalNormal("Update");
-        let Index = $(this).attr("position");
+        Index = $(this).attr("position");
         $.ajax({
             type: "POST",
             url: "/Users/GetDataUser",
@@ -74,12 +74,12 @@
         valid = validate("UpdateSurname", $("#modalUpdateSurname").val() !== "");
         valid = validate("UpdateName", $("#modalUpdateName").val() !== "") && valid;
         valid = validate("UpdateDni", $("#modalUpdateDni").val() !== "" && $("#modalUpdateDni").val() > 0) && valid;
-
         if (valid) {
             $.ajax({
                 type: "POST",
                 url: "/Users/UpdateUser",
-                data:{
+                data: {
+                    id: Index,
                     Surname: $("#modalUpdateSurname").val(),
                     Name: $("#modalUpdateName").val(),
                     dni: $("#modalUpdateDni").val(),

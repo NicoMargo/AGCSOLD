@@ -55,7 +55,7 @@ namespace AGCS.Models.BDD
                 {"pIdBill", idBill},
                 {"pIdProduct", idProduct},
                 {"pQuantity", quantity},
-                {"pIdBusiness", Sessionh.GetSUInt32("buisnessId") },
+                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness") },
             };
             Helpers.CallNonQuery("spBillXProductInsert", args);
 

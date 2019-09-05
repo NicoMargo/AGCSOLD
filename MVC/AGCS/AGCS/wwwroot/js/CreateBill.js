@@ -236,7 +236,7 @@
     $("#dni").keyup(function () {
         $.ajax({
             type: "POST",
-            url: "/Backend/GetDataClientByDNI",
+            url: "/Clients/GetDataClientByDNI",
             data: { dni: $("#dni").val() },
             success: function (DataJsonClient) {
                 var Data = JSON.parse(DataJsonClient);

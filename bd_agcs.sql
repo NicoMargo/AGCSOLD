@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 4.7.9
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 05-09-2019 a las 07:09:06
--- Versión del servidor: 5.7.26
--- Versión de PHP: 7.2.18
+-- Tiempo de generación: 05-09-2019 a las 14:00:47
+-- Versión del servidor: 5.7.21
+-- Versión de PHP: 5.6.35
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -295,6 +295,44 @@ DROP PROCEDURE IF EXISTS `spUsersGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUsersGet` (IN `pIdBusiness` INT)  NO SQL
 SELECT users.idUser, users.Name, users.Surname, users.Name_Second FROM users where users.Business_idBusiness = pIdBusiness$$
 
+DROP PROCEDURE IF EXISTS `spUserUpdate`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` VARCHAR(20), IN `pCellphone` VARCHAR(20))  NO SQL
+if(EXISTS(SELECT users.idUser from users WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness))
+THEN
+	if(pName != "" and pSurname != "" and pDNI_CUIT > 0 and pDNI_CUIT != ""  )
+    then
+		if( pName is not null and pName!= (SELECT users.Name from users where users.idUser = id) ) 
+		THEN
+			UPDATE users set Name = pName WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pSurname is not null and pSurname != (SELECT users.Surname from users where users.idUser = id)) 
+		THEN
+			UPDATE users set users.Surname = pSurname WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pDNI_CUIT is not null and pDNI_CUIT != (SELECT users.Dni from users where users.idUser = id) and not exists(SELECT users.Dni from users where users.Dni = pDNI_CUIT and users.Business_idBusiness = pIdBusiness)) 
+		THEN
+			UPDATE users set users.Dni = pDNI_CUIT WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pEmail is not null) 
+		THEN
+			UPDATE users set users.eMail = pEmail WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
+		end if;
+		
+		if( pTelephone is not null and pTelephone != (SELECT user_ExtraInfo.Tel_User from user_ExtraInfo where user_ExtraInfo.idUser = id)) 
+		THEN
+			UPDATE user_ExtraInfo set user_ExtraInfo.Tel_User = pTelephone WHERE user_ExtraInfo.idUser = id; 
+		end if;
+		
+		if( pCellphone is not null and pCellphone != (SELECT user_ExtraInfo.Cellphone from user_ExtraInfo where user_ExtraInfo.idUser = id)) 
+		THEN
+			UPDATE user_ExtraInfo set user_ExtraInfo.Cellphone = pCellphone WHERE user_ExtraInfo.idUser = id; 
+		end if;
+	end if;
+end if$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -579,7 +617,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idClients`) USING BTREE,
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
@@ -595,12 +633,11 @@ INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Tel
 (34, 'a', 'a', 12, 'a', '1', '1', 1),
 (37, 'a', 'a', 1111111, '', '123123123', '1', 1),
 (39, 'aaa', 'aaa', 43444, NULL, '1125458', '1154898', 1),
-(40, 'asdf8', 'asdf9', 3246, 'hola9', '2436', '2344', 1),
-(42, 'a', 'a', 2147483647, NULL, NULL, NULL, 1),
+(40, 'Mati', 'Santos', 3246, 'hola9', '2436', '2344', 1),
 (45, 'hoola', 'q hace', 555555, NULL, '0', '123213213', 2),
 (46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 2),
-(47, 'nicolas', 'margossian23', 439940804, NULL, '0', '2345', 2),
-(50, 'fgdñljkasdfgñl', 'sfdajñlk', 132, NULL, '1', '2', 1);
+(47, 'nicolas', 'margossian2344', 439940804, '', '0', '2345', 2),
+(51, 'Mati2', 'Santoro2', 43886785, 'mati@mati', '8474747', '7777', 1);
 
 -- --------------------------------------------------------
 
@@ -764,7 +801,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Dni` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idUser`) USING BTREE,
   KEY `fk_Users_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `users`
@@ -773,7 +810,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`idUser`, `eMail`, `Password`, `Code`, `Admin`, `Name`, `Surname`, `Name_Second`, `Business_idBusiness`, `Dni`) VALUES
 (3, 'admin@admin', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'admin', 'admin', NULL, 1, NULL),
 (5, 'nico@nico', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'Nicolas', 'Margossian', NULL, 2, NULL),
-(10, 'asdffas@dsafg', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'Jonathan', 'Liu', NULL, 1, '43403629');
+(10, 'asdffas@dsafg', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'Jonathan', 'Liu', NULL, 1, '43403629'),
+(11, 'iara@gmail.com', '912ec803b2ce49e4a541068d495ab570', NULL, NULL, 'Iara', 'Sporno', NULL, 1, '43333333');
 
 -- --------------------------------------------------------
 
@@ -784,23 +822,24 @@ INSERT INTO `users` (`idUser`, `eMail`, `Password`, `Code`, `Admin`, `Name`, `Su
 DROP TABLE IF EXISTS `user_extrainfo`;
 CREATE TABLE IF NOT EXISTS `user_extrainfo` (
   `idUser_ExtraInfo` int(11) NOT NULL AUTO_INCREMENT,
-  `Address` varchar(100) DEFAULT NULL,
+  `Address` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
   `Tel_Father` int(11) DEFAULT NULL,
   `Tel_Mother` int(11) DEFAULT NULL,
   `Tel_User` int(11) DEFAULT NULL,
-  `eMail` varchar(45) DEFAULT NULL,
-  `District` varchar(45) DEFAULT NULL,
-  `Healthcare_Company` varchar(45) DEFAULT NULL,
+  `eMail` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `District` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `Healthcare_Company` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
   `Sallary` int(11) DEFAULT NULL,
   `Employee_Code` int(11) DEFAULT NULL,
-  `Users_idUsuarios` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
   `Province_idProvince` int(11) NOT NULL,
   `Payment_Methods_idPayment_Methods` int(11) NOT NULL,
+  `Cellphone` int(11) DEFAULT NULL,
   PRIMARY KEY (`idUser_ExtraInfo`) USING BTREE,
-  KEY `fk_User_ExtraInfo_Users1_idx` (`Users_idUsuarios`),
+  KEY `fk_User_ExtraInfo_Users1_idx` (`idUser`),
   KEY `fk_User_ExtraInfo_Province1_idx` (`Province_idProvince`),
   KEY `fk_User_ExtraInfo_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin2;
 
 --
 -- Restricciones para tablas volcadas
@@ -878,7 +917,7 @@ ALTER TABLE `users`
 ALTER TABLE `user_extrainfo`
   ADD CONSTRAINT `fk_User_ExtraInfo_Payment_Methods1` FOREIGN KEY (`Payment_Methods_idPayment_Methods`) REFERENCES `payment_methods` (`idPayment_Methods`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_User_ExtraInfo_Province1` FOREIGN KEY (`Province_idProvince`) REFERENCES `provinces` (`idProvince`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_User_ExtraInfo_Users1` FOREIGN KEY (`Users_idUsuarios`) REFERENCES `users` (`idUser`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_User_ExtraInfo_Users1` FOREIGN KEY (`idUser`) REFERENCES `users` (`idUser`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
