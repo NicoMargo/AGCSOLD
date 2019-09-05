@@ -1,12 +1,14 @@
 ﻿@{
     @model AGCS.Models.Client
-    string validInt(ulong number) {
+    string validInt(ulong number)
+    {
         string value;
         if (number <= 0)
         {
             value = "-";
         }
-        else {
+        else
+        {
             value = number.ToString();
         }
         return value;
@@ -22,7 +24,7 @@
     }
 }
 <!doctype html>
-<html lang="es"> 
+<html lang="es">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -35,16 +37,16 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="m-5">
         <div class="content mt-3">
             <div class="animated fadeIn">
                 <div class="card">
                     <div class="card-header">
-                        <strong class="card-title">Clientes</strong>
+                        <strong class="card-title">Usuarios</strong>
                     </div>
                     <div class="card-body">
-                        <input type="text" id="myInput" onkeyup="myFunction();" placeholder="Buscar Cliente">
-                        <button type="button" id="createClient" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
+                        <input type="text" id="myInput" onkeyup="myFunction();" placeholder="Buscar Usuario">
+                        <button type="button" id="createUser" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
                             Agregar Cliente
                         </button>
 
@@ -52,23 +54,23 @@
                             <tr class="header">
                                 <th style="width:20%;">Apellido</th>
                                 <th style="width:15%;">Nombre</th>
-                                <th style="width:15%;">DNI/CUIT/CUIL</th>
+                                <th style="width:15%;">Dni</th>
                                 <th style="width:10%;">Celular</th>
                                 <th style="width:25%;">Email</th>
                                 <th style="width:10%;">Modificar</th>
                                 <th style="width:10%;">Eliminar</th>
                             </tr>
                             @{
-                                for (int i = 0; i < ViewBag.Clients.Count; i++)
+                                for (int i = 0; i < ViewBag.Users.Count; i++)
                                 {
                                     <tr>
-                                        <td>@validString(ViewBag.Clients[i].Surname)</td>
-                                        <td>@validString(ViewBag.Clients[i].Name)</td>
-                                        <td>@validInt(ViewBag.Clients[i].Dni)</td>
-                                        <td>@validString(ViewBag.Clients[i].Cellphone)</td>
-                                        <td>@validString(ViewBag.Clients[i].Email)</td>
-                                        <td><a data-toggle="modal" data-target="#updateClient"><img position="@i" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
-                                        <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@i"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
+                                        <td>@validString(ViewBag.Users[i].Surname)</td>
+                                        <td>@validString(ViewBag.Users[i].Name)</td>
+                                        <td>@validInt(ViewBag.Users[i].Dni)</td>
+                                        <td>@validString(ViewBag.Users[i].Cellphone)</td>
+                                        <td>@validString(ViewBag.Users[i].Email)</td>
+                                        <td><a data-toggle="modal" data-target="#updateClient"><img position="@ViewBag.Users[i].Id" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
+                                        <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@ViewBag.Users[i].Id"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
                                     </tr>
                                 }
                             }
@@ -97,11 +99,11 @@
 
 
     <!-- Extra large modal Create-->
-    <div class="modal fade bd-example-modal-xl" id="createClient" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-xl" id="createUser" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Crear Cliente</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Crear Usuario</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -126,10 +128,31 @@
                         </div>
                         <div class="offset-md-1 col-md-2">
                             <div class="text-center">
-                                <strong><span>DNI/CUIT/CUIL</span></strong>
+                                <strong><span>Segundo Nombre</span></strong>
+                            </div>
+                            <input id="modalCreateSecondName" class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center" id="msgCreateSecondName">Ingrese un Segundo nombre válido</div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Contraseña</span></strong>
+                            </div>
+                            <input id="modalCreatePassword" class="form-control text-center" type="password">
+                            <div class="validation_msg hidden text-center" id="msgCreatePassword">Ingrese una contraseña válida</div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Confirmar Contraseña</span></strong>
+                            </div>
+                            <input id="modalCreateConfirmPassword" class="form-control text-center" type="password">
+                            <div class="validation_msg hidden text-center" id="msgCreateConfirmPassword">Confirmar contraseña</div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Dni</span></strong>
                             </div>
                             <input id="modalCreateDni" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateDni">Ingrese un DNI o CUIT válido</div>
+                            <div class="validation_msg hidden text-center" id="msgCreateDni">Ingrese Dni</div>
                         </div>
                     </div>
                     <div class="row mt-4">
@@ -211,7 +234,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundary" id="createCancel" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" id="newClient">Crear</button>
+                    <button class="btn btn-primary" id="newUser">Crear</button>
                 </div>
 
             </div>
@@ -343,7 +366,7 @@
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> 
-    <script src="~/js/CRUDClient.js"></script>
-    </body>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="~/js/UsersCRUD.js"></script>
+</body>
 </html>

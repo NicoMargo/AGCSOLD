@@ -13,9 +13,6 @@ namespace AGCS.Controllers
         // GET: Backend
         public ActionResult Index()
         {           
-            
-            ViewBag.Name =  Session.GetSString("username");
-            ViewBag.NameB = Session.GetSString("business");
             return View();
         }
         public ActionResult Pruebas()
@@ -43,7 +40,7 @@ namespace AGCS.Controllers
             {
                 Bill bill = new Bill(DateTime.Today, products, recharge , discount, dniClient);
                 
-                success = BillsProvider.InsertBill(bill, ClientBill, Session.GetSUInt32("business"));
+                success = BillsProvider.InsertBill(bill, ClientBill, Session.GetSUInt32("businessId"));
             }
             return success;
         }
@@ -68,11 +65,7 @@ namespace AGCS.Controllers
             ViewBag.Clients = ClientsProvider.ClientsList;
             return View();
         }
-        public ActionResult UsersCRUD()
-        {
-
-            return View();
-        }
+   
         public ActionResult Configuration()
         {
 

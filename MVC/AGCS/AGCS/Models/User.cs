@@ -7,8 +7,6 @@ namespace AGCS.Models
 {
     public class User:Person
     {
-        private uint _id;
-        private string _passBusiness;
         private string _passUser;
         private ulong _dni;  
 
@@ -19,23 +17,23 @@ namespace AGCS.Models
         }
 
         //After Login constructor
-        public User(string Name, string Surname, uint id):base(Name,Surname)
+        public User(string Name, string Surname, uint id):base(Name,Surname, id)
         {
-            _id = id;
         }
 
-
-
-        //complete constructor
-        /*public User(uint id, string name, string surname, ulong dni, string username, string passBusiness,string passUser) : base(id, name, surname, email, cellphone)
+        //New User constructor
+        public User(string name, string surname, ulong dni, string email, string cellphone,string passUser, string telephone) : base(name, surname, email, cellphone, telephone)
         {
-            _username = username;
-            _passBusiness = passBusiness;
             _passUser = passUser;
             _dni = dni;
-        }*/
+        }
 
-        public string PassBusiness { get => _passBusiness; set => _passBusiness = value; }
+        //Get User By Id constructor
+        public User(uint id, string name, string surname, ulong dni, string email) : base(id, name, surname, email)
+        {
+            _dni = dni;
+        }
+
         public string PassUser { get => _passUser; set => _passUser = value; }
         public ulong Dni { get => _dni; set => _dni = value; }
     }

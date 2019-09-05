@@ -14,16 +14,35 @@ namespace AGCS.Models
         private string telephone;
         private string cellphone;
 
-        public uint Id { get => id;  }
+        public uint Id { get => id; set => id = value; }
         public string Name { get => name; set => name = value; }
         public string Surname { get => surname; set => surname = value; }
         public string Email { get => email; set => email = value; }
         public string Telephone { get => telephone; set => telephone = value; }
         public string Cellphone { get => cellphone; set => cellphone = value; }
 
+        //Complete Constructor
         protected Person(uint id, string name, string surname, string email, string cellphone, string telephone)
         {
             this.id = id;
+            this.name = name;
+            this.surname = surname;
+            this.email = email;
+            this.cellphone = cellphone;
+            this.telephone = telephone;
+        }
+        //Get User By Id Constructor
+        protected Person(uint id, string name, string surname, string email)
+        {
+            this.id = id;
+            this.name = name;
+            this.surname = surname;
+            this.email = email;
+        }
+
+        //New Person Constructor
+        protected Person(string name, string surname, string email, string cellphone, string telephone)
+        {
             this.name = name;
             this.surname = surname;
             this.email = email;
@@ -47,10 +66,12 @@ namespace AGCS.Models
             this.telephone = telephone;
             this.cellphone = cellphone;
         }
-        protected Person(string name, string surname)
+        //After login Constructor
+        protected Person(string name, string surname, uint id)
         {
             this.name = name;
             this.surname = surname;
+            this.id = id;
         }
 
         //Login Constructor

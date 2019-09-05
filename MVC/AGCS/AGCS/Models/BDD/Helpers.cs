@@ -86,11 +86,6 @@ namespace AGCS.Models.BDD
             try { result = Convert.ToBoolean(ConnectionReader[parameter]); } catch { }
             return result;
         }
-        /*
-        private static bool ReadBool<T>(MySqlDataReader ConnectionReader, string parameter)
-        {
-            return (T)Convert.ChangeType(value, typeof(T));
-        }*/
 
     }
 }

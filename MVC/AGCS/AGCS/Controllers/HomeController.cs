@@ -10,12 +10,7 @@ namespace AGCS.Controllers
 {
     public class HomeController : Controller
     {
-        const string SessionUserName = "";
-        public ActionResult _Layout()
-        {
-            ViewBag.NameUser = HttpContext.Session.GetString(SessionUserName);
-            return View();
-        }
+
         public ActionResult Index()
         {
             return View();
@@ -25,7 +20,7 @@ namespace AGCS.Controllers
         {
             User Loginuser = new User(email,passUser);
             Business LoginBusiness;
-            Object[] Objects = LogInProvider.LogIn(Loginuser);
+            Object[] Objects = UsersProvider.LogIn(Loginuser);
             LoginBusiness = (Business)Objects[0];
             Loginuser = (User)Objects[1];
             try
@@ -35,7 +30,7 @@ namespace AGCS.Controllers
                     Session.SHC = HttpContext;
                     HttpContext.Session.SetString("username", Loginuser.Name+" "+Loginuser.Surname);                    
                     HttpContext.Session.SetString("business", LoginBusiness.Name);
-                    HttpContext.Session.SetInt32("businessId", Convert.ToInt32(LoginBusiness.Id));
+                    HttpContext.Session.SetInt32("idBusiness", Convert.ToInt32(LoginBusiness.Id));
                     return RedirectToAction("Index", "Backend");
                 }
                 else

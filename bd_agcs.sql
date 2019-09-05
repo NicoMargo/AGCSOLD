@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.9
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 30-08-2019 a las 15:34:07
--- Versión del servidor: 5.7.21
--- Versión de PHP: 5.6.35
+-- Tiempo de generación: 05-09-2019 a las 07:09:06
+-- Versión del servidor: 5.7.26
+-- Versión de PHP: 7.2.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -245,6 +245,38 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN 
     end if;
 END$$
 
+DROP PROCEDURE IF EXISTS `spUserDelete`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserDelete` (IN `pId` INT, IN `pIdBusiness` INT)  if(EXISTS(SELECT users.idUser FROM users WHERE users.idUser = pId and users.Business_idBusiness = pIdBusiness))
+THEN
+	DELETE from users WHERE users.idUser = pId and users.Business_idBusiness = pIdBusiness;
+end IF$$
+
+DROP PROCEDURE IF EXISTS `spUserGetById`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserGetById` (IN `pId` INT, IN `pIdBusiness` INT)  NO SQL
+SELECT * FROM users WHERE users.idUser = pId and users.Business_idBusiness = pIdBusiness$$
+
+DROP PROCEDURE IF EXISTS `spUserInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDni` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` VARCHAR(20), IN `pPass` VARCHAR(45), IN `pCellphone` VARCHAR(20))  NO SQL
+if( pIdBusiness > -1 && pName != ""&& pPass != "" && pSurname != "" && pDni > 1 && not exists(select users.idUser from users where users.Dni = pDni and users.Business_idBusiness = pIdBusiness))
+then
+	insert into users(users.Name,users.Surname,users.Dni,users.Business_idBusiness, users.Password) values( pName, pSurname, pDni, pIdBusiness,md5(pPass));
+	
+    set @lastId = (select users.idUser from users where users.idUser = LAST_INSERT_ID() and users.Name = pName and users.Surname = pSurname and users.Dni = pDni and users.Business_idBusiness = pIdBusiness);
+	
+    if(@lastId is not null)
+    then
+    
+		if( pEmail is not null) 
+		THEN
+			UPDATE users set users.eMail = pEmail WHERE users.idUser = @lastId and users.Business_idBusiness = pIdBusiness; 
+		end if;		
+		
+		select 1 as success; #Insert Success
+    end if;
+    else
+		select 0 as success; #Insert Fail
+end if$$
+
 DROP PROCEDURE IF EXISTS `spUserLogin`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserLogin` (IN `Email` VARCHAR(320), IN `Password` VARCHAR(200))  SELECT users.Name, users.Surname, users.idUser, business.idBusiness, business.Name as NameB from users INNER JOIN business ON business.idBusiness = users.Business_idBusiness where Email = users.eMail and md5(Password) = users.Password$$
 
@@ -258,6 +290,10 @@ THEN
     ELSE
     select 0;
 end if$$
+
+DROP PROCEDURE IF EXISTS `spUsersGet`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUsersGet` (IN `pIdBusiness` INT)  NO SQL
+SELECT users.idUser, users.Name, users.Surname, users.Name_Second FROM users where users.Business_idBusiness = pIdBusiness$$
 
 DELIMITER ;
 
@@ -725,17 +761,19 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Surname` varchar(45) DEFAULT NULL,
   `Name_Second` varchar(45) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
+  `Dni` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idUser`) USING BTREE,
   KEY `fk_Users_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`idUser`, `eMail`, `Password`, `Code`, `Admin`, `Name`, `Surname`, `Name_Second`, `Business_idBusiness`) VALUES
-(3, 'admin@admin', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'admin', 'admin', NULL, 1),
-(5, 'nico@nico', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'Nicolas', 'Margossian', NULL, 2);
+INSERT INTO `users` (`idUser`, `eMail`, `Password`, `Code`, `Admin`, `Name`, `Surname`, `Name_Second`, `Business_idBusiness`, `Dni`) VALUES
+(3, 'admin@admin', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'admin', 'admin', NULL, 1, NULL),
+(5, 'nico@nico', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'Nicolas', 'Margossian', NULL, 2, NULL),
+(10, 'asdffas@dsafg', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'Jonathan', 'Liu', NULL, 1, '43403629');
 
 -- --------------------------------------------------------
 
