@@ -27,6 +27,11 @@ namespace AGCS.Controllers
             return Json(JsonDataClient);
         }
 
+        [HttpPost]
+        public JsonResult GetDataClientByDNI(uint dni)
+        {
+            return Json(JsonConvert.SerializeObject(ClientsProvider.GetClientByDNI(dni)));
+        }
 
         [HttpPost]
         public bool UpdateClient(uint id, string surname, string name, ulong dni, string email, string telephone, string cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)

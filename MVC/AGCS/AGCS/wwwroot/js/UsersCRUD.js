@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿
+$(document).ready(function () {
     function validate(id,expectedCondition = true) {
         if (!expectedCondition) {
             $("#modal" + id).addClass("validation_error");

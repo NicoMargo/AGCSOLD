@@ -10,7 +10,7 @@ namespace AGCS.Models.BDD
         {
             List<Client> clientsList = new List<Client>();
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness",Sessionh.GetSUInt32("idBusiness") }
+                {"pIdBusiness",Sessionh.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientsGet", args);
             while (ConnectionReader.Read())

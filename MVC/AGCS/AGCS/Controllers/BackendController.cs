@@ -57,13 +57,7 @@ namespace AGCS.Controllers
             string JsonDataClient = JsonConvert.SerializeObject(product);
             return Json(JsonDataClient);
         }
-
-        [HttpPost]
-        public JsonResult GetDataClientByDNI(uint dni)
-        {
-            return Json(JsonConvert.SerializeObject(ClientsProvider.GetClientByDNI(dni)));
-        }
-
+        
         public ActionResult Configuration()
         {
 

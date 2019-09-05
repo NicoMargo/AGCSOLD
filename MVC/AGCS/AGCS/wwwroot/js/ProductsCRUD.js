@@ -94,7 +94,7 @@
     function inputNormal(parentId) {
         var element = document.getElementById(parentId);
         element.getElementsByTagName("input")[0].classList.remove("validation_error");
-        element.getElementsByClassName('validation_msg')[0].classList.add("hidden")
+        element.getElementsByClassName('validation_msg')[0].classList.add("hidden");
     }
 
     function normalizeInputs(parentId, inputClassname) { //Modal type: create , update
@@ -213,8 +213,9 @@
                 stock: parseInt($(this).parent().find("input").val())
             },
             success: function () {
+                
                 location.reload();
-                $("#productUpdate").modal("toggle");
+                alert("Se Modifico el Stock");
             },
             error: function () {
                 alert("ERROR");
