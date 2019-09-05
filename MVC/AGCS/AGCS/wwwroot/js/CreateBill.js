@@ -171,7 +171,6 @@
         if (validateQuant()) {
             var bool = validate("#thisName");
             bool = bool & validate("#surname");
-            bool = bool & validate("#cellphone");
             bool = bool & validate("#dni");
             if (parseInt($("#dni").val(), 10) <= 0) {
                 bool = false;

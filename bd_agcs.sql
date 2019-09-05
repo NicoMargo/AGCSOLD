@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 05-09-2019 a las 20:30:47
+-- Tiempo de generación: 05-09-2019 a las 21:31:20
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -28,9 +28,9 @@ DELIMITER $$
 --
 DROP PROCEDURE IF EXISTS `spBillInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT, IN `pDNI` INT)  BEGIN
-	if EXISTS(select clients.idClients from clients where (clients.DNI_CUIT = pDNI and pIdBusiness = clients.Business_idBusiness) or (pDNI = 1))
+	if EXISTS(select clients.idClients from clients where (clients.DNI_CUIT = pDNI and pIdBusiness = clients.Business_idBusiness and clients.Active = 1) or (pDNI = 1))
     THEN
-    	SET  @idClient = (select clients.idClients from clients where clients.DNI_CUIT = pDNI and (clients.Business_idBusiness = pIdBusiness or pDNI = 1));
+    	SET  @idClient = (select clients.idClients from clients where clients.DNI_CUIT = pDNI and ((clients.Business_idBusiness = pIdBusiness and clients.Active = 1) or pDNI = 1));
 		Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness,bills.Clients_idClients) values( pDate, pTotal, pIdBusiness,@idClient);
     	select bills.idBills from bills where bills.idBills = LAST_INSERT_ID() and bills.DateBill = pDate and bills.Total = ptotal and bills.Business_idBusiness = pIdBusiness and bills.Clients_idClients = @idClient;
     ELSE
@@ -40,12 +40,12 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spBillXProductInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pIdBill` INT, IN `pIdProduct` INT, IN `pQuantity` INT, IN `pIdBusiness` INT)  BEGIN
-	if exists(select products.idProducts from products where products.idProducts = pIdProduct and products.Business_idBusiness = pIdBusiness) and exists(select bills.idBills from bills where bills.idBills = pIdBill and bills.Business_idBusiness = pIdBusiness)
+	if exists(select products.idProducts from products where products.idProducts = pIdProduct and products.Business_idBusiness = pIdBusiness and products.Active = 1) and exists(select bills.idBills from bills where bills.idBills = pIdBill and bills.Business_idBusiness = pIdBusiness)
     then
 		if(pQuantity > 0 and pQuantity is not null)
         then
 			insert into bills_x_products(bills_x_products.Products_idProducts,bills_x_products.Bills_idBills,bills_x_products.Quantity) values(pIdProduct,pIdBill,pQuantity);
-            update products set products.Stock = products.Stock - pQuantity where products.idProducts = pIdProduct and products.Business_idBusiness = pIdBusiness;
+            update products set products.Stock = products.Stock - pQuantity where products.idProducts = pIdProduct and products.Business_idBusiness = pIdBusiness and products.Active = 1;
 		else
 			insert into bills_x_products(bills_x_products.Products_idProducts,bills_x_products.Bills_idBills,bills_x_products.Quantity) values(pIdProduct,pIdBill,0);
         end if;
@@ -56,16 +56,16 @@ DROP PROCEDURE IF EXISTS `spClientDelete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientDelete` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
 if(EXISTS(SELECT clients.idClients FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
 THEN
-	DELETE from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness;
+	Update clients set clients.Active = 0 where clients.idClients = id and clients.Business_idBusiness = pIdBusiness and clients.Active = 1;
 end IF$$
 
 DROP PROCEDURE IF EXISTS `spClientGetByDNI`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetByDNI` (IN `pDNI` BIGINT, IN `pIdBusiness` INT)  NO SQL
-select clients.idClients,clients.Name, clients.Surname,clients.Cellphone,clients.eMail from clients where (clients.DNI_CUIT = pDNI and clients.Business_idBusiness = pIdBusiness) or (pDNI = 1 and pDNI = clients.DNI_CUIT and clients.idClients = 0)$$
+select clients.idClients,clients.Name, clients.Surname,clients.Cellphone,clients.eMail from clients where ((clients.DNI_CUIT = pDNI and clients.Business_idBusiness = pIdBusiness) or (pDNI = 1 and pDNI = clients.DNI_CUIT and clients.idClients = 0)) and clients.Active = 1$$
 
 DROP PROCEDURE IF EXISTS `spClientGetById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetById` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
-SELECT * FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness$$
+SELECT * FROM clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness and clients.Active = 1$$
 
 DROP PROCEDURE IF EXISTS `spClientInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_CUIT` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` VARCHAR(20), IN `pCellphone` VARCHAR(20))  NO SQL
@@ -100,11 +100,11 @@ end if$$
 
 DROP PROCEDURE IF EXISTS `spClientsGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientsGet` (IN `pIdBusiness` INT)  NO SQL
-SELECT clients.idClients, clients.Name, clients.Surname, clients.DNI_CUIT, clients.eMail,clients.Cellphone FROM clients where clients.Business_idBusiness = pIdBusiness$$
+SELECT clients.idClients, clients.Name, clients.Surname, clients.DNI_CUIT, clients.eMail,clients.Cellphone FROM clients where clients.Business_idBusiness = pIdBusiness and clients.Active = 1$$
 
 DROP PROCEDURE IF EXISTS `spClientUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` VARCHAR(20), IN `pCellphone` VARCHAR(20))  NO SQL
-if(EXISTS(SELECT clients.idClients from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness))
+if(EXISTS(SELECT clients.idClients from clients WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness and clients.Active = 1))
 THEN
 	if(pName != "" and pSurname != "" and pDNI_CUIT > 0 and pDNI_CUIT != ""  )
     then
@@ -137,17 +137,17 @@ end if$$
 
 DROP PROCEDURE IF EXISTS `spProductDelete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductDelete` (IN `pId` INT, IN `pIdBusiness` INT)  BEGIN
-	delete from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+    update products set products.Active = 0 where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness and products.active = 1;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductGetByCode`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetByCode` (IN `pCode` LONG, IN `pIdBusiness` INT)  BEGIN
-	SELECT * FROM products WHERE (/*products.Article_Number = pCode or */products.CodeProduct = pCode) and products.Business_idBusiness = pIdBusiness;
+	SELECT * FROM products WHERE (/*products.Article_Number = pCode or */products.CodeProduct = pCode) and products.Business_idBusiness = pIdBusiness and products.Active = 1;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductGetById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetById` (IN `pId` LONG, IN `pIdBusiness` INT)  BEGIN
-	SELECT * FROM products WHERE products.idProducts = pId and products.Business_idBusiness = pIdBusiness;
+	SELECT * FROM products WHERE products.idProducts = pId and products.Business_idBusiness = pIdBusiness and products.Active = 1;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductInsert`$$
@@ -182,17 +182,17 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spProductsGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` INT)  BEGIN
-	select * from Products where Products.Business_idBusiness = pIdBusiness;
+	select * from Products where Products.Business_idBusiness = pIdBusiness and products.Active = 1;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductStockUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductStockUpdate` (IN `pIdProducts` INT, IN `pIdBusiness` INT, IN `pStock` INT)  BEGIN
-	update products set products.stock = pStock where products.idProducts = pIdProducts and products.Business_idBusiness = pIdBusiness;
+	update products set products.stock = pStock where products.idProducts = pIdProducts and products.Business_idBusiness = pIdBusiness and products.Active = 1;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN `pIdBusiness` INT, IN `pProduct_Number` INT, IN `pCode` VARCHAR(100), IN `pDescription` VARCHAR(50), IN `pCost` FLOAT, IN `pPrice` FLOAT, IN `pPriceW` FLOAT, IN `pStock` INT, IN `pIdSupplier` INT)  BEGIN
-	if exists(select Products.idProducts from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness)
+	if exists(select Products.idProducts from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness and products.Active = 1)
     then
 		#Product Number
         if (not exists(select Products.idProducts from Products where Products.Article_Number = pProduct_Number and Products.Business_idBusiness = pIdBusiness) and pProduct_Number > 0 and pProduct_Number is not null )
@@ -393,7 +393,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Macs1_idx` (`Macs_idMacs`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE,
   KEY `fk_Bills_Clients1_idx` (`Clients_idClients`)
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
@@ -456,7 +456,8 @@ INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`
 (55, '2019-07-18', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (56, '2019-07-19', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (57, '2019-07-19', 23, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(58, '2019-07-19', 23, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1);
+(58, '2019-07-19', 23, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
+(59, '2019-09-05', 53, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 510.00, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -473,7 +474,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProducts`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBills`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills_x_products`
@@ -541,7 +542,8 @@ INSERT INTO `bills_x_products` (`idBills_X_Products`, `Quantity`, `Products_idPr
 (65, 2, 1, 58),
 (66, 2, 2, 58),
 (67, 6, 3, 58),
-(68, 3, 4, 58);
+(68, 3, 4, 58),
+(69, 17, 16, 59);
 
 -- --------------------------------------------------------
 
@@ -616,27 +618,29 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Telephone` varchar(20) DEFAULT NULL,
   `Cellphone` varchar(20) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
+  `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idClients`) USING BTREE,
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
 --
 
-INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Cellphone`, `Business_idBusiness`) VALUES
-(0, 'Consumidor Final', 'Consumidor Final', 1, ' ', '0', '1', 0),
-(8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', '113212113', '11231213', 1),
-(22, 'Margosian', '11', 3, 'a', NULL, '111', 2),
-(23, 'test', 'prueba', 123456, NULL, NULL, '43214321', 1),
-(25, 'nombre', 'apellido', 987654321, NULL, NULL, '40005000', 1),
-(32, 'Margossian', 'Nicolas', 5555555, NULL, '1144322258', '1165898555', 1),
-(39, 'aaa', 'aaa', 43444, NULL, '1125458', '1154898', 1),
-(40, 'asdf8', 'asdf9', 3246, 'hola9', '2436', '2344', 1),
-(45, 'hoola', 'q hace', 555555, NULL, '0', '123213213', 1),
-(46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 1),
-(47, 'nicolass', 'margossian23', 439940804, 'a', '5613', '2345', 1),
-(52, 'dawa', 'yareyare', 435435435, 'mnail@q', '123', '5', 1);
+INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Telephone`, `Cellphone`, `Business_idBusiness`, `Active`) VALUES
+(0, 'Consumidor Final', 'Consumidor Final', 1, ' ', '0', '1', 0, b'1'),
+(8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', '113212113', '11231213', 1, b'1'),
+(22, 'Margosian', '11', 3, 'a', NULL, '111', 2, b'1'),
+(23, 'test', 'prueba', 123456, NULL, NULL, '43214321', 1, b'1'),
+(25, 'nombre', 'apellido', 987654321, NULL, NULL, '40005000', 1, b'1'),
+(32, 'Margossian', 'Nicolas', 5555555, NULL, '1144322258', '1165898555', 1, b'1'),
+(39, 'aaa', 'aaa', 43444, NULL, '1125458', '1154898', 1, b'1'),
+(40, 'asdf8', 'asdf9', 3246, 'hola9', '2436', '2344', 1, b'1'),
+(45, 'hoola', 'q hace', 555555, NULL, '0', '123213213', 1, b'0'),
+(46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 1, b'1'),
+(47, 'nicolass', 'margossian23', 439940804, 'a', '5613', '2345', 1, b'1'),
+(52, 'dawa', 'yareyare', 1234, 'mnail@q', '123', '5', 1, b'0'),
+(53, 'R', 'lucas', 7, NULL, NULL, NULL, 1, b'0');
 
 -- --------------------------------------------------------
 
@@ -715,23 +719,26 @@ CREATE TABLE IF NOT EXISTS `products` (
   `CodeProduct` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
   `Suppliers_idSupplier` int(11) NOT NULL,
   `Business_idBusiness` int(11) NOT NULL,
+  `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idProducts`) USING BTREE,
   KEY `fk_Products_Suppliers1_idx` (`Suppliers_idSupplier`),
   KEY `fk_Products_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Volcado de datos para la tabla `products`
 --
 
-INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 10, '1', 3, 1),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1),
-(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1),
-(4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1),
-(7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, 32, '434', 1, 1),
-(8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1),
-(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 33, '707', 1, 1);
+INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`, `Active`) VALUES
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 10, '1', 3, 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1, b'1'),
+(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1, b'1'),
+(4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1, b'1'),
+(7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, 32, '434', 1, 1, b'1'),
+(8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1, b'1'),
+(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 33, '707', 1, 1, b'1'),
+(15, 50, 'a', 0000654.00, 0000546.00, 0000213.00, NULL, 500, '50', 1, 1, b'0'),
+(16, 54, 'ce', 0000030.00, 0000030.00, 0000035.00, NULL, 31, '54', 1, 1, b'0');
 
 -- --------------------------------------------------------
 
