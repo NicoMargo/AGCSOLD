@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 02-09-2019 a las 19:01:26
+-- Tiempo de generación: 05-09-2019 a las 19:00:05
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -128,15 +128,10 @@ THEN
 			UPDATE clients set clients.eMail = pEmail WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
 		end if;
 		
-		if( pTelephone is not null and pTelephone != (SELECT clients.Telephone from clients where clients.idClients = id)) 
-		THEN
-			UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
-		end if;
+		UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+
+		UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
 		
-		if( pCellphone is not null and pCellphone != (SELECT clients.Cellphone from clients where clients.idClients = id)) 
-		THEN
-			UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
-		end if;
 	end if;
 end if$$
 
@@ -538,7 +533,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idClients`) USING BTREE,
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
@@ -551,14 +546,12 @@ INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Tel
 (23, 'test', 'prueba', 123456, NULL, NULL, '43214321', 1),
 (25, 'nombre', 'apellido', 987654321, NULL, NULL, '40005000', 1),
 (32, 'Margossian', 'Nicolas', 5555555, NULL, '1144322258', '1165898555', 1),
-(34, 'a', 'a', 12, 'a', '1', '1', 1),
-(37, 'a', 'a', 1111111, '', '123123123', '1', 1),
 (39, 'aaa', 'aaa', 43444, NULL, '1125458', '1154898', 1),
 (40, 'asdf8', 'asdf9', 3246, 'hola9', '2436', '2344', 1),
-(42, 'a', 'a', 2147483647, NULL, NULL, NULL, 1),
 (45, 'hoola', 'q hace', 555555, NULL, '0', '123213213', 1),
 (46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 1),
-(47, 'nicolass', 'margossian23', 439940804, 'a', '0', '2345', 1);
+(47, 'nicolass', 'margossian23', 439940804, 'a', '5613', '2345', 1),
+(52, 'dawa', 'yareyare', 435435435, 'mnail@q', '123', '5', 1);
 
 -- --------------------------------------------------------
 
@@ -640,14 +633,14 @@ CREATE TABLE IF NOT EXISTS `products` (
   PRIMARY KEY (`idProducts`) USING BTREE,
   KEY `fk_Products_Suppliers1_idx` (`Suppliers_idSupplier`),
   KEY `fk_Products_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Volcado de datos para la tabla `products`
 --
 
 INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 5, '1', 3, 1),
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 10, '1', 3, 1),
 (2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1),
 (3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1),
 (4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1),

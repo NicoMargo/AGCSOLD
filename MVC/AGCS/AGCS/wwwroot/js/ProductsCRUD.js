@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+    var modelId;
     $("#searchInput").keyup(
         function () {
             var input, filter, i, txtValue;
@@ -106,11 +107,11 @@
 
     $(".btnProductUpdate").click(function () {
         normalizeInputs("productUpdate", "updtInput");
-        let Index = $(this).attr("position");
+        modelId = $(this).attr("modelId");
         $.ajax({
             type: "POST",
             url: "/Products/GetProduct",
-            data: { pos: Index },
+            data: { id: modelId },
             success: function (DataJsonClient) {
                 var Data = JSON.parse(DataJsonClient);
                 $("#updtNumber").find("input").val(Data.ArticleNumber);
@@ -135,6 +136,7 @@
                 type: "POST",
                 url: "/Products/UpdateProduct",
                 data: {
+                    id: modelId,
                     number: parseInt($("#updtNumber").find("input").val()),
                     description: $("#updtDescription").find("input").val(),
                     code: $("#updtCode").find("input").val(),
@@ -156,12 +158,12 @@
     });
 
     $("deleteButton").click(function () {
-        let Index = $(this).attr("position");
+        modelId = $(this).attr("modelId");
          $("#confirm").click(function () {
             $.ajax({
                 type: "DELETE",
                 url: "/Products/DeleteProduct",
-                data: { index: Index },
+                data: { id: modelId },
                 success: function () {
                     location.reload();
                 },
@@ -202,12 +204,12 @@
     });
 
     $(".btnStockUpdt").click(function () {
-        let Index = $(this).attr("position");
+        modelId = $(this).attr("modelId");
         $.ajax({
             type: "POST",
             url: "/Products/UpdateStock",
             data: {
-                pos: parseInt(Index),
+                id: parseInt(modelId),
                 stock: parseInt($(this).parent().find("input").val())
             },
             success: function () {

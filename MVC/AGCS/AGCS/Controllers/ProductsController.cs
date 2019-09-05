@@ -25,28 +25,27 @@ namespace AGCS.Controllers
         //Products
         public ActionResult ProductsCRUD()
         {
-            ProductsProvider.GetProducts(Helpers.idBusiness);
-            ViewBag.Products = ProductsProvider.ProductsList;
+            ViewBag.Products = ProductsProvider.GetProducts(Helpers.idBusiness);
             ViewBag.Suppliers = SupplierProvider.GetSuppliersShort(Helpers.idBusiness);
             return View();
         }
 
         [HttpPost]
-        public JsonResult GetProduct(int pos)
+        public JsonResult GetProduct(uint id)
         {
-            ProductsProvider.GetProductById(ProductsProvider.ProductsList[pos].Id, Helpers.idBusiness);
-            string JsonDataProduct = JsonConvert.SerializeObject(ProductsProvider.SelectedProduct);
+            Product product = ProductsProvider.GetProductById(id, Helpers.idBusiness);
+            string JsonDataProduct = JsonConvert.SerializeObject(product);
             return Json(JsonDataProduct);
         }
                     
         [HttpPost]
-        public bool UpdateProduct(uint number, string description, string code, string cost, string price, string priceW, int stock, uint idSupplier)
+        public bool UpdateProduct(uint id, uint number, string description, string code, string cost, string price, string priceW, int stock, uint idSupplier)
         {
             bool Success = true;
             float fCost = parseFloat(cost);
             float fPrice = parseFloat(price);
             float fPriceW = parseFloat(priceW);
-            Product product = new Product(ProductsProvider.SelectedProduct.Id, number, description, fCost, fPrice, fPriceW, stock, code,idSupplier);
+            Product product = new Product(id, number, description, fCost, fPrice, fPriceW, stock, code,idSupplier);
 
             try
             {
@@ -85,12 +84,12 @@ namespace AGCS.Controllers
     
 
         [HttpDelete]
-        public bool DeleteProduct(uint index)
+        public bool DeleteProduct(uint id)
         {
             bool success = true;
             try
             {
-                ProductsProvider.DeleteProduct(ProductsProvider.ProductsList[Convert.ToInt32(index)].Id, Helpers.idBusiness);
+                ProductsProvider.DeleteProduct(id, Helpers.idBusiness);
             }
             catch
             {
@@ -100,13 +99,13 @@ namespace AGCS.Controllers
         }
 
         [HttpPost]
-        public bool UpdateStock(uint pos, int stock)
+        public bool UpdateStock(uint id, int stock)
         {
             bool success = true;      
 
             try
             {
-                success = ProductsProvider.UpdateStock(ProductsProvider.ProductsList[(int)pos].Id,stock, Helpers.idBusiness);
+                success = ProductsProvider.UpdateStock(id, stock, Helpers.idBusiness);
             }
             catch
             {

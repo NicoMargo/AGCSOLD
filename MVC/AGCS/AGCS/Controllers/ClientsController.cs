@@ -18,29 +18,28 @@ namespace AGCS.Controllers
         //Clients
         public ActionResult ClientsCRUD()
         {
-            ClientsProvider.GetClients(Helpers.idBusiness);
-            ViewBag.Clients = ClientsProvider.ClientsList;
+            ViewBag.Clients = ClientsProvider.GetClients(Helpers.idBusiness);
             return View();
         }
 
         [HttpPost]
-        public JsonResult GetDataClient(int pos)
+        public JsonResult GetDataClient(uint id)
         {
-            ClientsProvider.GetClientById(ClientsProvider.ClientsList[pos].Id, Helpers.idBusiness);
-            string JsonDataClient = JsonConvert.SerializeObject(ClientsProvider.SelectedClient);
+            Client client = ClientsProvider.GetClientById(id, Helpers.idBusiness);
+            string JsonDataClient = JsonConvert.SerializeObject(client);
             return Json(JsonDataClient);
         }
 
         [HttpPost]
-        public bool UpdateClient(string Surname, string Name, ulong Dni, string email, string Telephone, string Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
-        {
+        public bool UpdateClient(uint id, string surname, string name, ulong dni, string email, string telephone, string cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
+            {
             bool Success = true;
             if (email is null) { email = ""; }
-            Client cUpdateClient = new Client(ClientsProvider.SelectedClient.Id, Name, Surname, Dni, email, Cellphone, Telephone);
+            Client client = new Client(id, name, surname, dni, email, cellphone, telephone);
 
             try
             {
-                ClientsProvider.UpdateClient(cUpdateClient, Helpers.idBusiness);
+                ClientsProvider.UpdateClient(client, Helpers.idBusiness);
             }
             catch
             {
@@ -71,12 +70,12 @@ namespace AGCS.Controllers
         }
 
         [HttpDelete]
-        public bool DeleteClient(uint pos)
+        public bool DeleteClient(uint id)
         {
             bool Success = true;
             try
             {
-                ClientsProvider.DeleteClient(ClientsProvider.ClientsList[Convert.ToInt32(pos)].Id, Helpers.idBusiness);
+                ClientsProvider.DeleteClient(id, Helpers.idBusiness);
             }
             catch
             {

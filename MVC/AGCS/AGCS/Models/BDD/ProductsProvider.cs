@@ -8,17 +8,16 @@ namespace AGCS.Models.BDD
 {
     public static class ProductsProvider
     {
-        private static List<Product> productsList = new List<Product>();
-        private static Product selectedProduct;
+        //private static List<Product> productsList = new List<Product>();
+        //private static Product selectedProduct;
 
-        public static Product SelectedProduct { get => selectedProduct; }
-        public static List<Product> ProductsList { get => productsList; }
+        //public static Product SelectedProduct { get => selectedProduct; }
+        //public static List<Product> ProductsList { get => productsList; }
 
         //Methods for store procedures of Table Products 
-        public static void GetProducts(uint idBusiness)
+        public static List<Product> GetProducts(uint idBusiness)
         {
-            
-            productsList.Clear();
+            List<Product> productsList = new List<Product>();
 
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", idBusiness}
@@ -49,6 +48,7 @@ namespace AGCS.Models.BDD
                 catch { }
             }
             Helpers.Disconect();
+            return productsList;
         }
 
         public static Product GetProductByCode(ulong code, uint idBusiness)
@@ -84,7 +84,7 @@ namespace AGCS.Models.BDD
             return product;
         }
 
-        public static void GetProductById(uint idProducts, uint idBusiness)
+        public static Product GetProductById(uint idProducts, uint idBusiness)
         {
             Product product = null;
 
@@ -119,7 +119,7 @@ namespace AGCS.Models.BDD
                 catch { }
             }
             Helpers.Disconect();
-            selectedProduct = product;
+            return product;
         }
 
         public static bool InsertProduct(Product product, uint idBusiness) {

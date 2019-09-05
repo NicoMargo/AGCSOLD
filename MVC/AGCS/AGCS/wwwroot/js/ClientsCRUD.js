@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-
+    var clientId;
     $("#searchInput").keyup(
         function () {
             var input, filter, i, txtValue;
@@ -64,11 +64,11 @@
 
     $(".imgClientUpdate").click(function () {
         modalNormal("Update");
-        let Index = $(this).attr("position");
+        clientId = $(this).attr("clientId");
         $.ajax({
             type: "POST",
             url: "/Clients/GetDataClient",
-            data: { pos: Index },
+            data: { id: clientId },
             success: function (DataJsonClient) {
                 var Data = JSON.parse(DataJsonClient);
                 $("#modalUpdateSurname").val(Data.Surname);
@@ -103,12 +103,13 @@
                 type: "POST",
                 url: "/Clients/UpdateClient",
                 data: {
-                    Surname: $("#modalUpdateSurname").val(),
-                    Name: $("#modalUpdateName").val(),
+                    id: clientId,
+                    surname: $("#modalUpdateSurname").val(),
+                    name: $("#modalUpdateName").val(),
                     dni: $("#modalUpdateDni").val(),
                     email: $("#modalUpdateEmail").val(),
-                    Telephone: $("#modalUpdateTelephone").val(),
-                    Cellphone: $("#modalUpdateCellphone").val(),
+                    telephone: $("#modalUpdateTelephone").val(),
+                    cellphone: $("#modalUpdateCellphone").val(),
                     Town: $("#modalUpdateTown").val(),
                     Address: $("#modalUpdateAddress").val(),
                     Province: 1,
@@ -128,12 +129,12 @@
     });
 
     $("deleteButton").click(function () {
-        let Index = $(this).attr("position");
+        clientId = $(this).attr("clientId");
          $("#confirm").click(function () {
             $.ajax({
                 type: "DELETE",
                 url: "/Clients/DeleteClient",
-                data: { pos: Index },
+                data: { id: clientId },
                 success: function () {
                     location.reload();
                 },

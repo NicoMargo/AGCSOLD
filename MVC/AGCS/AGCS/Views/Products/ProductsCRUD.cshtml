@@ -80,9 +80,9 @@
                                     <td class="colDescription">@validString(ViewBag.Products[i].Description)</td>
                                     <td class="colCode">@validString(ViewBag.Products[i].Code)</td>
                                     <td>@validFloat(ViewBag.Products[i].Price)</td>
-                                    <td><input value=@ViewBag.Products[i].Stock type="number" step="1" class="form-control text-center" style="width:100px"/> <img position="@i"  class="btnStockUpdt" src="~/images/submit.png" style="width:50px"/> </td>
-                                    <td><a data-toggle="modal" data-target="#productUpdate"><img position="@i" class="btnProductUpdate updateImage" src="~/images/edit.png" /></a></td>
-                                    <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@i"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
+                                    <td><input value=@ViewBag.Products[i].Stock type="number" step="1" class="form-control text-center" style="width:100px"/> <img modelId="@ViewBag.Products[i].Id"  class="btnStockUpdt" src="~/images/submit.png" style="width:50px"/> </td>
+                                    <td><a data-toggle="modal" data-target="#productUpdate"><img modelId="@ViewBag.Products[i].Id" class="btnProductUpdate updateImage" src="~/images/edit.png" /></a></td>
+                                    <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton modelId="@ViewBag.Products[i].Id"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
                                 </tr>
                             }
                         }

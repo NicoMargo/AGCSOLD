@@ -7,25 +7,10 @@ using MySql.Data.MySqlClient;
 namespace AGCS.Models.BDD
 {
     public static class ClientsProvider {
-
-        private static Client selectedClient;
-        private static List<Client> clientsList = new List<Client>();
-
-        public static Client SelectedClient { get => selectedClient;  }
-        public static List<Client> ClientsList { get => clientsList;  }
-
-
         //Methods for store procedures of Table Clients 
-        public static void GetClients(uint idBusiness)
+        public static List<Client> GetClients(uint idBusiness)
         {
-            clientsList.Clear();
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientsGet";
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            MySqlDataReader ConnectionReader = CommandConnection.ExecuteReader();*/
+            List<Client> clientsList = new List<Client>();
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness",idBusiness }
             };
@@ -54,19 +39,13 @@ namespace AGCS.Models.BDD
                 catch { }
             }
             Helpers.Disconect();
+            return clientsList;
         }
 
-        public static void GetClientById(uint idClient, uint idBusiness)
+        public static Client GetClientById(uint idClient, uint idBusiness)
         {
 
             Client client = null;
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientGetById";
-            CommandConnection.Parameters.AddWithValue("@id", idClient);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", idClient},
                 {"pIdBusiness", idBusiness}
@@ -94,19 +73,12 @@ namespace AGCS.Models.BDD
                 catch { }
             }
             Helpers.Disconect();
-            selectedClient = client;
+            return client;
         }
 
         public static Client GetClientByDNI(uint DNI, uint idBusiness)
         {
             Client client = null;
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientGetByDNI";
-            CommandConnection.Parameters.AddWithValue("@pDNI", DNI);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pDNI", DNI},
                 {"pIdBusiness", idBusiness}
@@ -135,19 +107,6 @@ namespace AGCS.Models.BDD
 
         public static bool InsertClient(Client client, uint idBusiness)
         {
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientInsert";
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            CommandConnection.Parameters.AddWithValue("@pName", client.Name);
-            CommandConnection.Parameters.AddWithValue("@pSurname", client.Surname);
-            CommandConnection.Parameters.AddWithValue("@pDNI_CUIT", client.Dni);
-            CommandConnection.Parameters.AddWithValue("@pEmail", client.Email);
-            CommandConnection.Parameters.AddWithValue("@pTelephone", client.Telephone);
-            CommandConnection.Parameters.AddWithValue("@pCellphone", client.Cellphone);*/
-
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", idBusiness},
                 {"pName", client.Name},
@@ -170,25 +129,6 @@ namespace AGCS.Models.BDD
 
         public static void UpdateClient(Client client, uint idBusiness)
         {
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientUpdate";
-            CommandConnection.Parameters.AddWithValue("@id", client.Id);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            CommandConnection.Parameters.AddWithValue("@pName", client.Name);
-            CommandConnection.Parameters.AddWithValue("@pSurname", client.Surname);
-            CommandConnection.Parameters.AddWithValue("@pDNI_CUIT", client.Dni);
-            CommandConnection.Parameters.AddWithValue("@pEmail", client.Email);
-            CommandConnection.Parameters.AddWithValue("@pTelephone", client.Telephone);
-            CommandConnection.Parameters.AddWithValue("@pCellphone", client.Cellphone);
-            /*
-            CommandConnection.Parameters.AddWithValue("@pLocality", "");
-            CommandConnection.Parameters.AddWithValue("@pidProvince", 0);
-            CommandConnection.Parameters.AddWithValue("@pidDelivery", 0);
-            CommandConnection.Parameters.AddWithValue("@pComments", "");
-            */
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", client.Id },
                 {"pIdBusiness", idBusiness},
@@ -206,12 +146,6 @@ namespace AGCS.Models.BDD
 
         public static void DeleteClient(uint id, uint idBusiness)
         {
-            /*MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientDelete";
-            CommandConnection.Parameters.AddWithValue("@id", id);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", id },
                 {"pIdBusiness", idBusiness},

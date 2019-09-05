@@ -67,8 +67,8 @@
                                     <td class="colDNI">@validInt(ViewBag.Clients[i].Dni)</td>
                                     <td>@validString(ViewBag.Clients[i].Cellphone)</td>
                                     <td>@validString(ViewBag.Clients[i].Email)</td>
-                                    <td><a data-toggle="modal" data-target="#updateClient"><img position="@i" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
-                                    <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@i"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
+                                    <td><a data-toggle="modal" data-target="#updateClient"><img clientId="@ViewBag.Clients[i].Id" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
+                                    <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton clientId="@ViewBag.Clients[i].Id"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
                                 </tr>
                             }
                         }
