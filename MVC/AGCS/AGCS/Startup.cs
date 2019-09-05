@@ -1,4 +1,5 @@
 ﻿using System;
+using AGCS.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

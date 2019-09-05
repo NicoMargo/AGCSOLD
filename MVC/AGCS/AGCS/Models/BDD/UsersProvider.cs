@@ -33,7 +33,7 @@ namespace AGCS.Models.BDD
         public static List<User> GetUsers()
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness",1}
+                {"pIdBusiness",Sessionh.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spUsersGet", args);
             List<User> ListOfUsers = new List<User>();
@@ -53,7 +53,7 @@ namespace AGCS.Models.BDD
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pId", id },
-                {"pIdBusiness",1},
+                {"pIdBusiness",Sessionh.GetSUInt32("idBusiness")},
             };
             Helpers.CallNonQuery("spUserDelete", args);
             Helpers.Disconect();
@@ -61,7 +61,7 @@ namespace AGCS.Models.BDD
         public static bool InsertUser(User user)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", 1},
+                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
                 {"pName", user.Name},
                 {"pSurname", user.Surname},
                 {"pDni", user.Dni},
@@ -83,7 +83,7 @@ namespace AGCS.Models.BDD
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pId", idUser},
-                {"pIdBusiness", 1}
+                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spUserGetById", args);
             User user = null;
@@ -109,6 +109,22 @@ namespace AGCS.Models.BDD
             }
             Helpers.Disconect();
             return user;
+        }
+        public static void UpdateUser(User user)
+        {
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"id", user.Id },
+                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
+                {"pName", user.Name},
+                {"pSurname", user.Surname},
+                {"pDNI_CUIT", user.Dni},
+                {"pEmail", user.Email},
+                {"pTelephone", user.Telephone},
+                {"pCellphone", user.Cellphone}
+            };
+            Helpers.CallNonQuery("spUserUpdate", args);
+            Helpers.Disconect();
+
         }
 
     }

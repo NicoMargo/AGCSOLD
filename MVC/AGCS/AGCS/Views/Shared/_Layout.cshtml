@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>    
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AGCS</title>
@@ -18,11 +18,12 @@
                 <h1 class="pl-5 offset-md-1 text-white float-left">AGCS</h1>
             </a>
             <div class="offset-md-7 pt-2">
-                <span class="text-white"></span>
+                <span class="text-white">@Sessionh.GetSString("business")</span>
                 <span class="ml-2 mr-2 text-white">|</span>
-                <span class="text-white"></span>
+                <span class="text-white">@Sessionh.GetSString("username")</span>
                 <span class="ml-2 mr-2 text-white">|</span>
                 <img src="~/images/icon-user.png" alt="icono-User" class="w-10 mr-5">
+                @Html.ActionLink("Cerrar Sesón", "Index", "Home",null, new {@class = "btn btn-primary"})
             </div>
         </div>
     </nav>

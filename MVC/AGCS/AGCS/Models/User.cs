@@ -5,24 +5,24 @@ using System.Threading.Tasks;
 
 namespace AGCS.Models
 {
-    public class User:Person
+    public class User : Person
     {
         private string _passUser;
-        private ulong _dni;  
+        private ulong _dni;
 
         //Login constructor
-        public User(string email, string passUser):base(email)
+        public User(string email, string passUser) : base(email)
         {
             _passUser = passUser;
         }
 
         //After Login constructor
-        public User(string Name, string Surname, uint id):base(Name,Surname, id)
+        public User(string Name, string Surname, uint id) : base(Name, Surname, id)
         {
         }
 
         //New User constructor
-        public User(string name, string surname, ulong dni, string email, string cellphone,string passUser, string telephone) : base(name, surname, email, cellphone, telephone)
+        public User(string name, string surname, ulong dni, string email, string cellphone, string passUser, string telephone) : base(name, surname, email, cellphone, telephone)
         {
             _passUser = passUser;
             _dni = dni;
@@ -30,6 +30,12 @@ namespace AGCS.Models
 
         //Get User By Id constructor
         public User(uint id, string name, string surname, ulong dni, string email) : base(id, name, surname, email)
+        {
+            _dni = dni;
+        }
+
+        //Update User constructor
+        public User(uint id, string name, string surname, ulong dni, string email, string cellphone, string telephone) : base(id, name, surname, email, cellphone, telephone)
         {
             _dni = dni;
         }

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace AGCS.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
         
         public ActionResult UsersCRUD()
@@ -50,12 +50,28 @@ namespace AGCS.Controllers
             }
             return Success;
         }
-
         [HttpPost]
         public JsonResult GetDataUser(uint id)
         {            
             string JsonDataClient = JsonConvert.SerializeObject(UsersProvider.GetUserById(id));
             return Json(JsonDataClient);
+        }
+        [HttpPost]
+        public bool UpdateUser(uint id,string Surname, string Name, ulong Dni, string email, string Telephone, string Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
+        {
+            bool Success = true;
+            if (email is null) { email = ""; }
+            User cUser = new User(id, Name, Surname, Dni, email, Cellphone, Telephone);
+            try
+            {
+                UsersProvider.UpdateUser(cUser);
+            }
+            catch
+            {
+                Success = false;
+            }
+
+            return Success;
         }
 
     }

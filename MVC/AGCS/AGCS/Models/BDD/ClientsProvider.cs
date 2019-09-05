@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
 namespace AGCS.Models.BDD
@@ -16,12 +14,12 @@ namespace AGCS.Models.BDD
 
 
         //Methods for store procedures of Table Clients 
-        public static void GetClients(uint idBusiness)
+        public static void GetClients()
         {
             clientsList.Clear();
         
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness",idBusiness }
+                {"pIdBusiness",Sessionh.GetSUInt32("idBusiness") }
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientsGet", args);
             while (ConnectionReader.Read())
@@ -50,13 +48,13 @@ namespace AGCS.Models.BDD
             Helpers.Disconect();
         }
 
-        public static void GetClientById(uint idClient, uint idBusiness)
+        public static void GetClientById(uint idClient)
         {
 
             Client client = null;
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", idClient},
-                {"pIdBusiness", idBusiness}
+                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientGetById", args);
 
@@ -84,7 +82,7 @@ namespace AGCS.Models.BDD
             selectedClient = client;
         }
 
-        public static Client GetClientByDNI(uint DNI, uint idBusiness)
+        public static Client GetClientByDNI(uint DNI)
         {
             Client client = null;
             /*
@@ -96,7 +94,7 @@ namespace AGCS.Models.BDD
             CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pDNI", DNI},
-                {"pIdBusiness", idBusiness}
+                {"pIdBusiness",Sessionh.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientGetByDNI", args);
 
@@ -120,7 +118,7 @@ namespace AGCS.Models.BDD
             return client;
         }
 
-        public static bool InsertClient(Client client, uint idBusiness)
+        public static bool InsertClient(Client client)
         {
             /*
             MySqlConnection Connection = Connect();
@@ -136,7 +134,7 @@ namespace AGCS.Models.BDD
             CommandConnection.Parameters.AddWithValue("@pCellphone", client.Cellphone);*/
 
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", idBusiness},
+                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
                 {"pName", client.Name},
                 {"pSurname", client.Surname},
                 {"pDNI_CUIT", client.Dni},
@@ -155,7 +153,7 @@ namespace AGCS.Models.BDD
             return success;
         }
 
-        public static void UpdateClient(Client client, uint idBusiness)
+        public static void UpdateClient(Client client)
         {
             /*
             MySqlConnection Connection = Connect();
@@ -178,7 +176,7 @@ namespace AGCS.Models.BDD
             */
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", client.Id },
-                {"pIdBusiness", idBusiness},
+                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
                 {"pName", client.Name},
                 {"pSurname", client.Surname},
                 {"pDNI_CUIT", client.Dni},
@@ -188,7 +186,6 @@ namespace AGCS.Models.BDD
             };
             Helpers.CallNonQuery("spClientUpdate", args);
             Helpers.Disconect();
-
         }
 
         public static void DeleteClient(uint id, uint idBusiness)

@@ -78,8 +78,8 @@
         if (valid) {
             $.ajax({
                 type: "POST",
-                url: "/Clients/UpdateClient",
-                data: {
+                url: "/Users/UpdateUser",
+                data:{
                     Surname: $("#modalUpdateSurname").val(),
                     Name: $("#modalUpdateName").val(),
                     dni: $("#modalUpdateDni").val(),
@@ -95,7 +95,6 @@
                 },
                 success: function () {
                     location.reload();
-                    $("#updateClient").modal("toggle");
                 },
                 error: function () {
                     alert("ERROR");

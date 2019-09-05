@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AGCS.Controllers
 {
-    public class ClientsController : Controller
+    public class ClientsController : BaseController
     {
         public IActionResult Index()
         {
@@ -15,7 +15,7 @@ namespace AGCS.Controllers
         //Clients
         public ActionResult ClientsCRUD()
         {
-            ClientsProvider.GetClients(Session.GetSUInt32("idBusiness"));
+            ClientsProvider.GetClients();
             ViewBag.Clients = ClientsProvider.ClientsList;
             return View();
         }
@@ -23,14 +23,14 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetDataClient(int pos)
         {
-            ClientsProvider.GetClientById(ClientsProvider.ClientsList[pos].Id, Session.GetSUInt32("idBusiness"));
+            ClientsProvider.GetClientById(ClientsProvider.ClientsList[pos].Id);
             string JsonDataClient = JsonConvert.SerializeObject(ClientsProvider.SelectedClient);
             return Json(JsonDataClient);
         }
         [HttpPost]
         public JsonResult GetDataClientByDNI(uint dni)
         {
-            return Json(JsonConvert.SerializeObject(ClientsProvider.GetClientByDNI(dni, Session.GetSUInt32("idBusiness"))));
+            return Json(JsonConvert.SerializeObject(ClientsProvider.GetClientByDNI(dni)));
         }
         [HttpPost]
         public bool UpdateClient(string Surname, string Name, ulong Dni, string email, string Telephone, string Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
@@ -38,16 +38,14 @@ namespace AGCS.Controllers
             bool Success = true;
             if (email is null) { email = ""; }
             Client cUpdateClient = new Client(ClientsProvider.SelectedClient.Id, Name, Surname, Dni, email, Cellphone, Telephone);
-
             try
             {
-                ClientsProvider.UpdateClient(cUpdateClient, Session.GetSUInt32("idBusiness"));
+                ClientsProvider.UpdateClient(cUpdateClient);
             }
             catch
             {
                 Success = false;
             }
-
             return Success;
         }
 
@@ -61,7 +59,7 @@ namespace AGCS.Controllers
             Client NewClient = new Client(name, surname, dni, email, telephone, cellphone);
             try
             {
-                Success = ClientsProvider.InsertClient(NewClient, Session.GetSUInt32("idBusiness"));
+                Success = ClientsProvider.InsertClient(NewClient);
             }
             catch
             {
@@ -76,7 +74,7 @@ namespace AGCS.Controllers
             bool Success = true;
             try
             {
-                ClientsProvider.DeleteClient(ClientsProvider.ClientsList[Convert.ToInt32(id)].Id, Session.GetSUInt32("idBusiness"));
+                ClientsProvider.DeleteClient(ClientsProvider.ClientsList[Convert.ToInt32(id)].Id, Sessionh.GetSUInt32("idBusiness"));
             }
             catch
             {

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AGCS.Controllers
 {
-    public class ProductsController : Controller
+    public class ProductsController : BaseController
     {
         public IActionResult Index()
         {

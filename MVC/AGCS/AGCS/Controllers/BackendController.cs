@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace AGCS.Controllers
 {
-    public class BackendController : Controller
+    public class BackendController : BaseController
     {
         // GET: Backend
         public ActionResult Index()
@@ -40,7 +40,7 @@ namespace AGCS.Controllers
             {
                 Bill bill = new Bill(DateTime.Today, products, recharge , discount, dniClient);
                 
-                success = BillsProvider.InsertBill(bill, ClientBill, Session.GetSUInt32("businessId"));
+                success = BillsProvider.InsertBill(bill, ClientBill, Sessionh.GetSUInt32("businessId"));
             }
             return success;
         }
@@ -61,7 +61,7 @@ namespace AGCS.Controllers
         
         public ActionResult ProductsCRUD()
         {
-            ClientsProvider.GetClients(Session.GetSUInt32("businessId"));
+            ClientsProvider.GetClients();
             ViewBag.Clients = ClientsProvider.ClientsList;
             return View();
         }

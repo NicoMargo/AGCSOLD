@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace AGCS.Models
 {
-    public class Session
+    public class Sessionh
     {
-        private static HttpContext _shc = null;        
+        private static HttpContext _shc = null;       
+        
+        public static void ClearSession()
+        {
+            SHC.Session.Clear();
+        }
 
         public void SetSession(HttpContext HC)
         {
@@ -16,7 +21,7 @@ namespace AGCS.Models
         }
         public static string GetSString(string nameSession)
         {           
-                return SHC.Session.GetString(nameSession);         
+            return SHC.Session.GetString(nameSession);         
         }
         public static UInt32 GetSUInt32(string nameSession)
         {

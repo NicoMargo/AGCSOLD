@@ -12,7 +12,7 @@ namespace AGCS.Models.BDD
             bool success = false;
             if (ClientBill.Name != null)
             {
-                ClientsProvider.InsertClient(ClientBill, Session.GetSUInt32("businessId"));
+                ClientsProvider.InsertClient(ClientBill);
             }
 
             Dictionary<string, object> args = new Dictionary<string, object> {
@@ -55,7 +55,7 @@ namespace AGCS.Models.BDD
                 {"pIdBill", idBill},
                 {"pIdProduct", idProduct},
                 {"pQuantity", quantity},
-                {"pIdBusiness", Session.GetSUInt32("buisnessId") },
+                {"pIdBusiness", Sessionh.GetSUInt32("buisnessId") },
             };
             Helpers.CallNonQuery("spBillXProductInsert", args);
 

@@ -8,11 +8,12 @@ using Microsoft.AspNetCore.Http;
 
 namespace AGCS.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
 
         public ActionResult Index()
         {
+            Sessionh.ClearSession();
             return View();
         }
         [HttpPost]
@@ -27,7 +28,6 @@ namespace AGCS.Controllers
             {
                 if (Loginuser.Name != null)
                 {
-                    Session.SHC = HttpContext;
                     HttpContext.Session.SetString("username", Loginuser.Name+" "+Loginuser.Surname);                    
                     HttpContext.Session.SetString("business", LoginBusiness.Name);
                     HttpContext.Session.SetInt32("idBusiness", Convert.ToInt32(LoginBusiness.Id));
