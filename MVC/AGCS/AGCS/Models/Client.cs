@@ -31,18 +31,12 @@ namespace AGCS.Models
             _dni = dni;
         }
         //Full Client
-        public Client(uint id, string Name, string Surname, ulong dni, string email, string cellphone, string telephone) :base(id,Name,Surname,email,cellphone,telephone)
+        public Client(uint id, string name, string surname, ulong dni, string email, string cellphone, string telephone) :base(id,name,surname,email,cellphone,telephone)
         {
             _dni = dni;
-            _town = Town;
-            _Address = Address;
-            _province = Province;
-            _leter = Leter;
-            _number = Number;
-            _floor = Floor;
         }
         //New Client
-        public Client(string Name, string Surname, ulong dni, string email, string Telephone, string Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(0, Name, Surname, email, Telephone, Cellphone)
+        public Client(string name, string surname, ulong dni, string email, string telephone, string cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(0, name, surname, email, telephone, cellphone)
         {
             _dni = dni;
             _town = Town;
@@ -52,17 +46,17 @@ namespace AGCS.Models
             _number = Number;
             _floor = Floor;
         }
-        public Client(string Name, string Surname, ulong dni, string email, string Telephone, string Cellphone) : base(0, Name, Surname, email, Cellphone, Telephone)
+        public Client(string name, string surname, ulong dni, string email, string telephone, string cellphone) : base(0, name, surname, email, cellphone, telephone)
         {
             _dni = dni;
         }
 
-        public Client(uint id, string Name, string Surname, string email, string cellphone) : base(id, Name, Surname, email, cellphone) {
+        public Client(uint id, string name, string surname, string email, string cellphone) : base(id, name, surname, email, cellphone) {
 
         }
-        public Client(ulong Dni, string Name, string Surname, string Cellphone, string Telephone) :base(Name, Surname, Cellphone, Telephone)
+        public Client(ulong dni, string name, string surname, string cellphone, string telephone) :base(name, surname, cellphone, telephone)
         {
-            _dni = Dni;
+            _dni = dni;
         }
         public Client() : base()
         {

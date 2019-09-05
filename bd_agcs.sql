@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 05-09-2019 a las 14:00:47
+-- Tiempo de generación: 05-09-2019 a las 20:30:47
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -128,15 +128,10 @@ THEN
 			UPDATE clients set clients.eMail = pEmail WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
 		end if;
 		
-		if( pTelephone is not null and pTelephone != (SELECT clients.Telephone from clients where clients.idClients = id)) 
-		THEN
-			UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
-		end if;
+		UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
+
+		UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
 		
-		if( pCellphone is not null and pCellphone != (SELECT clients.Cellphone from clients where clients.idClients = id)) 
-		THEN
-			UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClients = id and clients.Business_idBusiness = pIdBusiness; 
-		end if;
 	end if;
 end if$$
 
@@ -159,7 +154,7 @@ DROP PROCEDURE IF EXISTS `spProductInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductInsert` (IN `pIdBusiness` INT, IN `pProduct_Number` INT, IN `pCode` VARCHAR(100), IN `pDescription` VARCHAR(50), IN `pCost` FLOAT(10,2), IN `pPrice` FLOAT(10,2), IN `pPriceW` FLOAT(10,2), IN `pStock` INT, IN `pIdSupplier` INT)  BEGIN
 	if (not exists(select Products.idProducts from Products where Products.Business_idBusiness = pIdBusiness and (Products.CodeProduct = pCode or Products.Article_number = pProduct_Number)))
     then
-		if exists(select Suppliers.idSupplier from Suppliers where Suppliers.Business_idBusiness = pIdBusiness and Suppliers.idSupplier = pIdSupplier)
+		if exists(select Suppliers.idSupplier from Suppliers where (Suppliers.Business_idBusiness = pIdBusiness or Suppliers.Business_idBusiness = 0) and Suppliers.idSupplier = pIdSupplier)
         then
 			if(pProduct_Number > 0)
             then 
@@ -177,7 +172,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductInsert` (IN `pIdBusiness` 
 					end if;
                     if(pPriceW > 0)
 					then
-						Update Products set Products.Price_W = pPriceW where Products.idProducts = @lastId; 
+						Update Products set Products.PriceW = pPriceW where Products.idProducts = @lastId; 
 					end if;
 				end if; #endif lastId is not null 
 			end if;#endif ProductNumber > 0
@@ -188,6 +183,11 @@ END$$
 DROP PROCEDURE IF EXISTS `spProductsGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` INT)  BEGIN
 	select * from Products where Products.Business_idBusiness = pIdBusiness;
+END$$
+
+DROP PROCEDURE IF EXISTS `spProductStockUpdate`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductStockUpdate` (IN `pIdProducts` INT, IN `pIdBusiness` INT, IN `pStock` INT)  BEGIN
+	update products set products.stock = pStock where products.idProducts = pIdProducts and products.Business_idBusiness = pIdBusiness;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductUpdate`$$
@@ -207,7 +207,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN 
         end if;
         
 		#Description
-        if (pDescription != (select Products.Description from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and pDescription is not null )
+        if (pDescription is not null )
         then
 			update Products set Products.Description = pDescription where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
         end if;
@@ -225,24 +225,25 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN 
         end if;
         
 		#PriceW
-        if (pPriceW - (select Products.Price_W from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) != 0 and pPriceW > 0 and pPriceW is not null)
+        if (pPriceW - (select Products.PriceW from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) != 0 and pPriceW > 0 and pPriceW is not null)
         then
-			update Products set Products.Price_W = pPriceW where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+			    update Products set Products.PriceW = pPriceW where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
         end if;
-        
-		#Stock
-        if (pStock != (select Products.Stock from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and pStock is not null)
-        then
-			update Products set Products.Stock = pStock where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
-        end if;
-        
+	    	#Stock
+		    update Products set Products.Stock = pStock where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
+         
         #Supplier
-        if (pIdSupplier != (select Products.Suppliers_idSupplier from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and exists(select Suppliers.idSupplier from Suppliers where Suppliers.idSupplier = pIdSupplier and Suppliers.Business_idBusiness = pIdBusiness))
+        if (pIdSupplier != (select Products.Suppliers_idSupplier from Products where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness) and exists(select Suppliers.idSupplier from Suppliers where Suppliers.idSupplier = pIdSupplier and (Suppliers.Business_idBusiness = pIdBusiness or Suppliers.Business_idBusiness = 0)))
         then
 			update Products set Products.Suppliers_idSupplier = pIdSupplier where Products.idProducts = pId and Products.Business_idBusiness = pIdBusiness;
         end if;
         
     end if;
+END$$
+
+DROP PROCEDURE IF EXISTS `spSuppliersGet`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spSuppliersGet` (IN `pIdBusiness` INT)  BEGIN
+	select idSupplier,Name,Surname from suppliers where Business_idBusiness = pIdBusiness;
 END$$
 
 DROP PROCEDURE IF EXISTS `spUserDelete`$$
@@ -629,15 +630,13 @@ INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Tel
 (22, 'Margosian', '11', 3, 'a', NULL, '111', 2),
 (23, 'test', 'prueba', 123456, NULL, NULL, '43214321', 1),
 (25, 'nombre', 'apellido', 987654321, NULL, NULL, '40005000', 1),
-(32, 'Margossian', 'Nicolas', 5555555, NULL, '1144322258', '1165898555', 2),
-(34, 'a', 'a', 12, 'a', '1', '1', 1),
-(37, 'a', 'a', 1111111, '', '123123123', '1', 1),
+(32, 'Margossian', 'Nicolas', 5555555, NULL, '1144322258', '1165898555', 1),
 (39, 'aaa', 'aaa', 43444, NULL, '1125458', '1154898', 1),
-(40, 'Mati', 'Santos', 3246, 'hola9', '2436', '2344', 1),
-(45, 'hoola', 'q hace', 555555, NULL, '0', '123213213', 2),
-(46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 2),
-(47, 'nicolas', 'margossian2344', 439940804, '', '0', '2345', 2),
-(51, 'Mati2', 'Santoro2', 43886785, 'mati@mati', '8474747', '7777', 1);
+(40, 'asdf8', 'asdf9', 3246, 'hola9', '2436', '2344', 1),
+(45, 'hoola', 'q hace', 555555, NULL, '0', '123213213', 1),
+(46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 1),
+(47, 'nicolass', 'margossian23', 439940804, 'a', '5613', '2345', 1),
+(52, 'dawa', 'yareyare', 435435435, 'mnail@q', '123', '5', 1);
 
 -- --------------------------------------------------------
 
@@ -707,28 +706,32 @@ DROP TABLE IF EXISTS `products`;
 CREATE TABLE IF NOT EXISTS `products` (
   `idProducts` int(11) NOT NULL AUTO_INCREMENT,
   `Article_number` int(11) DEFAULT NULL,
-  `Description` varchar(45) DEFAULT NULL,
+  `Description` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
   `Cost` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
   `Price` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
+  `PriceW` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
   `Age` bit(1) DEFAULT NULL,
   `Stock` int(11) DEFAULT NULL,
-  `CodeProduct` varchar(100) DEFAULT NULL,
+  `CodeProduct` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
   `Suppliers_idSupplier` int(11) NOT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   PRIMARY KEY (`idProducts`) USING BTREE,
   KEY `fk_Products_Suppliers1_idx` (`Suppliers_idSupplier`),
   KEY `fk_Products_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Volcado de datos para la tabla `products`
 --
 
-INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0000320.00, 0000100.00, b'1', -48, '1', 3, 1),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, b'1', -55, '2', 3, 1),
-(3, 3, 'Manga Yakusoku no Neverland Vol 3', 0000320.00, 0000300.00, b'1', -1037, '3', 3, 1),
-(4, 5, 'Yogurisimo Con Cereales', 0000020.00, 0000050.00, b'1', 97, '7791337613027', 2, 1);
+INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 10, '1', 3, 1),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1),
+(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1),
+(4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1),
+(7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, 32, '434', 1, 1),
+(8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1),
+(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 33, '707', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -764,9 +767,10 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `Surname` varchar(45) DEFAULT NULL,
   `Telephone` int(11) DEFAULT NULL,
   `Cellphone` int(11) NOT NULL,
-  `Factory_Plant` varchar(45) DEFAULT NULL,
+  `Factory` varchar(45) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
-  `Address` varchar(200) NOT NULL,
+  `Address` varchar(200) DEFAULT NULL,
+  `Mail` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`idSupplier`) USING BTREE,
   KEY `fk_Supplier_Business1_idx` (`Business_idBusiness`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
@@ -775,11 +779,12 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
 -- Volcado de datos para la tabla `suppliers`
 --
 
-INSERT INTO `suppliers` (`idSupplier`, `Name`, `Surname`, `Telephone`, `Cellphone`, `Factory_Plant`, `Business_idBusiness`, `Address`) VALUES
-(1, 'Aquiles', 'Traigo', 43216543, 13111111, 'Nose q va aK xd', 1, 'En la loma del ort'),
-(2, 'Aquiles', 'Doy', 45678912, 1513317546, 'yo tampoco jaja salu2', 1, 'viste china, bueno doblando a la izquierda'),
-(3, 'Ivrea', NULL, NULL, 154321321, 'EEEEEEEE', 1, 'Cabildo 6000'),
-(4, 'void', NULL, NULL, 154321321, 'EEEEEEEE', 1, 'Cabildo 6000');
+INSERT INTO `suppliers` (`idSupplier`, `Name`, `Surname`, `Telephone`, `Cellphone`, `Factory`, `Business_idBusiness`, `Address`, `Mail`) VALUES
+(0, NULL, NULL, NULL, 0, NULL, 0, NULL, NULL),
+(1, 'Aquiles', 'Traigo', 43216543, 13111111, 'Nose q va aK xd', 1, 'En la loma del ort', NULL),
+(2, 'Aquiles', 'Doy', 45678912, 1513317546, 'yo tampoco jaja salu2', 1, 'viste china, bueno doblando a la izquierda', NULL),
+(3, 'Ivrea', NULL, NULL, 154321321, 'EEEEEEEE', 1, 'Cabildo 6000', NULL),
+(4, 'void', NULL, NULL, 154321321, 'EEEEEEEE', 1, 'Cabildo 6000', NULL);
 
 -- --------------------------------------------------------
 

@@ -5,19 +5,10 @@ using MySql.Data.MySqlClient;
 namespace AGCS.Models.BDD
 {
     public static class ClientsProvider {
-
-        private static Client selectedClient;
-        private static List<Client> clientsList = new List<Client>();
-
-        public static Client SelectedClient { get => selectedClient;  }
-        public static List<Client> ClientsList { get => clientsList;  }
-
-
         //Methods for store procedures of Table Clients 
-        public static void GetClients()
+        public static List<Client> GetClients()
         {
-            clientsList.Clear();
-        
+            List<Client> clientsList = new List<Client>();
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness",Sessionh.GetSUInt32("idBusiness") }
             };
@@ -46,9 +37,10 @@ namespace AGCS.Models.BDD
                 catch { }
             }
             Helpers.Disconect();
+            return clientsList;
         }
 
-        public static void GetClientById(uint idClient)
+        public static Client GetClientById(uint idClient)
         {
 
             Client client = null;
@@ -79,19 +71,12 @@ namespace AGCS.Models.BDD
                 catch { }
             }
             Helpers.Disconect();
-            selectedClient = client;
+            return client;
         }
 
         public static Client GetClientByDNI(uint DNI)
         {
             Client client = null;
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientGetByDNI";
-            CommandConnection.Parameters.AddWithValue("@pDNI", DNI);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pDNI", DNI},
                 {"pIdBusiness",Sessionh.GetSUInt32("idBusiness")}
@@ -120,19 +105,6 @@ namespace AGCS.Models.BDD
 
         public static bool InsertClient(Client client)
         {
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientInsert";
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            CommandConnection.Parameters.AddWithValue("@pName", client.Name);
-            CommandConnection.Parameters.AddWithValue("@pSurname", client.Surname);
-            CommandConnection.Parameters.AddWithValue("@pDNI_CUIT", client.Dni);
-            CommandConnection.Parameters.AddWithValue("@pEmail", client.Email);
-            CommandConnection.Parameters.AddWithValue("@pTelephone", client.Telephone);
-            CommandConnection.Parameters.AddWithValue("@pCellphone", client.Cellphone);*/
-
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
                 {"pName", client.Name},
@@ -155,25 +127,6 @@ namespace AGCS.Models.BDD
 
         public static void UpdateClient(Client client)
         {
-            /*
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientUpdate";
-            CommandConnection.Parameters.AddWithValue("@id", client.Id);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);
-            CommandConnection.Parameters.AddWithValue("@pName", client.Name);
-            CommandConnection.Parameters.AddWithValue("@pSurname", client.Surname);
-            CommandConnection.Parameters.AddWithValue("@pDNI_CUIT", client.Dni);
-            CommandConnection.Parameters.AddWithValue("@pEmail", client.Email);
-            CommandConnection.Parameters.AddWithValue("@pTelephone", client.Telephone);
-            CommandConnection.Parameters.AddWithValue("@pCellphone", client.Cellphone);
-            /*
-            CommandConnection.Parameters.AddWithValue("@pLocality", "");
-            CommandConnection.Parameters.AddWithValue("@pidProvince", 0);
-            CommandConnection.Parameters.AddWithValue("@pidDelivery", 0);
-            CommandConnection.Parameters.AddWithValue("@pComments", "");
-            */
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", client.Id },
                 {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
@@ -188,17 +141,11 @@ namespace AGCS.Models.BDD
             Helpers.Disconect();
         }
 
-        public static void DeleteClient(uint id, uint idBusiness)
+        public static void DeleteClient(uint id)
         {
-            /*MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spClientDelete";
-            CommandConnection.Parameters.AddWithValue("@id", id);
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", id },
-                {"pIdBusiness", idBusiness},
+                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
             };
             Helpers.CallNonQuery("spClientDelete", args);
             Helpers.Disconect();

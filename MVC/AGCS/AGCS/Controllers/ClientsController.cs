@@ -15,32 +15,28 @@ namespace AGCS.Controllers
         //Clients
         public ActionResult ClientsCRUD()
         {
-            ClientsProvider.GetClients();
-            ViewBag.Clients = ClientsProvider.ClientsList;
+            ViewBag.Clients = ClientsProvider.GetClients();
             return View();
         }
 
         [HttpPost]
-        public JsonResult GetDataClient(int pos)
+        public JsonResult GetDataClient(uint id)
         {
-            ClientsProvider.GetClientById(ClientsProvider.ClientsList[pos].Id);
-            string JsonDataClient = JsonConvert.SerializeObject(ClientsProvider.SelectedClient);
+            Client client = ClientsProvider.GetClientById(id);
+            string JsonDataClient = JsonConvert.SerializeObject(client);
             return Json(JsonDataClient);
         }
+
+
         [HttpPost]
-        public JsonResult GetDataClientByDNI(uint dni)
-        {
-            return Json(JsonConvert.SerializeObject(ClientsProvider.GetClientByDNI(dni)));
-        }
-        [HttpPost]
-        public bool UpdateClient(string Surname, string Name, ulong Dni, string email, string Telephone, string Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
-        {
+        public bool UpdateClient(uint id, string surname, string name, ulong dni, string email, string telephone, string cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
+            {
             bool Success = true;
             if (email is null) { email = ""; }
-            Client cUpdateClient = new Client(ClientsProvider.SelectedClient.Id, Name, Surname, Dni, email, Cellphone, Telephone);
+            Client client = new Client(id, name, surname, dni, email, cellphone, telephone);
             try
             {
-                ClientsProvider.UpdateClient(cUpdateClient);
+                ClientsProvider.UpdateClient(client);
             }
             catch
             {
@@ -51,9 +47,6 @@ namespace AGCS.Controllers
 
         [HttpPost]
         public bool CreateClient(string surname = "", string name = "", ulong dni = 0, string email = "", string telephone = "", string cellphone = "", string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
-
-        //? public bool CreateClient(string Surname = "", string Name = "", int dni = 0, string email = "", int Telephone = 0, int Cellphone = 0, string Town = "", string Address = "", string Province = "", string Leter = "", int Number = 0, int Floor = 0)
-
         {
             bool Success;
             Client NewClient = new Client(name, surname, dni, email, telephone, cellphone);
@@ -68,13 +61,14 @@ namespace AGCS.Controllers
 
             return Success;
         }
+
         [HttpDelete]
         public bool DeleteClient(uint id)
         {
             bool Success = true;
             try
             {
-                ClientsProvider.DeleteClient(ClientsProvider.ClientsList[Convert.ToInt32(id)].Id, Sessionh.GetSUInt32("idBusiness"));
+                ClientsProvider.DeleteClient(id);
             }
             catch
             {

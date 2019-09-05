@@ -45,12 +45,12 @@
                         <strong class="card-title">Usuarios</strong>
                     </div>
                     <div class="card-body">
-                        <input type="text" id="myInput" onkeyup="myFunction();" placeholder="Buscar Usuario">
+                        <input type="text" id="searchInput" class="searchInput" placeholder="Buscar clientes">
                         <button type="button" id="createUser" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
                             Agregar Cliente
                         </button>
 
-                        <table id="myTable">
+                        <table id="UsersTable" class="CRUDTable">
                             <tr class="header">
                                 <th style="width:20%;">Apellido</th>
                                 <th style="width:15%;">Nombre</th>
@@ -63,10 +63,10 @@
                             @{
                                 for (int i = 0; i < ViewBag.Users.Count; i++)
                                 {
-                                    <tr>
-                                        <td>@validString(ViewBag.Users[i].Surname)</td>
-                                        <td>@validString(ViewBag.Users[i].Name)</td>
-                                        <td>@validInt(ViewBag.Users[i].Dni)</td>
+                                    <tr class="tableRow">
+                                        <td class="colSurname">@validString(ViewBag.Users[i].Surname)</td>
+                                        <td class="colName">@validString(ViewBag.Users[i].Name)</td>
+                                        <td class="colDNI">@validInt(ViewBag.Users[i].Dni)</td>
                                         <td>@validString(ViewBag.Users[i].Cellphone)</td>
                                         <td>@validString(ViewBag.Users[i].Email)</td>
                                         <td><a data-toggle="modal" data-target="#updateClient"><img position="@ViewBag.Users[i].Id" class="imgClientUpdate" src="~/images/edit.png" /></a></td>

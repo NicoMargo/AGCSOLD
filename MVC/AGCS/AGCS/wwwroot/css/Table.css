@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 
-#myInput {
+.searchInput {
     background-image: url('/css/searchicon.png');
     background-position: 10px 10px;
     background-repeat: no-repeat;
@@ -13,22 +13,22 @@
     margin-bottom: 12px;
 }
 
-#myTable {
+.CRUDTable {
     border-collapse: collapse;
     width: 100%;
     border: 1px solid #ddd;
-    font-size: 18px;
+    font-size: 19px;
 }
 
-    #myTable th, #myTable td {
-        text-align: left;
-        padding: 12px;
-    }
+.CRUDTable th, .CRUDTable td {
+    text-align: left;
+    padding: 6px;
+}
 
-    #myTable tr {
-        border-bottom: 1px solid #ddd;
-    }
+.CRUDTable tr {
+border-bottom: 1px solid #ddd;
+}
 
-        #myTable tr.header, #myTable tr:hover {
-            background-color: #f1f1f1;
-        }
+.CRUDTable tr.header, .CRUDTable tr:hover {
+    background-color: #f1f1f1;
+}

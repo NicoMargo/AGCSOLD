@@ -43,12 +43,12 @@
                     <strong class="card-title">Clientes</strong>
                 </div>
                 <div class="card-body">
-                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Buscar Cliente">
+                    <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Cliente">
                     <button type="button" id="createClient" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
                         Agregar Cliente
                     </button>
 
-                    <table id="myTable">
+                    <table class="CRUDTable" id="ClientsTable">
                         <tr class="header">
                             <th style="width:20%;">Apellido</th>
                             <th style="width:15%;">Nombre</th>
@@ -61,14 +61,14 @@
                         @{
                             for (int i = 0; i < ViewBag.Clients.Count; i++)
                             {
-                                <tr>
-                                    <td>@validString(ViewBag.Clients[i].Surname)</td>
-                                    <td>@validString(ViewBag.Clients[i].Name)</td>
-                                    <td>@validInt(ViewBag.Clients[i].Dni)</td>
+                                <tr class="tableRow">
+                                    <td class="colSurname">@validString(ViewBag.Clients[i].Surname)</td>
+                                    <td class="colName">@validString(ViewBag.Clients[i].Name)</td>
+                                    <td class="colDNI">@validInt(ViewBag.Clients[i].Dni)</td>
                                     <td>@validString(ViewBag.Clients[i].Cellphone)</td>
                                     <td>@validString(ViewBag.Clients[i].Email)</td>
-                                    <td><a data-toggle="modal" data-target="#updateClient"><img position="@i" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
-                                    <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@i"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
+                                    <td><a data-toggle="modal" data-target="#updateClient"><img clientId="@ViewBag.Clients[i].Id" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
+                                    <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton clientId="@ViewBag.Clients[i].Id"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
                                 </tr>
                             }
                         }
@@ -343,6 +343,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> 
-    <script src="~/js/CRUDClient.js"></script>
+    <script src="~/js/ClientsCRUD.js"></script>
     </body>
 </html>

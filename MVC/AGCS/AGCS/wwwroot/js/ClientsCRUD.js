@@ -1,4 +1,30 @@
 ﻿$(document).ready(function () {
+    var clientId;
+    $("#searchInput").keyup(
+        function () {
+            var input, filter, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            table = document.getElementById("ClientsTable");
+            rows = table.getElementsByClassName('tableRow');
+
+            // Loop through all list items, and hide those who don't match the search query
+            for (i = 0; i < rows.length; i++) {
+                let tdn = rows[i].getElementsByClassName('colName')[0];
+                let name = tdn.textContent || tdn.innerText;
+                let tdd = rows[i].getElementsByClassName('colDNI')[0];
+                let dni = tdd.textContent || tdd.innerText;
+                let tds = rows[i].getElementsByClassName('colSurname')[0];
+                let surname = tds.textContent || tds.innerText;
+                if (name.toUpperCase().indexOf(filter) > -1 || dni.toUpperCase().indexOf(filter) > -1 || surname.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    );
+
     function validate(id,expectedCondition = true) {
         if (!expectedCondition) {
             $("#modal" + id).addClass("validation_error");
@@ -38,11 +64,11 @@
 
     $(".imgClientUpdate").click(function () {
         modalNormal("Update");
-        let Index = $(this).attr("position");
+        clientId = $(this).attr("clientId");
         $.ajax({
             type: "POST",
             url: "/Clients/GetDataClient",
-            data: { pos: Index },
+            data: { id: clientId },
             success: function (DataJsonClient) {
                 var Data = JSON.parse(DataJsonClient);
                 $("#modalUpdateSurname").val(Data.Surname);
@@ -77,12 +103,13 @@
                 type: "POST",
                 url: "/Clients/UpdateClient",
                 data: {
-                    Surname: $("#modalUpdateSurname").val(),
-                    Name: $("#modalUpdateName").val(),
+                    id: clientId,
+                    surname: $("#modalUpdateSurname").val(),
+                    name: $("#modalUpdateName").val(),
                     dni: $("#modalUpdateDni").val(),
                     email: $("#modalUpdateEmail").val(),
-                    Telephone: $("#modalUpdateTelephone").val(),
-                    Cellphone: $("#modalUpdateCellphone").val(),
+                    telephone: $("#modalUpdateTelephone").val(),
+                    cellphone: $("#modalUpdateCellphone").val(),
                     Town: $("#modalUpdateTown").val(),
                     Address: $("#modalUpdateAddress").val(),
                     Province: 1,
@@ -102,12 +129,12 @@
     });
 
     $("deleteButton").click(function () {
-        let Index = $(this).attr("position");
+        clientId = $(this).attr("clientId");
          $("#confirm").click(function () {
             $.ajax({
                 type: "DELETE",
                 url: "/Clients/DeleteClient",
-                data: { id: Index },
+                data: { id: clientId },
                 success: function () {
                     location.reload();
                 },

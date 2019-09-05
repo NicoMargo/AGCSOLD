@@ -8,25 +8,14 @@ namespace AGCS.Models.BDD
 {
     public static class ProductsProvider
     {
-        private static List<Product> productsList = new List<Product>();
-        private static Product selectedProduct;
-
-        public static Product SelectedProduct { get => selectedProduct; }
-        public static List<Product> ProductsList { get => productsList; }
-
+       
         //Methods for store procedures of Table Products 
-        public static void GetProducts()
+        public static List<Product> GetProducts()
         {
-            /*
-            ListProducts.Clear();
-            MySqlConnection Connection = Connect();
-            MySqlCommand CommandConnection = Connection.CreateCommand();
-            CommandConnection.CommandType = System.Data.CommandType.StoredProcedure;
-            CommandConnection.CommandText = "spProductsGet";
-            CommandConnection.Parameters.AddWithValue("@pIdBusiness", idBusiness);*/
+            List<Product> productsList = new List<Product>();
 
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Sessionh.GetSString("idBusiness")}
+                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductsGet", args);
 
@@ -38,27 +27,26 @@ namespace AGCS.Models.BDD
                 float cost;
                 float price;
                 int stock;
-                bool age;
                 string code;
                 try
                 {
                     id = Convert.ToUInt32(ConnectionReader["idProducts"]);
-                    description = Helpers.ReadString(ConnectionReader, "Description");
                     articleNumber = Helpers.ReadULong(ConnectionReader, "Article_Number");
+                    description = Helpers.ReadString(ConnectionReader, "Description");
+                    code = Helpers.ReadString(ConnectionReader, "CodeProduct");
                     cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    age = Helpers.ReadBool(ConnectionReader, "Age");
-                    code = Helpers.ReadString(ConnectionReader, "Code");
-                    Product product = new Product(id, description, price, stock);
+                    Product product = new Product(id, (int) articleNumber,code, description, price, stock);
                     productsList.Add(product);
                 }
                 catch { }
             }
             Helpers.Disconect();
+            return productsList;
         }
 
-        public static Product GetByCodeProduct(ulong code)
+        public static Product GetProductByCode(ulong code)
         {
             Product product = null;
 
@@ -91,7 +79,7 @@ namespace AGCS.Models.BDD
             return product;
         }
 
-        public static void GetByIdProduct(uint idProducts)
+        public static Product GetProductById(uint idProducts)
         {
             Product product = null;
 
@@ -105,28 +93,28 @@ namespace AGCS.Models.BDD
             {
                 string description;
                 float price,cost,priceW;
-                int stock, articleNumber;                 
-                uint idSupplier;
+                int stock;
+                uint idSupplier, articleNumber;
 
-                string codeProduct;//arreglar
+                string code;//arreglar
                 /*Addres info ...*/
                 try
                 {
-                    codeProduct = Helpers.ReadString(ConnectionReader, "CodeProduct");
-                    articleNumber = Helpers.ReadInt(ConnectionReader, "Article_number");
+                    code = Helpers.ReadString(ConnectionReader, "CodeProduct");
+                    articleNumber = (uint) Helpers.ReadInt(ConnectionReader, "Article_number");
                     description = Helpers.ReadString(ConnectionReader, "Description");
                     cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
-                    priceW = Helpers.ReadFloat(ConnectionReader, "Price_W");
+                    priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    idSupplier = (uint) Helpers.ReadInt(ConnectionReader, "idSupplier");
+                    idSupplier = (uint) Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier");
 
-                    product = new Product(idProducts, articleNumber, description, cost, price, priceW, stock, codeProduct, Sessionh.GetSUInt32("idBusiness"), idSupplier);
+                    product = new Product(idProducts, articleNumber, description, cost, price, priceW, stock, code, idSupplier);
                 }
                 catch { }
             }
             Helpers.Disconect();
-            selectedProduct = product;
+            return product;
         }
 
         public static bool InsertProduct(Product product) {
@@ -178,6 +166,19 @@ namespace AGCS.Models.BDD
             bInserted = (Helpers.CallNonQuery("spProductDelete", args) > 0);
             Helpers.Disconect();
             return bInserted;
+        }
+
+        public static bool UpdateStock(uint idProducts, int stock)
+        {
+            Dictionary<string, object> args = new Dictionary<string, object>
+            {
+                { "pIdProducts", idProducts },
+                { "pIdBusiness", Sessionh.GetSUInt32("idBusiness")} ,
+                { "pStock", stock } 
+            };
+            bool success = (Helpers.CallNonQuery("spProductStockUpdate", args) > 0);
+            Helpers.Disconect();
+            return success;
         }
     }
 }

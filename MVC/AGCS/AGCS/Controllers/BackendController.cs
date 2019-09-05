@@ -53,24 +53,21 @@ namespace AGCS.Controllers
         [HttpPost]
         public JsonResult GetProductToEnter(ulong code)
         {
-            Product product = ProductsProvider.GetByCodeProduct(code);
+            Product product = ProductsProvider.GetProductByCode(code);
             string JsonDataClient = JsonConvert.SerializeObject(product);
             return Json(JsonDataClient);
         }
 
-        
-        public ActionResult ProductsCRUD()
+        [HttpPost]
+        public JsonResult GetDataClientByDNI(uint dni)
         {
-            ClientsProvider.GetClients();
-            ViewBag.Clients = ClientsProvider.ClientsList;
-            return View();
+            return Json(JsonConvert.SerializeObject(ClientsProvider.GetClientByDNI(dni)));
         }
-   
+
         public ActionResult Configuration()
         {
 
             return View();
         }
-
     }
 }

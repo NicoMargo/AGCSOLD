@@ -8,13 +8,17 @@
     <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="wwwroot\js\CreateBill.js" />
+    <None Include="wwwroot\js\ClientsCRUD.js" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="MySql.Data" Version="8.0.17" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="Views\Backend\ProductsCRUD.cshtml">
+    <Content Update="Views\Products\ProductsCRUD.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Backend\Pruebas.cshtml">

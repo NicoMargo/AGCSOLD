@@ -39,6 +39,32 @@
         return number;
     }
     var Index;
+
+    $("#searchInput").keyup(
+        function () {
+            var input, filter, i, txtValue;
+            input = document.getElementById('searchInput');
+            filter = input.value.toUpperCase();
+            table = document.getElementById("UsersTable");
+            rows = table.getElementsByClassName('tableRow');
+
+            // Loop through all list items, and hide those who don't match the search query
+            for (i = 0; i < rows.length; i++) {
+                let tdn = rows[i].getElementsByClassName('colName')[0];
+                let name = tdn.textContent || tdn.innerText;
+                let tdd = rows[i].getElementsByClassName('colDNI')[0];
+                let dni = tdd.textContent || tdd.innerText;
+                let tds = rows[i].getElementsByClassName('colSurname')[0];
+                let surname = tds.textContent || tds.innerText;
+                if (name.toUpperCase().indexOf(filter) > -1 || dni.toUpperCase().indexOf(filter) > -1 || surname.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    );
+
     $(".imgClientUpdate").click(function () {
         modalNormal("Update");
         Index = $(this).attr("position");
