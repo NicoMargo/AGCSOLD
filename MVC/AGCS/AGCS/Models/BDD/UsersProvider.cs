@@ -1,8 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AGCS.Models.BDD
 {
@@ -20,7 +18,7 @@ namespace AGCS.Models.BDD
             {
                 try
                 {
-                    User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Convert.ToUInt32(ConnectionReader["idUser"]));
+                    User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Convert.ToUInt32(ConnectionReader["idUser"]), Convert.ToBoolean(ConnectionReader["Admin"]));
                     Business DataBuisness = new Business(Convert.ToUInt32(ConnectionReader["idBusiness"]), Helpers.ReadString(ConnectionReader, "NameB"));
                     TwoObjects[0] = DataBuisness;
                     TwoObjects[1] = DataUser;
@@ -33,7 +31,7 @@ namespace AGCS.Models.BDD
         public static List<User> GetUsers()
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness",Sessionh.GetSUInt32("idBusiness")}
+                {"pIdBusiness",Session.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spUsersGet", args);
             List<User> ListOfUsers = new List<User>();
@@ -53,7 +51,7 @@ namespace AGCS.Models.BDD
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pId", id },
-                {"pIdBusiness",Sessionh.GetSUInt32("idBusiness")},
+                {"pIdBusiness",Session.GetSUInt32("idBusiness")},
             };
             try
             {
@@ -68,7 +66,7 @@ namespace AGCS.Models.BDD
         public static string InsertUser(User user)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
                 {"pName", user.Name},
                 {"pSurname", user.Surname},
                 {"pDni", user.Dni},
@@ -95,27 +93,15 @@ namespace AGCS.Models.BDD
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pId", idUser},
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")}
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spUserGetById", args);
             User user = null;
             if (ConnectionReader.Read())
             {
-                string name, surname, email;
-                ulong dni;
-                string telephone, cellphone;
-                uint id;
-                /*Addres info ...*/
                 try
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idUser"]);
-                    name = Helpers.ReadString(ConnectionReader, "Name");
-                    surname = Helpers.ReadString(ConnectionReader, "Surname");
-                    dni = Helpers.ReadULong(ConnectionReader, "Dni");
-                    email = Helpers.ReadString(ConnectionReader, "eMail");
-                    //telephone = Helpers.ReadString(ConnectionReader, "Telephone");
-                    //cellphone = Helpers.ReadString(ConnectionReader, "Cellphone");
-                    user = new User(id, name, surname, dni, email);
+                    user = new User(Convert.ToUInt32(ConnectionReader["idUser"]), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadString(ConnectionReader, "Name_Second"), Helpers.ReadULong(ConnectionReader, "Dni"), Helpers.ReadString(ConnectionReader, "eMail"), Helpers.ReadString(ConnectionReader, "Cellphone"), Helpers.ReadString(ConnectionReader, "Tel_User"), Helpers.ReadString(ConnectionReader, "Tel_Mother"), Helpers.ReadString(ConnectionReader, "Tel_Father"), Helpers.ReadString(ConnectionReader, "Tel_Brother"), Helpers.ReadString(ConnectionReader, "Address"));
                 }
                 catch { }
             }
@@ -126,19 +112,35 @@ namespace AGCS.Models.BDD
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", user.Id },
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
                 {"pName", user.Name},
                 {"pSurname", user.Surname},
                 {"pDNI_CUIT", user.Dni},
                 {"pEmail", user.Email},
                 {"pTelephone", user.Telephone},
-                {"pCellphone", user.Cellphone}
+                {"pCellphone", user.Cellphone},
+                {"pTelephoneM", user.TelephoneM},
+                {"pTelephoneF", user.TelephoneF},
+                {"pTelephoneB", user.TelephoneB},
+                {"pAddress", user.Address},
+                {"pSecondN", user.SecondName}
             };
-            Helpers.CallNonQuery("spUserUpdate", args);
+           
+                Helpers.CallNonQuery("spUserUpdate", args);
+            
             Helpers.Disconect();
 
         }
-
+        public static int ChangePassword(string original, string new1)
+        {
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pId", Session.GetSUInt32("idUser")},
+                {"pOriginal", original},
+                {"pNew", new1}
+            };
+            int regs = Helpers.CallNonQuery("spUserChangePassword", args);
+            Helpers.Disconect();
+            return regs;
+        }
     }
-
 }

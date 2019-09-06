@@ -18,9 +18,9 @@
                 <h1 class="pl-5 offset-md-1 text-white float-left">AGCS</h1>
             </a>
             <div class="offset-md-7 pt-2">
-                <span class="text-white">@Sessionh.GetSString("business")</span>
+                <span class="text-white">@Session.GetSString("business")</span>
                 <span class="ml-2 mr-2 text-white">|</span>
-                <span class="text-white">@Sessionh.GetSString("username")</span>
+                <span class="text-white">@Session.GetSString("username")</span>
                 <span class="ml-2 mr-2 text-white">|</span>
                 <img src="~/images/icon-user.png" alt="icono-User" class="w-5 mr-5">
                 @Html.ActionLink("Cerrar Sesión", "Index", "Home",null, new {@class = "btn btn-primary"})

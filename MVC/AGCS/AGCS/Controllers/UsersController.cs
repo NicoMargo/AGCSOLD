@@ -13,8 +13,39 @@ namespace AGCS.Controllers
 
         public ActionResult UsersCRUD()
         {
-            ViewBag.Users = UsersProvider.GetUsers();
+            if (Convert.ToBoolean(Session.GetSUInt32("op")))
+            {
+                ViewBag.Users = UsersProvider.GetUsers();
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Backend");
+            }
+            
+        }
+        public ActionResult ChangePassword()
+        {
             return View();
+        }
+        [HttpPost]
+        public ActionResult ChangePassword(string original, string new1, string new2)
+        {
+            if(new1 == new2)
+            {
+                if (Convert.ToBoolean(UsersProvider.ChangePassword(original, new1)))
+                    return RedirectToAction("Index", "Backend");
+                else
+                {
+                    ViewBag.check = "Contraseña incorrecta";
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.check = "Las contraseas no coinciden";
+                return View();
+            }
         }
         [HttpDelete]
         public bool DeleteUser(uint id)
@@ -58,11 +89,10 @@ namespace AGCS.Controllers
             return Json(JsonDataClient);
         }
         [HttpPost]
-        public bool UpdateUser(uint id,string Surname, string Name, ulong Dni, string email, string Telephone, string Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
+        public bool UpdateUser(uint id,string surname, string name, ulong dni, string email, string telephone, string cellphone, string secondName, string address, string telephoneM, string telephoneF, string telephoneB)
         {
             bool Success = true;
-            if (email is null) { email = ""; }
-            User cUser = new User(id, Name, Surname, Dni, email, Cellphone, Telephone);
+            User cUser = new User(id, name, surname, secondName, dni, email, cellphone, telephone, telephoneM, telephoneF, telephoneB, address);
             try
             {
                 UsersProvider.UpdateUser(cUser);
@@ -71,7 +101,6 @@ namespace AGCS.Controllers
             {
                 Success = false;
             }
-
             return Success;
         }
 

@@ -14,6 +14,7 @@ namespace AGCS.Models
         private string _telephoneF;
         private string _telephoneB;
         private ulong _dni;
+        private bool _admin;
 
         public string PassUser { get => _passUser; set => _passUser = value; }
         public string TelephoneM { get => _telephoneM; set => _telephoneM = value; }
@@ -22,6 +23,7 @@ namespace AGCS.Models
         public string TelephoneB { get => _telephoneB; set => _telephoneB = value; }
         public ulong Dni { get => _dni; set => _dni = value; }
         public string SecondName { get => _secondName; set => _secondName = value; }
+        public bool Admin { get => _admin; set => _admin = value; }
 
         //Login constructor
         public User(string email, string passUser) : base(email)
@@ -30,8 +32,9 @@ namespace AGCS.Models
         }
 
         //After Login constructor
-        public User(string Name, string Surname, uint id) : base(Name, Surname, id)
+        public User(string Name, string Surname, uint id, bool admin) : base(Name, Surname, id)
         {
+            _admin = admin;
         }
 
         //New User constructor
@@ -54,9 +57,14 @@ namespace AGCS.Models
         }
 
         //Get User By Id constructor
-        public User(uint id, string name, string surname, ulong dni, string email) : base(id, name, surname, email)
+        public User(uint id,string name, string surname, string SecondName, ulong dni, string email, string cellphone, string telephone, string telephoneM, string telephoneF, string telephoneB, string address) : base(id,name, surname, email, cellphone, telephone)
         {
-            Dni = dni;
+            _dni = dni;
+            _address = address;
+            _telephoneM = telephoneM;
+            _telephoneF = telephoneF;
+            _telephoneB = telephoneB;
+            _secondName = SecondName;
         }
 
         //Update User constructor

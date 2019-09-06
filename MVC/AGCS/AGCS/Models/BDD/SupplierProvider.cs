@@ -13,7 +13,7 @@ namespace AGCS.Models.BDD
             List<Supplier> suppliersList = new List<Supplier>();
 
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")}
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spSuppliersGet", args);
 
