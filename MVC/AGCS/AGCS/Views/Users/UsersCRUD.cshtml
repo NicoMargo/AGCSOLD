@@ -45,9 +45,9 @@
                         <strong class="card-title">Usuarios</strong>
                     </div>
                     <div class="card-body">
-                        <input type="text" id="searchInput" class="searchInput" placeholder="Buscar clientes">
+                        <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Usuario">
                         <button type="button" id="createUser" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
-                            Agregar Cliente
+                            Agregar Usuario
                         </button>
 
                         <table id="UsersTable" class="CRUDTable">
@@ -69,7 +69,7 @@
                                         <td class="colDNI">@validInt(ViewBag.Users[i].Dni)</td>
                                         <td>@validString(ViewBag.Users[i].Cellphone)</td>
                                         <td>@validString(ViewBag.Users[i].Email)</td>
-                                        <td><a data-toggle="modal" data-target="#updateClient"><img position="@ViewBag.Users[i].Id" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
+                                        <td><a data-toggle="modal" data-target="#updateUser"><img position="@ViewBag.Users[i].Id" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
                                         <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@ViewBag.Users[i].Id"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
                                     </tr>
                                 }
@@ -86,7 +86,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5 class="modal-title" id="confirmationModal">Esta seguro que quiere eliminar al cliente?</h5>
+                    <h5 class="modal-title" id="confirmationModal">Esta seguro que quiere eliminar al usuario?</h5>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -95,8 +95,6 @@
             </div>
         </div>
     </div>
-
-
 
     <!-- Extra large modal Create-->
     <div class="modal fade bd-example-modal-xl" id="createUser" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
@@ -110,44 +108,70 @@
                 </div>
 
                 <div class="modal-body">
-
-                    <div class="row">
-                        <div class="offset-md-1 col-md-2">
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Apellido</span></strong>
                             </div>
                             <input id="modalCreateSurname" class="form-control text-center" type="text">
                             <div class="validation_msg hidden text-center" id="msgCreateSurname">Ingrese un apellido válido</div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nombre</span></strong>
                             </div>
                             <input id="modalCreateName" class="form-control text-center" type="text">
                             <div class="validation_msg hidden text-center" id="msgCreateName">Ingrese un nombre válido</div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Segundo Nombre</span></strong>
                             </div>
                             <input id="modalCreateSecondName" class="form-control text-center" type="text">
                             <div class="validation_msg hidden text-center" id="msgCreateSecondName">Ingrese un Segundo nombre válido</div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                    </div>
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <strong><span>Email</span></strong>
+                            </div>
+                            <input id="modalCreateEmail" class="form-control text-center" type="email">
+                            <div class="validation_msg hidden text-center" id="msgCreateEmail">Ingrese un email válido</div>
+                        </div>
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Contraseña</span></strong>
                             </div>
                             <input id="modalCreatePassword" class="form-control text-center" type="password">
                             <div class="validation_msg hidden text-center" id="msgCreatePassword">Ingrese una contraseña válida</div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Confirmar Contraseña</span></strong>
                             </div>
                             <input id="modalCreateConfirmPassword" class="form-control text-center" type="password">
                             <div class="validation_msg hidden text-center" id="msgCreateConfirmPassword">Confirmar contraseña</div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                    </div>
+
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nro. Teléfono</span></strong>
+                            </div>
+                            <input id="modalCreateTelephone" class="form-control text-center" type="number" min="0">
+                            <div class="validation_msg hidden text-center" id="msgCreateTelephone">Ingrese un teléfono válido</div>
+                        </div>
+                        <div class="ml-5 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nro. Celular</span></strong>
+                            </div>
+                            <input id="modalCreateCellphone" class="form-control text-center" type="number" min="0">
+                            <div class="validation_msg hidden text-center" id="msgCreateCellphone">Ingrese un nro. celular válido</div>
+                        </div>
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Dni</span></strong>
                             </div>
@@ -155,83 +179,42 @@
                             <div class="validation_msg hidden text-center" id="msgCreateDni">Ingrese Dni</div>
                         </div>
                     </div>
-                    <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
+                    <div class="text-center offset-md-1 mt-5">
+                        <h4 class="badge-pill col-md-11 badge-danger">Dirección</h4>
+                    </div>
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-md-10">
+                            <input id="modalCreateAddress" class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center" id="msgCreateTelephone">Ingrese una Dirección</div>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center mt-5">
+                        <div class="col-md-3">
                             <div class="text-center">
-                                <strong><span>Nro. Teléfono</span></strong>
+                                <strong><span>Nro. Teléfono Madre</span></strong>
                             </div>
-                            <input id="modalCreateTelephone" class="form-control text-center" type="number" min="0">
+                            <input id="modalCreateTelephoneMother" class="form-control text-center" type="text">
                             <div class="validation_msg hidden text-center" id="msgCreateTelephone">Ingrese un teléfono válido</div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
-                                <strong><span>Nro. Celular</span></strong>
+                                <strong><span>Nro. Teléfono Padre</span></strong>
                             </div>
-                            <input id="modalCreateCellphone" class="form-control text-center" type="number" min="0">
+                            <input id="modalCreateTelephoneFather" class="form-control text-center">
                             <div class="validation_msg hidden text-center" id="msgCreateCellphone">Ingrese un nro. celular válido</div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
-                                <strong><span>Email</span></strong>
+                                <strong><span>Nro. Teléfono Hermano</span></strong>
                             </div>
-                            <input id="modalCreateEmail" class="form-control text-center" type="email">
+                            <input id="modalCreateTelephoneBrother" class="form-control text-center" type="email">
                             <div class="validation_msg hidden text-center" id="msgCreateEmail">Ingrese un email válido</div>
                         </div>
                     </div>
-                    <div class="text-center mt-5">
-                        <h4 class="badge-pill badge-danger">Dirección</h4>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Localidad</span></strong>
-                            </div>
-                            <input id="modalCreateTown" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateTown">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-3">
-                            <div class="text-center">
-                                <strong><span>Direccion</span></strong>
-                            </div>
-                            <input id="modalCreateAddress" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateAddress">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Provincia</span></strong>
-                            </div>
-                            <select class="form-control">
-                                <option value="CABA">CABA</option>
-                                <option value="Buenos Aires">Buenos Aires</option>
-                                <option value="Mendoza">Mendoza</option>
-                                <option value="Santa Fé">Santa Fe</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Número</span></strong>
-                            </div>
-                            <input id="modalCreateNumber" class="form-control text-center" type="number">
-                            <div class="validation_msg hidden text-center" id="msgCreateNumber">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-3">
-                            <div class="text-center">
-                                <strong><span>Piso</span></strong>
-                            </div>
-                            <input id="modalCreateFloor" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateFloor">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Letra</span></strong>
-                            </div>
-                            <input id="modalCreateAppartment" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateAppartment">Ingrese un  válido</div>
-                        </div>
-                    </div>
+
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundary" id="createCancel" data-dismiss="modal">Cerrar</button>
                     <button class="btn btn-primary" id="newUser">Crear</button>
@@ -242,57 +225,44 @@
     </div>
     <!-- Modal Create END-->
     <!-- Modal Update Beginning-->
-    <div class="modal fade bd-example-modal-xl" id="updateClient" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+
+    <div class="modal fade bd-example-modal-xl" id="updateUser" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Datos Del Cliente</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Modificar Usuario</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
 
                 <div class="modal-body">
-
-                    <div class="row">
-                        <div class="offset-md-1 col-md-2">
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Apellido</span></strong>
                             </div>
                             <input id="modalUpdateSurname" class="form-control text-center" type="text">
                             <div class="validation_msg hidden text-center" id="msgUpdateSurname">Ingrese un apellido válido</div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nombre</span></strong>
                             </div>
                             <input id="modalUpdateName" class="form-control text-center" type="text">
                             <div class="validation_msg hidden text-center" id="msgUpdateName">Ingrese un nombre válido</div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
-                                <strong><span>DNI/CUIT/CUIL</span></strong>
+                                <strong><span>Segundo Nombre</span></strong>
                             </div>
-                            <input id="modalUpdateDni" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgUpdateDni">Ingrese un DNI o CUIT válido</div>
+                            <input id="modalUpdateSecondName" class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center" id="msgUpdateSecondName">Ingrese un Segundo nombre válido</div>
                         </div>
                     </div>
-                    <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Nro. Telefono</span></strong>
-                            </div>
-                            <input id="modalUpdateTelephone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgUpdateTelephone">Ingrese un teléfono válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-3">
-                            <div class="text-center">
-                                <strong><span>Nro. Celular</span></strong>
-                            </div>
-                            <input id="modalUpdateCellphone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgUpdateCellphone">Ingrese un nro. celular válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-2">
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-md-10">
                             <div class="text-center">
                                 <strong><span>Email</span></strong>
                             </div>
@@ -300,64 +270,71 @@
                             <div class="validation_msg hidden text-center" id="msgUpdateEmail">Ingrese un email válido</div>
                         </div>
                     </div>
-                    <div class="text-center mt-5">
-                        <h4 class="badge-pill badge-danger">Dirección</h4>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
+
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-md-3">
                             <div class="text-center">
-                                <strong><span>Localidad</span></strong>
+                                <strong><span>Nro. Teléfono</span></strong>
                             </div>
-                            <input id="modalUpdateTown" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateTown">Ingrese un  válido</div>
+                            <input id="modalUpdateTelephone" class="form-control text-center" type="number" min="0">
+                            <div class="validation_msg hidden text-center" id="msgUpdateTelephone">Ingrese un teléfono válido</div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
-                                <strong><span>Direccion</span></strong>
+                                <strong><span>Nro. Celular</span></strong>
                             </div>
+                            <input id="modalUpdateCellphone" class="form-control text-center" type="number" min="0">
+                            <div class="validation_msg hidden text-center" id="msgUpdateCellphone">Ingrese un nro. celular válido</div>
+                        </div>
+                        <div class="ml-5 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Dni</span></strong>
+                            </div>
+                            <input id="modalUpdateDni" class="form-control text-center" type="number" min="0">
+                            <div class="validation_msg hidden text-center" id="msgUpdateDni">Ingrese Dni</div>
+                        </div>
+                    </div>
+                    <div class="text-center offset-md-1 mt-5">
+                        <h4 class="badge-pill col-md-11 badge-danger">Dirección</h4>
+                    </div>
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-md-10">
                             <input id="modalUpdateAddress" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateAddress">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Provincia</span></strong>
-                            </div>
-                            <select class="form-control">
-                                <option value="CABA">CABA</option>
-                                <option value="Buenos Aires">Buenos Aires</option>
-                                <option value="Mendoza">Mendoza</option>
-                                <option value="Santa Fé">Santa Fe</option>
-                            </select>
+                            <div class="validation_msg hidden text-center" id="msgUpdateTelephone">Ingrese una Dirección</div>
                         </div>
                     </div>
-                    <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
+
+                    <div class="row justify-content-center mt-5">
+                        <div class="col-md-3">
                             <div class="text-center">
-                                <strong><span>Número</span></strong>
+                                <strong><span>Nro. Teléfono Madre</span></strong>
                             </div>
-                            <input id="modalUpdateNumber" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateNumber">Ingrese un  válido</div>
+                            <input id="modalUpdateTelephoneMother" class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center" id="msgUpdateTelephone">Ingrese un teléfono válido</div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
-                                <strong><span>Piso</span></strong>
+                                <strong><span>Nro. Teléfono Padre</span></strong>
                             </div>
-                            <input id="modalUpdateFloor" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgUpdateFloor">Ingrese un  válido</div>
+                            <input id="modalUpdateTelephoneFather" class="form-control text-center">
+                            <div class="validation_msg hidden text-center" id="msgUpdateCellphone">Ingrese un nro. celular válido</div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="ml-5 col-md-3">
                             <div class="text-center">
-                                <strong><span>Letra</span></strong>
+                                <strong><span>Nro. Teléfono Hermano</span></strong>
                             </div>
-                            <input id="modalUpdateAppartment" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateAppartment">Ingrese un  válido</div>
+                            <input id="modalUpdateTelephoneBrother" class="form-control text-center" type="email">
+                            <div class="validation_msg hidden text-center" id="msgUpdateEmail">Ingrese un email válido</div>
                         </div>
                     </div>
+
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secundary" id="updateCancel" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" id="UpdateSubmit">Guardar</button>
+                    <button type="button" class="btn btn-secundary" id="UpdateCancel" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" id="UpdateSubmit">Modificar</button>
                 </div>
+
             </div>
         </div>
     </div>

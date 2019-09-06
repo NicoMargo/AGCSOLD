@@ -59,6 +59,15 @@ namespace AGCS.Models
             this._email = email;
             this._cellphone = cellphone;
         }
+        //Get Users Constructor 
+        protected Person(string name, string surname, string email, string cellphone, uint id)
+        {
+            this._id = id;
+            this._name = name;
+            this._surname = surname;
+            this._email = email;
+            this._cellphone = cellphone;
+        }
 
         protected Person(string name, string surname, string cellphone, string telephone)
         {

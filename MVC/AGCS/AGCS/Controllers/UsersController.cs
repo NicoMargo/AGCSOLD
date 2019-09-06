@@ -10,11 +10,42 @@ namespace AGCS.Controllers
 {
     public class UsersController : BaseController
     {
-        
+
         public ActionResult UsersCRUD()
         {
-            ViewBag.Users = UsersProvider.GetUsers();
+            if (Convert.ToBoolean(Session.GetSUInt32("op")))
+            {
+                ViewBag.Users = UsersProvider.GetUsers();
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Backend");
+            }
+            
+        }
+        public ActionResult ChangePassword()
+        {
             return View();
+        }
+        [HttpPost]
+        public ActionResult ChangePassword(string original, string new1, string new2)
+        {
+            if(new1 == new2)
+            {
+                if (Convert.ToBoolean(UsersProvider.ChangePassword(original, new1)))
+                    return RedirectToAction("Index", "Backend");
+                else
+                {
+                    ViewBag.check = "Contraseña incorrecta";
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.check = "Las contraseas no coinciden";
+                return View();
+            }
         }
         [HttpDelete]
         public bool DeleteUser(uint id)
@@ -33,22 +64,23 @@ namespace AGCS.Controllers
 
         }
         [HttpPost]
-        public bool CreateUser(string surname = "", string name = "", ulong dni = 0, string email = "", string telephone = "",string passUser = "",string cPassUser = "", string cellphone = "", string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
+        public string CreateUser(string surname = "",string secondName = "", string name = "", string dni = "", string email = "", string telephone = "",string passUser = "",string cPassUser = "", string cellphone = "", string telephoneM = "", string address = "", string telephoneF = "", string telephoneB = "")
         {
-            bool Success = false;
+            string Msg = "";
             if (passUser == cPassUser)
             {                
-                User NewUser = new User(name, surname, dni, email, cellphone, passUser, telephone);
-                try
-                {
-                    Success = UsersProvider.InsertUser(NewUser);
-                }
-                catch
-                {
-                    Success = false;
-                }
+                User NewUser = new User(name, surname,secondName, Convert.ToUInt64(dni), email, cellphone, passUser, telephone, telephoneM, telephoneF, telephoneB,address);
+               
+                    Msg =UsersProvider.InsertUser(NewUser);
+                
             }
-            return Success;
+            else
+            {
+                Msg = "las contraseñas no coinciden";
+            }
+            if (Msg == "False")
+                Msg = "Ya existe un usuario con ese email o Dni";
+            return Msg;
         }
         [HttpPost]
         public JsonResult GetDataUser(uint id)
@@ -57,11 +89,10 @@ namespace AGCS.Controllers
             return Json(JsonDataClient);
         }
         [HttpPost]
-        public bool UpdateUser(uint id,string Surname, string Name, ulong Dni, string email, string Telephone, string Cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
+        public bool UpdateUser(uint id,string surname, string name, ulong dni, string email, string telephone, string cellphone, string secondName, string address, string telephoneM, string telephoneF, string telephoneB)
         {
             bool Success = true;
-            if (email is null) { email = ""; }
-            User cUser = new User(id, Name, Surname, Dni, email, Cellphone, Telephone);
+            User cUser = new User(id, name, surname, secondName, dni, email, cellphone, telephone, telephoneM, telephoneF, telephoneB, address);
             try
             {
                 UsersProvider.UpdateUser(cUser);
@@ -70,7 +101,6 @@ namespace AGCS.Controllers
             {
                 Success = false;
             }
-
             return Success;
         }
 

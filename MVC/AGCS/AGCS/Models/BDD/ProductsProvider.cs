@@ -15,7 +15,7 @@ namespace AGCS.Models.BDD
             List<Product> productsList = new List<Product>();
 
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")}
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductsGet", args);
 
@@ -51,7 +51,7 @@ namespace AGCS.Models.BDD
             Product product = null;
 
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
                 {"pCode", code}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetByCode", args);
@@ -84,7 +84,7 @@ namespace AGCS.Models.BDD
             Product product = null;
 
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
                 {"pId", idProducts}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetById", args);
@@ -121,7 +121,7 @@ namespace AGCS.Models.BDD
             bool bInserted = false;
             Dictionary<string, object> args = new Dictionary<string, object>
             {
-                { "pIdBusiness", Sessionh.GetSUInt32("idBusiness")} ,
+                { "pIdBusiness", Session.GetSUInt32("idBusiness")} ,
                 { "pCode", product.Code} ,
                 { "pProduct_Number",product.ArticleNumber } ,
                 { "pDescription",product.Description } ,
@@ -141,7 +141,7 @@ namespace AGCS.Models.BDD
             Dictionary<string, object> args = new Dictionary<string, object>
             {
                 { "pId", product.Id} ,
-                { "pIdBusiness",Sessionh.GetSUInt32("idBusiness")} ,
+                { "pIdBusiness",Session.GetSUInt32("idBusiness")} ,
                 { "pCode", product.Code} ,
                 { "pProduct_Number",product.ArticleNumber } ,
                 { "pDescription",product.Description } ,
@@ -161,7 +161,7 @@ namespace AGCS.Models.BDD
             Dictionary<string, object> args = new Dictionary<string, object>
             {
                 { "pId", id} ,
-                { "pIdBusiness", Sessionh.GetSUInt32("idBusiness")} 
+                { "pIdBusiness", Session.GetSUInt32("idBusiness")} 
             };
             bInserted = (Helpers.CallNonQuery("spProductDelete", args) > 0);
             Helpers.Disconect();
@@ -173,7 +173,7 @@ namespace AGCS.Models.BDD
             Dictionary<string, object> args = new Dictionary<string, object>
             {
                 { "pIdProducts", idProducts },
-                { "pIdBusiness", Sessionh.GetSUInt32("idBusiness")} ,
+                { "pIdBusiness", Session.GetSUInt32("idBusiness")} ,
                 { "pStock", stock } 
             };
             bool success = (Helpers.CallNonQuery("spProductStockUpdate", args) > 0);

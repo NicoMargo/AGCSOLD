@@ -1,5 +1,5 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.9
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
@@ -246,31 +246,65 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spSuppliersGet` (IN `pIdBusiness` I
 	select idSupplier,Name,Surname from suppliers where Business_idBusiness = pIdBusiness;
 END$$
 
+DROP PROCEDURE IF EXISTS `spUserChangePassword`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserChangePassword` (IN `pOriginal` VARCHAR(60), IN `pNew` VARCHAR(60), IN `pId` BIGINT)  NO SQL
+if exists(select users.idUser from users where users.idUser = pId and users.Password = md5(pOriginal))
+	then
+    	update users set users.Password = md5(pNew) where users.idUser = pId;
+    end if$$
+
 DROP PROCEDURE IF EXISTS `spUserDelete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserDelete` (IN `pId` INT, IN `pIdBusiness` INT)  if(EXISTS(SELECT users.idUser FROM users WHERE users.idUser = pId and users.Business_idBusiness = pIdBusiness))
 THEN
+	DELETE from user_extrainfo WHERE  user_extrainfo.idUser = pId;
 	DELETE from users WHERE users.idUser = pId and users.Business_idBusiness = pIdBusiness;
 end IF$$
 
 DROP PROCEDURE IF EXISTS `spUserGetById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserGetById` (IN `pId` INT, IN `pIdBusiness` INT)  NO SQL
-SELECT * FROM users WHERE users.idUser = pId and users.Business_idBusiness = pIdBusiness$$
+SELECT users.idUser, users.eMail ,users.Name ,users.Surname ,users.Name_Second ,users.Dni, user_extrainfo.Address, user_extrainfo.Tel_Father, user_extrainfo.Tel_Mother,user_extrainfo.Tel_Brother, user_extrainfo.Tel_User,user_extrainfo.Cellphone FROM users inner join user_extrainfo on user_extrainfo.idUser = users.idUser WHERE users.idUser = pId and users.Business_idBusiness= pIdBusiness$$
 
 DROP PROCEDURE IF EXISTS `spUserInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDni` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` VARCHAR(20), IN `pPass` VARCHAR(45), IN `pCellphone` VARCHAR(20))  NO SQL
-if( pIdBusiness > -1 && pName != ""&& pPass != "" && pSurname != "" && pDni > 1 && not exists(select users.idUser from users where users.Dni = pDni and users.Business_idBusiness = pIdBusiness))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(60), IN `pSurname` VARCHAR(60), IN `pDni` BIGINT, IN `pEmail` VARCHAR(60), IN `pTelephone` VARCHAR(60), IN `pPass` VARCHAR(60), IN `pCellphone` VARCHAR(60), IN `pAddress` VARCHAR(55), IN `pTelephoneM` VARCHAR(55), IN `pTelephoneF` VARCHAR(55), IN `pTelephoneB` VARCHAR(55), IN `pSecondN` VARCHAR(55))  NO SQL
+if( pIdBusiness > -1 and pName != "" and pPass != "" and pSurname != "" and not exists(select users.idUser from users where users.eMail = pEmail or (users.Dni = pDni and users.Business_idBusiness = pIdBusiness)))
 then
-	insert into users(users.Name,users.Surname,users.Dni,users.Business_idBusiness, users.Password) values( pName, pSurname, pDni, pIdBusiness,md5(pPass));
-	
-    set @lastId = (select users.idUser from users where users.idUser = LAST_INSERT_ID() and users.Name = pName and users.Surname = pSurname and users.Dni = pDni and users.Business_idBusiness = pIdBusiness);
-	
+	insert into users (users.Name,users.Surname,users.Business_idBusiness, users.Password, users.eMail,users.Admin) values( pName, pSurname,pIdBusiness,md5(pPass),pEmail,0);	
+    set @lastId = (select users.idUser from users where users.idUser = LAST_INSERT_ID() and users.Name = pName and users.Surname = pSurname and users.Business_idBusiness = pIdBusiness);
     if(@lastId is not null)
-    then
-    
-		if( pEmail is not null) 
+    then    
+    	insert into user_extrainfo (user_extrainfo.idUser) values (@lastId);
+		if( pDni is not null) 
 		THEN
-			UPDATE users set users.eMail = pEmail WHERE users.idUser = @lastId and users.Business_idBusiness = pIdBusiness; 
-		end if;		
+			UPDATE users set users.Dni = pDni WHERE users.idUser = @lastId and users.Business_idBusiness = pIdBusiness; 
+		end if;	
+        if( pSecondN is not null) 
+		THEN
+			UPDATE users set users.Name_Second = pSecondN WHERE users.idUser = @lastId and users.Business_idBusiness = pIdBusiness; 
+		end if;	
+         if( pTelephone is not null) 
+		THEN
+			UPDATE user_extrainfo set user_extrainfo.Tel_User = pTelephone WHERE user_extrainfo.idUser = @lastId; 
+		end if;	
+        if( pTelephoneM is not null) 
+		THEN
+			UPDATE user_extrainfo set user_extrainfo.Tel_Mother = pTelephoneM WHERE user_extrainfo.idUser = @lastId; 
+		end if;	
+        if( pTelephoneF is not null) 
+		THEN
+			UPDATE user_extrainfo set user_extrainfo.Tel_Father = pTelephoneF WHERE user_extrainfo.idUser = @lastId; 
+		end if;	
+        if( pTelephoneB is not null) 
+		THEN
+			UPDATE user_extrainfo set user_extrainfo.Tel_Brother = pTelephoneB WHERE user_extrainfo.idUser = @lastId; 
+		end if;
+        if( pAddress is not null) 
+		THEN
+			UPDATE user_extrainfo set user_extrainfo.Address = pAddress WHERE user_extrainfo.idUser = @lastId; 
+		end if;
+        if( pCellphone is not null) 
+		THEN
+			UPDATE user_extrainfo set user_extrainfo.Cellphone = pCellphone WHERE user_extrainfo.idUser = @lastId; 
+		end if;	
 		
 		select 1 as success; #Insert Success
     end if;
@@ -279,32 +313,27 @@ then
 end if$$
 
 DROP PROCEDURE IF EXISTS `spUserLogin`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserLogin` (IN `Email` VARCHAR(320), IN `Password` VARCHAR(200))  SELECT users.Name, users.Surname, users.idUser, business.idBusiness, business.Name as NameB from users INNER JOIN business ON business.idBusiness = users.Business_idBusiness where Email = users.eMail and md5(Password) = users.Password$$
-
-DROP PROCEDURE IF EXISTS `spUserRegister`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserRegister` (IN `eMail` VARCHAR(320), IN `UserPassword` VARCHAR(200), IN `Name` VARCHAR(150), IN `idBusiness` INT(11), IN `Surname` VARCHAR(150))  NO SQL
-if not EXISTS(SELECT idUser from users where users.eMail = eMail and users.Business_idBusiness = idBusiness)
-THEN
-	insert into users(users.eMail,users.Password,users.Name,users.Surname, users.Business_idBusiness)values(eMail,MD5(UserPassword), Name,Surname,idBusiness);
-	select 1;
-    
-    ELSE
-    select 0;
-end if$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserLogin` (IN `Email` VARCHAR(320), IN `Password` VARCHAR(200))  SELECT users.Name, users.Surname, users.Admin, users.idUser, business.idBusiness, business.Name as NameB from users INNER JOIN business ON business.idBusiness = users.Business_idBusiness where Email = users.eMail and md5(Password) = users.Password$$
 
 DROP PROCEDURE IF EXISTS `spUsersGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUsersGet` (IN `pIdBusiness` INT)  NO SQL
-SELECT users.idUser, users.Name, users.Surname, users.Name_Second FROM users where users.Business_idBusiness = pIdBusiness$$
+SELECT user_extrainfo.Cellphone, users.idUser, users.Name, users.Surname, users.Dni, users.eMail FROM users left join user_extrainfo on users.idUser = user_extrainfo.idUser where users.Business_idBusiness = pIdBusiness and users.Admin != 1$$
 
 DROP PROCEDURE IF EXISTS `spUserUpdate`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(45), IN `pSurname` VARCHAR(45), IN `pDNI_Cuit` LONG, IN `pEmail` VARCHAR(45), IN `pTelephone` VARCHAR(20), IN `pCellphone` VARCHAR(20))  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(60), IN `pSurname` VARCHAR(60), IN `pDNI_CUIT` INT, IN `pEmail` VARCHAR(60), IN `pTelephone` VARCHAR(60), IN `pCellphone` VARCHAR(60), IN `pTelephoneM` VARCHAR(60), IN `pTelephoneF` VARCHAR(60), IN `pTelephoneB` VARCHAR(60), IN `pAddress` VARCHAR(60), IN `pSecondN` VARCHAR(60))  NO SQL
 if(EXISTS(SELECT users.idUser from users WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness))
 THEN
-	if(pName != "" and pSurname != "" and pDNI_CUIT > 0 and pDNI_CUIT != ""  )
+	if(pName != "" and pSurname != "" and pDNI_CUIT != "" and pEmail!= "" )
     then
-		if( pName is not null and pName!= (SELECT users.Name from users where users.idUser = id) ) 
+        
+         if( pName is not null and pName!= (SELECT users.Name from users where users.idUser = id) ) 
 		THEN
 			UPDATE users set Name = pName WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
+		end if;
+        
+        if( pSecondN is not null and pSecondN!= (SELECT users.Name_Second from users where users.idUser = id) ) 
+		THEN
+			UPDATE users set Name_Second = pSecondN WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
 		end if;
 		
 		if( pSurname is not null and pSurname != (SELECT users.Surname from users where users.idUser = id)) 
@@ -317,20 +346,42 @@ THEN
 			UPDATE users set users.Dni = pDNI_CUIT WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
 		end if;
 		
-		if( pEmail is not null) 
+		if( pEmail is not null and pEmail != (SELECT users.eMail from users where users.idUser = id) and not exists(SELECT users.eMail from users where users.eMail = pEmail and users.Business_idBusiness = pIdBusiness)) 
 		THEN
 			UPDATE users set users.eMail = pEmail WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
 		end if;
 		
-		if( pTelephone is not null and pTelephone != (SELECT user_ExtraInfo.Tel_User from user_ExtraInfo where user_ExtraInfo.idUser = id)) 
+		if( pTelephone is not null and pTelephone != "") 
 		THEN
 			UPDATE user_ExtraInfo set user_ExtraInfo.Tel_User = pTelephone WHERE user_ExtraInfo.idUser = id; 
 		end if;
 		
-		if( pCellphone is not null and pCellphone != (SELECT user_ExtraInfo.Cellphone from user_ExtraInfo where user_ExtraInfo.idUser = id)) 
+		if( pCellphone is not null and pCellphone != "") 
 		THEN
 			UPDATE user_ExtraInfo set user_ExtraInfo.Cellphone = pCellphone WHERE user_ExtraInfo.idUser = id; 
 		end if;
+        
+        if( pTelephoneM is not null and pTelephoneM != "") 
+		THEN
+			UPDATE user_ExtraInfo set user_ExtraInfo.Tel_Mother = pTelephoneM WHERE user_ExtraInfo.idUser = id; 
+		end if;
+        
+        if( pTelephoneF is not null and pTelephoneF != "") 
+		THEN
+			UPDATE user_ExtraInfo set user_ExtraInfo.Tel_Father = pTelephoneF WHERE user_ExtraInfo.idUser = id; 
+		end if;
+        
+        if( pTelephoneB is not null and pTelephoneB != "") 
+		THEN
+			UPDATE user_ExtraInfo set user_ExtraInfo.Tel_Brother = pTelephoneB WHERE user_ExtraInfo.idUser = id; 
+		end if;
+        
+        if( pAddress is not null and pAddress != "") 
+		THEN
+			UPDATE user_ExtraInfo set user_ExtraInfo.Address = pAddress WHERE user_ExtraInfo.idUser = id; 
+		end if;
+        
+        
 	end if;
 end if$$
 
@@ -729,16 +780,14 @@ CREATE TABLE IF NOT EXISTS `products` (
 -- Volcado de datos para la tabla `products`
 --
 
-INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`, `Active`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 10, '1', 3, 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1, b'1'),
-(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1, b'1'),
-(4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1, b'1'),
-(7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, 32, '434', 1, 1, b'1'),
-(8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1, b'1'),
-(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 33, '707', 1, 1, b'1'),
-(15, 50, 'a', 0000654.00, 0000546.00, 0000213.00, NULL, 500, '50', 1, 1, b'0'),
-(16, 54, 'ce', 0000030.00, 0000030.00, 0000035.00, NULL, 31, '54', 1, 1, b'0');
+INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 100, '1', 3, 1),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1),
+(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1),
+(4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1),
+(7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, 32, '434', 1, 1),
+(8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1),
+(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 33, '707', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -804,7 +853,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `idUser` int(11) NOT NULL AUTO_INCREMENT,
   `eMail` varchar(45) DEFAULT NULL,
   `Password` varchar(45) DEFAULT NULL,
-  `Code` int(11) DEFAULT NULL,
   `Admin` bit(1) DEFAULT NULL,
   `Name` varchar(45) DEFAULT NULL,
   `Surname` varchar(45) DEFAULT NULL,
@@ -813,17 +861,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Dni` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idUser`) USING BTREE,
   KEY `fk_Users_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`idUser`, `eMail`, `Password`, `Code`, `Admin`, `Name`, `Surname`, `Name_Second`, `Business_idBusiness`, `Dni`) VALUES
-(3, 'admin@admin', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'admin', 'admin', NULL, 1, NULL),
-(5, 'nico@nico', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'Nicolas', 'Margossian', NULL, 2, NULL),
-(10, 'asdffas@dsafg', '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, 'Jonathan', 'Liu', NULL, 1, '43403629'),
-(11, 'iara@gmail.com', '912ec803b2ce49e4a541068d495ab570', NULL, NULL, 'Iara', 'Sporno', NULL, 1, '43333333');
+INSERT INTO `users` (`idUser`, `eMail`, `Password`, `Admin`, `Name`, `Surname`, `Name_Second`, `Business_idBusiness`, `Dni`) VALUES
+(27, 'admin@admin', '7510d498f23f5815d3376ea7bad64e29', b'1', 'admin', 'admin', 'admin', 1, '13'),
+(28, 'nicolasmargossian@gmail.com', '7510d498f23f5815d3376ea7bad64e29', b'0', 'Nicolas', 'Margossian', 'Alejandro Anushavan', 1, '43994080');
 
 -- --------------------------------------------------------
 
@@ -834,24 +880,26 @@ INSERT INTO `users` (`idUser`, `eMail`, `Password`, `Code`, `Admin`, `Name`, `Su
 DROP TABLE IF EXISTS `user_extrainfo`;
 CREATE TABLE IF NOT EXISTS `user_extrainfo` (
   `idUser_ExtraInfo` int(11) NOT NULL AUTO_INCREMENT,
-  `Address` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
-  `Tel_Father` int(11) DEFAULT NULL,
-  `Tel_Mother` int(11) DEFAULT NULL,
-  `Tel_User` int(11) DEFAULT NULL,
-  `eMail` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
-  `District` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
-  `Healthcare_Company` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `Address` varchar(100) DEFAULT NULL,
+  `Tel_Father` varchar(50) CHARACTER SET latin2 DEFAULT NULL,
+  `Tel_Mother` varchar(50) CHARACTER SET latin2 DEFAULT NULL,
+  `Tel_Brother` varchar(50) CHARACTER SET latin2 DEFAULT NULL,
+  `Tel_User` varchar(50) CHARACTER SET latin2 DEFAULT NULL,
+  `Healthcare_Company` varchar(45) DEFAULT NULL,
   `Sallary` int(11) DEFAULT NULL,
-  `Employee_Code` int(11) DEFAULT NULL,
   `idUser` int(11) NOT NULL,
-  `Province_idProvince` int(11) NOT NULL,
-  `Payment_Methods_idPayment_Methods` int(11) NOT NULL,
-  `Cellphone` int(11) DEFAULT NULL,
+  `Cellphone` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`idUser_ExtraInfo`) USING BTREE,
-  KEY `fk_User_ExtraInfo_Users1_idx` (`idUser`),
-  KEY `fk_User_ExtraInfo_Province1_idx` (`Province_idProvince`),
-  KEY `fk_User_ExtraInfo_Payment_Methods1_idx` (`Payment_Methods_idPayment_Methods`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin2;
+  KEY `fk_User_ExtraInfo_Users1_idx` (`idUser`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `user_extrainfo`
+--
+
+INSERT INTO `user_extrainfo` (`idUser_ExtraInfo`, `Address`, `Tel_Father`, `Tel_Mother`, `Tel_Brother`, `Tel_User`, `Healthcare_Company`, `Sallary`, `idUser`, `Cellphone`) VALUES
+(1, 'Admin', '4444444', '333333', '5555555', '011', NULL, NULL, 27, '12'),
+(2, 'Av Rivadavia 6015 13C', '01144404555', '01149607853', '01164538472', '44322210', NULL, NULL, 28, '11617306599');
 
 --
 -- Restricciones para tablas volcadas
@@ -927,8 +975,6 @@ ALTER TABLE `users`
 -- Filtros para la tabla `user_extrainfo`
 --
 ALTER TABLE `user_extrainfo`
-  ADD CONSTRAINT `fk_User_ExtraInfo_Payment_Methods1` FOREIGN KEY (`Payment_Methods_idPayment_Methods`) REFERENCES `payment_methods` (`idPayment_Methods`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_User_ExtraInfo_Province1` FOREIGN KEY (`Province_idProvince`) REFERENCES `provinces` (`idProvince`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_User_ExtraInfo_Users1` FOREIGN KEY (`idUser`) REFERENCES `users` (`idUser`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
