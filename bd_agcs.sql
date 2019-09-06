@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 4.7.9
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 05-09-2019 a las 21:31:20
+-- Tiempo de generación: 06-09-2019 a las 13:14:08
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -453,62 +453,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
 INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`, `IVA_Condition`, `TypeBill`, `Subtotal`, `Discount`, `IVA_Recharge`, `WholeSaler`, `Total`, `Branches_idBranch`, `Payment_Methods_idPayment_Methods`, `Macs_idMacs`, `Business_idBusiness`) VALUES
 (2, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (3, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(4, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(5, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(6, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(7, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(8, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(9, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(10, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(11, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(12, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(13, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(14, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(15, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.00, 0, 0, 0, 1),
-(16, '2019-06-28', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(17, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(18, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(19, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(20, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(21, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(22, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(23, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(24, '2019-07-05', NULL, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(25, '2019-07-12', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(26, '2019-07-12', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(27, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(28, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(29, '2019-07-12', 8, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, NULL, NULL, NULL, 1),
-(30, '2019-07-17', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(31, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(32, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(33, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(34, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.00, NULL, NULL, NULL, 1),
-(35, '2019-07-17', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.00, NULL, NULL, NULL, 1),
-(36, '2019-07-17', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.00, NULL, NULL, NULL, 1),
-(37, '2019-07-17', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(38, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(39, '2019-07-17', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(40, '2019-07-17', 45, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.00, NULL, NULL, NULL, 1),
-(41, '2019-07-17', 46, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(42, '2019-07-18', 46, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(43, '2019-07-18', 47, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(44, '2019-07-18', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(45, '2019-07-18', NULL, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(46, '2019-07-18', NULL, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(47, '2019-07-18', NULL, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(48, '2019-07-18', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(49, '2019-07-18', NULL, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(50, '2019-07-18', NULL, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(51, '2019-07-18', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(52, '2019-07-18', 22, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(53, '2019-07-18', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(54, '2019-07-18', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(55, '2019-07-18', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(56, '2019-07-19', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(57, '2019-07-19', 23, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(58, '2019-07-19', 23, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(59, '2019-09-05', 53, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 510.00, NULL, NULL, NULL, 1);
+(4, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -532,69 +477,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
 --
 
 INSERT INTO `bills_x_products` (`idBills_X_Products`, `Quantity`, `Products_idProducts`, `Bills_idBills`) VALUES
-(7, 5, 1, 2),
-(8, 10, 1, 12),
-(9, 5, 2, 12),
-(10, 4, 3, 12),
-(11, 100, 1, 13),
-(12, 6, 2, 13),
-(13, 12, 3, 13),
-(14, 48, 3, 14),
-(15, 4, 1, 16),
-(16, 30, 2, 16),
-(17, 2, 1, 25),
-(18, 2, 2, 25),
-(19, 2, 1, 26),
-(20, 4, 2, 26),
-(21, 3, 3, 26),
-(22, 1, 1, 27),
-(23, 2, 2, 27),
-(24, 3, 3, 27),
-(25, 2, 1, 28),
-(26, 2, 2, 28),
-(27, 2, 1, 29),
-(28, 2, 2, 29),
-(29, 1, 3, 29),
-(30, 1, 1, 30),
-(31, 1, 1, 31),
-(32, 1, 1, 32),
-(33, 1, 1, 33),
-(34, 0, 1, 34),
-(35, 0, 1, 35),
-(36, 0, 1, 36),
-(37, 3, 2, 36),
-(38, 1, 1, 37),
-(39, 3, 2, 37),
-(40, 1, 1, 38),
-(41, 3, 2, 38),
-(42, 1, 1, 39),
-(43, 3, 2, 39),
-(44, 0, 1, 40),
-(45, 2, 1, 41),
-(46, 2, 1, 42),
-(47, 9, 2, 42),
-(48, 8, 3, 42),
-(49, 4, 1, 43),
-(50, 2, 1, 44),
-(51, 4, 1, 48),
-(52, 5, 1, 51),
-(53, 5, 1, 52),
-(54, 5, 1, 53),
-(55, 5, 1, 54),
-(56, 2, 1, 55),
-(57, 26, 2, 55),
-(58, 1006, 3, 55),
-(59, 2, 1, 56),
-(60, 2, 2, 56),
-(61, 6, 3, 56),
-(62, 2, 1, 57),
-(63, 2, 2, 57),
-(64, 6, 3, 57),
-(65, 2, 1, 58),
-(66, 2, 2, 58),
-(67, 6, 3, 58),
-(68, 3, 4, 58),
-(69, 17, 16, 59);
+(7, 5, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -672,7 +555,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idClients`) USING BTREE,
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
@@ -691,7 +574,8 @@ INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Tel
 (46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 1, b'1'),
 (47, 'nicolass', 'margossian23', 439940804, 'a', '5613', '2345', 1, b'1'),
 (52, 'dawa', 'yareyare', 1234, 'mnail@q', '123', '5', 1, b'0'),
-(53, 'R', 'lucas', 7, NULL, NULL, NULL, 1, b'0');
+(53, 'R', 'lucas', 7, NULL, NULL, NULL, 1, b'0'),
+(54, 'xdd', 'aaa', 9, '', NULL, NULL, 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -774,20 +658,21 @@ CREATE TABLE IF NOT EXISTS `products` (
   PRIMARY KEY (`idProducts`) USING BTREE,
   KEY `fk_Products_Suppliers1_idx` (`Suppliers_idSupplier`),
   KEY `fk_Products_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Volcado de datos para la tabla `products`
 --
 
-INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 100, '1', 3, 1),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1),
-(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1),
-(4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1),
-(7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, 32, '434', 1, 1),
-(8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1),
-(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 33, '707', 1, 1);
+INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`, `Active`) VALUES
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 99, '1', 3, 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1, b'1'),
+(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1, b'1'),
+(4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1, b'1'),
+(7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, 32, '434', 1, 1, b'1'),
+(8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1, b'1'),
+(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 33, '707', 1, 1, b'1'),
+(17, 106, 'loljajasalu2', 0000081.00, 0000071.00, 0000082.00, NULL, 89, '891', 0, 1, b'0');
 
 -- --------------------------------------------------------
 

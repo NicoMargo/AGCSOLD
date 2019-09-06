@@ -62,7 +62,7 @@
         return number;
     }
 
-    $(".imgClientUpdate").click(function () {
+    $(".updtModalBtn").click(function () {
         modalNormal("Update");
         clientId = $(this).attr("clientId");
         $.ajax({
