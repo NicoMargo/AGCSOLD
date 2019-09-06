@@ -41,7 +41,7 @@ namespace AGCS.Models.BDD
             {
                 try
                 {
-                    User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Convert.ToUInt32(ConnectionReader["idUser"]));
+                    User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadULong(ConnectionReader, "Dni"), Helpers.ReadString(ConnectionReader, "Email"), Helpers.ReadString(ConnectionReader, "Cellphone"), Convert.ToUInt32(ConnectionReader["idUser"]));
                     ListOfUsers.Add(DataUser);
                 }
                 catch { }
@@ -55,10 +55,17 @@ namespace AGCS.Models.BDD
                 {"pId", id },
                 {"pIdBusiness",Sessionh.GetSUInt32("idBusiness")},
             };
-            Helpers.CallNonQuery("spUserDelete", args);
+            try
+            {
+                Helpers.CallNonQuery("spUserDelete", args);
+            }
+            catch
+            {
+
+            }
             Helpers.Disconect();
         }
-        public static bool InsertUser(User user)
+        public static string InsertUser(User user)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
@@ -68,13 +75,18 @@ namespace AGCS.Models.BDD
                 {"pEmail", user.Email},
                 {"pTelephone", user.Telephone},
                 {"pPass", user.PassUser},
+                {"pTelephoneM", user.TelephoneM},
+                {"pTelephoneF", user.TelephoneF},
+                {"pTelephoneB", user.TelephoneB},
+                {"pAddress", user.Address},
+                {"pSecondN", user.SecondName},
                 {"pCellphone", user.Cellphone }
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spUserInsert", args);
-            bool success = false;
+            string success = "Falla al registrar al usuario. Reintentar";
             if (ConnectionReader.Read())
             {
-                success = Helpers.ReadBool(ConnectionReader, "success");
+                success = Convert.ToString(Helpers.ReadBool(ConnectionReader, "success"));
             }
             Helpers.Disconect();
             return success;

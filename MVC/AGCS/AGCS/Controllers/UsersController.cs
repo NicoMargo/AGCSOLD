@@ -10,7 +10,7 @@ namespace AGCS.Controllers
 {
     public class UsersController : BaseController
     {
-        
+
         public ActionResult UsersCRUD()
         {
             ViewBag.Users = UsersProvider.GetUsers();
@@ -33,22 +33,23 @@ namespace AGCS.Controllers
 
         }
         [HttpPost]
-        public bool CreateUser(string surname = "", string name = "", ulong dni = 0, string email = "", string telephone = "",string passUser = "",string cPassUser = "", string cellphone = "", string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
+        public string CreateUser(string surname = "",string secondName = "", string name = "", string dni = "", string email = "", string telephone = "",string passUser = "",string cPassUser = "", string cellphone = "", string telephoneM = "", string address = "", string telephoneF = "", string telephoneB = "")
         {
-            bool Success = false;
+            string Msg = "";
             if (passUser == cPassUser)
             {                
-                User NewUser = new User(name, surname, dni, email, cellphone, passUser, telephone);
-                try
-                {
-                    Success = UsersProvider.InsertUser(NewUser);
-                }
-                catch
-                {
-                    Success = false;
-                }
+                User NewUser = new User(name, surname,secondName, Convert.ToUInt64(dni), email, cellphone, passUser, telephone, telephoneM, telephoneF, telephoneB,address);
+               
+                    Msg =UsersProvider.InsertUser(NewUser);
+                
             }
-            return Success;
+            else
+            {
+                Msg = "las contraseñas no coinciden";
+            }
+            if (Msg == "False")
+                Msg = "Ya existe un usuario con ese email o Dni";
+            return Msg;
         }
         [HttpPost]
         public JsonResult GetDataUser(uint id)
