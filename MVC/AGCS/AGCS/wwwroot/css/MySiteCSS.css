@@ -1,9 +1,5 @@
-﻿.imgClientUpdate {
-    width: 30%;
-}
-
-.updateImage{
-    width: 30%;
+﻿.crudButton {
+    width: 3rem;
 }
 .validation_msg {
     color : red;
@@ -15,4 +11,7 @@
 
 .hidden {
     display : none;
+}
+.display-inline {
+    display:inline;
 }
