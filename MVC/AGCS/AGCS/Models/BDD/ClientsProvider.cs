@@ -10,7 +10,7 @@ namespace AGCS.Models.BDD
         {
             List<Client> clientsList = new List<Client>();
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness",Sessionh.GetSUInt32("idBusiness")}
+                {"pIdBusiness",Session.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientsGet", args);
             while (ConnectionReader.Read())
@@ -46,7 +46,7 @@ namespace AGCS.Models.BDD
             Client client = null;
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", idClient},
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")}
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientGetById", args);
 
@@ -79,7 +79,7 @@ namespace AGCS.Models.BDD
             Client client = null;
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pDNI", DNI},
-                {"pIdBusiness",Sessionh.GetSUInt32("idBusiness")}
+                {"pIdBusiness",Session.GetSUInt32("idBusiness")}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientGetByDNI", args);
 
@@ -106,7 +106,7 @@ namespace AGCS.Models.BDD
         public static bool InsertClient(Client client)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
                 {"pName", client.Name},
                 {"pSurname", client.Surname},
                 {"pDNI_CUIT", client.Dni},
@@ -129,7 +129,7 @@ namespace AGCS.Models.BDD
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", client.Id },
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
                 {"pName", client.Name},
                 {"pSurname", client.Surname},
                 {"pDNI_CUIT", client.Dni},
@@ -145,7 +145,7 @@ namespace AGCS.Models.BDD
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"id", id },
-                {"pIdBusiness", Sessionh.GetSUInt32("idBusiness")},
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
             };
             Helpers.CallNonQuery("spClientDelete", args);
             Helpers.Disconect();

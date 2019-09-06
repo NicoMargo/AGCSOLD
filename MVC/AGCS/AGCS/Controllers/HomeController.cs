@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AGCS.Models;
 using AGCS.Models.BDD;
@@ -13,7 +11,7 @@ namespace AGCS.Controllers
 
         public ActionResult Index()
         {
-            Sessionh.ClearSession();
+            Session.ClearSession();
             return View();
         }
         [HttpPost]
@@ -30,7 +28,9 @@ namespace AGCS.Controllers
                 {
                     HttpContext.Session.SetString("username", Loginuser.Name+" "+Loginuser.Surname);                    
                     HttpContext.Session.SetString("business", LoginBusiness.Name);
+                    HttpContext.Session.SetInt32("op", Convert.ToInt32(Loginuser.Admin));
                     HttpContext.Session.SetInt32("idBusiness", Convert.ToInt32(LoginBusiness.Id));
+                    HttpContext.Session.SetInt32("idUser", Convert.ToInt32(Loginuser.Id));
                     return RedirectToAction("Index", "Backend");
                 }
                 else

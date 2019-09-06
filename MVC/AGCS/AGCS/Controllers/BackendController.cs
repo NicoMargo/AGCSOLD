@@ -40,7 +40,7 @@ namespace AGCS.Controllers
             {
                 Bill bill = new Bill(DateTime.Today, products, recharge , discount, dniClient);
                 
-                success = BillsProvider.InsertBill(bill, ClientBill, Sessionh.GetSUInt32("idBusiness"));
+                success = BillsProvider.InsertBill(bill, ClientBill, Session.GetSUInt32("idBusiness"));
             }
             return success;
         }

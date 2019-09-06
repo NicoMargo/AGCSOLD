@@ -1,6 +1,6 @@
 ﻿
 $(document).ready(function () {
-    function validate(id,expectedCondition = true) {
+    function validate(id, expectedCondition = true) {
         if (!expectedCondition) {
             $("#modal" + id).addClass("validation_error");
             $("#msg" + id).removeClass("hidden");
@@ -18,20 +18,20 @@ $(document).ready(function () {
     }
 
     function modalNormal(modalType) { //Modal type: create , update
-        inputNormal(modalType +"Surname");
-        inputNormal(modalType +"Name");
-        inputNormal(modalType +"SecondName");
-        inputNormal(modalType +"Password");
-        inputNormal(modalType +"ConfirmPassword");
-        inputNormal(modalType +"Dni");
-        inputNormal(modalType +"Email");
-        inputNormal(modalType +"Telephone");
-        inputNormal(modalType +"Cellphone");
-        inputNormal(modalType +"Town");
-        inputNormal(modalType +"Address");
-        inputNormal(modalType +"Appartment");
-        inputNormal(modalType +"Number");
-        inputNormal(modalType +"Floor");
+        inputNormal(modalType + "Surname");
+        inputNormal(modalType + "Name");
+        inputNormal(modalType + "SecondName");
+        inputNormal(modalType + "Password");
+        inputNormal(modalType + "ConfirmPassword");
+        inputNormal(modalType + "Dni");
+        inputNormal(modalType + "Email");
+        inputNormal(modalType + "Telephone");
+        inputNormal(modalType + "Cellphone");
+        inputNormal(modalType + "Town");
+        inputNormal(modalType + "Address");
+        inputNormal(modalType + "Appartment");
+        inputNormal(modalType + "Number");
+        inputNormal(modalType + "Floor");
     }
     function validInt(number) {
         if (number <= 0) {
@@ -81,11 +81,11 @@ $(document).ready(function () {
                 $("#modalUpdateEmail").val(Data.Email);
                 $("#modalUpdateTelephone").val(validInt(Data.Telephone));
                 $("#modalUpdateCellphone").val(validInt(Data.Cellphone));
-                $("#modalUpdateTown").val(Data.Town);
+                $("#modalUpdateTelephoneMother").val(Data.TelephoneM);
+                $("#modalUpdateTelephoneFather").val(Data.TelephoneF);
+                $("#modalUpdateTelephoneBrother").val(Data.TelephoneB);
                 $("#modalUpdateAddress").val(Data.Address);
-                $("#modalUpdateAppartment").val(Data.Leter);
-                $("#modalUpdateNumber").val(Data.Number);
-                $("#modalUpdateFloor").val(Data.Floor);
+                $("#modalUpdateSecondName").val(Data.SecondName);
             },
             error: function () {
                 alert("ERROR");
@@ -93,67 +93,82 @@ $(document).ready(function () {
         });
     });
 
-    $("#createUser").click(function () {
-        modalNormal("Create");
+    $("#UpdateUser").click(function () {
+        modalNormal("Update");
     });
 
     $("#UpdateSubmit").click(function () {
         valid = validate("UpdateSurname", $("#modalUpdateSurname").val() !== "");
         valid = validate("UpdateName", $("#modalUpdateName").val() !== "") && valid;
-        valid = validate("UpdateDni", $("#modalUpdateDni").val() !== "" && $("#modalUpdateDni").val() > 0) && valid;
+        valid = validate("UpdateDni", $("#modalUpdateDni").val() !== "") && valid;
+        valid = validate("UpdatePassword", $("#modalUpdatePassword").val() !== "") && valid;
+        valid = validate("UpdateConfirmPassword", $("#modalUpdateConfirmPassword").val() !== "") && valid;
+        valid = validate("UpdateEmail", $("#modalUpdateEmail").val() !== "") && valid;
+
         if (valid) {
             $.ajax({
                 type: "POST",
                 url: "/Users/UpdateUser",
                 data: {
                     id: Index,
-                    Surname: $("#modalUpdateSurname").val(),
-                    Name: $("#modalUpdateName").val(),
+                    surname: $("#modalUpdateSurname").val(),
+                    name: $("#modalUpdateName").val(),
+                    secondName: $("#modalUpdateSecondName").val(),
                     dni: $("#modalUpdateDni").val(),
                     email: $("#modalUpdateEmail").val(),
-                    Telephone: $("#modalUpdateTelephone").val(),
-                    Cellphone: $("#modalUpdateCellphone").val(),
-                    Town: $("#modalUpdateTown").val(),
-                    Address: $("#modalUpdateAddress").val(),
-                    Province: 1,
-                    Leter: $("#modalUpdateAppartment").val(),
-                    Number: $("#modalUpdateNumber").val(),
-                    Floor: $("#modalUpdateFloor").val()
+                    telephone: $("#modalUpdateTelephone").val(),
+                    cellphone: $("#modalUpdateCellphone").val(),
+                    address: $("#modalUpdateAddress").val(),
+                    telephoneM: $("#modalUpdateTelephoneMother").val(),
+                    telephoneF: $("#modalUpdateTelephoneFather").val(),
+                    telephoneB: $("#modalUpdateTelephoneBrother").val()
                 },
-                success: function () {
-                    location.reload();
+                success: function (success) {
+                    if (success) {
+                        location.reload();
+                    }
+                    else {
+                        alert("Ya existe un usuario con ese email o Dni");
+                    }
                 },
                 error: function () {
-                    alert("ERROR");
+                    alert("Falla al registrar el usuario. Reintentar");
                 }
+
             });
+        }
+        else {
+            if ($("#modalUpdateName").val() === "") {
+                $("#modalUpdateName").addClass("validation_error");
+            }
         }
     });
 
-    $("deleteButton").click(function () {
-        let Index = $(this).attr("position");
-         $("#confirm").click(function () {
-            $.ajax({
-                type: "DELETE",
-                url: "/Users/DeleteUser",
-                data: { id: Index },
-                success: function () {
-                    location.reload();
-                },
-                error: function () {
-                    alert("ERROR");
-                }
-            });
+
+$("deleteButton").click(function () {
+    let Index = $(this).attr("position");
+    $("#confirm").click(function () {
+        $.ajax({
+            type: "DELETE",
+            url: "/Users/DeleteUser",
+            data: { id: Index },
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                alert("ERROR");
+            }
         });
     });
+});
 
-    $("#newUser").click(function () {
-        valid = validate("CreateSurname", $("#modalCreateSurname").val() !== "");
-        valid = validate("CreateName", $("#modalCreateName").val() !== "") && valid;
-        valid = validate("CreateName", $("#modalCreateSecondName").val() !== "") && valid;
-        valid = validate("CreatePassword", $("#modalCreatePassword").val() !== "") && valid;
-        valid = validate("CreateeConfirmPassworde", $("#modalCreateConfirmPassword").val() !== "") && valid;
-        valid = validate("CreateDni", $("#modalCreateDni").val() !== "" && $("#modalCreateDni").val() > 0) && valid;
+$("#newUser").click(function () {
+    valid = validate("CreateSurname", $("#modalCreateSurname").val() !== "");
+    valid = validate("CreateName", $("#modalCreateName").val() !== "") && valid;
+    valid = validate("CreatePassword", $("#modalCreatePassword").val() !== "") && valid;
+    valid = validate("CreateConfirmPassword", $("#modalCreateConfirmPassword").val() !== "") && valid;
+    valid = validate("CreateEmail", $("#modalCreateEmail").val() !== "") && valid;
+    if ($("#modalCreateConfirmPassword").val() === $("#modalCreatePassword").val()) {
         if (valid) {
             $.ajax({
                 type: "POST",
@@ -161,30 +176,29 @@ $(document).ready(function () {
                 data: {
                     surname: $("#modalCreateSurname").val(),
                     name: $("#modalCreateName").val(),
-                    sname: $("#modalCreateSecondName").val(),
+                    secondName: $("#modalCreateSecondName").val(),
                     passUser: $("#modalCreatePassword").val(),
                     cPassUser: $("#modalCreateConfirmPassword").val(),
                     dni: $("#modalCreateDni").val(),
                     email: $("#modalCreateEmail").val(),
                     telephone: $("#modalCreateTelephone").val(),
                     cellphone: $("#modalCreateCellphone").val(),
-                    town: $("#modalCreateTown").val(),
-                    address: $("#modalCreateAddressC").val(),
-                    province: 1,
-                    leter: $("#modalCreateAppartment").val(),
-                    number: $("#modalCreateNumber").val(),
-                    floor: $("#modalCreateFloor").val()
+                    address: $("#modalCreateAddress").val(),
+                    telephoneM: $("#modalCreateTelephoneMother").val(),
+                    telephoneF: $("#modalCreateTelephoneFather").val(),
+                    telephoneB: $("#modalCreateTelephoneBrother").val()
                 },
                 success: function (success) {
-                    if (success)
+                    if (success == "True")
                         location.reload();
                     else {
-                        alert("no conciden las contraseñas");
+                        alert(success);
                     }
                 },
                 error: function () {
-                    alert("ERROR");
+                    alert("Falla al registrar el usuario. Reintentar");
                 }
+
             });
         }
         else {
@@ -192,5 +206,8 @@ $(document).ready(function () {
                 $("#modalCreateName").addClass("validation_error");
             }
         }
-    });
+    } else {
+        alert("Las contraseñas no coinciden");
+    }
+});
 });

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AGCS.Models
 {
-    public class Sessionh
+    public class Session
     {
         private static HttpContext _shc = null;       
         
