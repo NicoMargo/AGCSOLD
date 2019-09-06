@@ -43,7 +43,7 @@
                 <div class="card-header">
                     <strong class="card-title">Productos</strong>
                 </div>
-                <div class="card-body">
+                < class="card-body">
                     <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Producto">
                     <button type="button" id="addProduct" class="btn btn-primary w-100" data-toggle="modal" data-target="#productCreate">
                         Agregar Product
@@ -67,7 +67,7 @@
                                     <td class="colDescription">@validString(ViewBag.Products[i].Description)</td>
                                     <td class="colCode">@validString(ViewBag.Products[i].Code)</td>
                                     <td>@validFloat(ViewBag.Products[i].Price)</td>
-                                    <td><div><input value=@ViewBag.Products[i].Stock type="number" step="1" class="form-control text-center display-inline" style="width:10rem"/> <img modelId="@ViewBag.Products[i].Id" class="btnStockUpdt crudButton display-inline" src="~/images/submit.png" style="width:50px" /></div> </td>
+                                    <td><input value=@ViewBag.Products[i].Stock type="number" step="1" class="form-control text-center display-inline" style="width:10rem"/> <img modelId="@ViewBag.Products[i].Id" class="btnStockUpdt crudButton display-inline" src="~/images/submit.png" style="width:50px" /> </td>
                                     <td><a data-toggle="modal" data-target="#productUpdate"><img modelId="@ViewBag.Products[i].Id" class="btnProductUpdate crudButton" src="~/images/edit.png" /></a></td>
                                     <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
                                 </tr>
