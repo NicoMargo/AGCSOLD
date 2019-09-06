@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 4.7.9
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 05-09-2019 a las 21:31:20
+-- Tiempo de generación: 06-09-2019 a las 13:14:08
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -455,7 +455,6 @@ INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`
 (3, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (4, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1);
 
-
 -- --------------------------------------------------------
 
 --
@@ -556,7 +555,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idClients`) USING BTREE,
   KEY `fk_Clients_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
@@ -575,7 +574,8 @@ INSERT INTO `clients` (`idClients`, `Name`, `Surname`, `DNI_CUIT`, `eMail`, `Tel
 (46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 1, b'1'),
 (47, 'nicolass', 'margossian23', 439940804, 'a', '5613', '2345', 1, b'1'),
 (52, 'dawa', 'yareyare', 1234, 'mnail@q', '123', '5', 1, b'0'),
-(53, 'R', 'lucas', 7, NULL, NULL, NULL, 1, b'0');
+(53, 'R', 'lucas', 7, NULL, NULL, NULL, 1, b'0'),
+(54, 'xdd', 'aaa', 9, '', NULL, NULL, 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -658,20 +658,21 @@ CREATE TABLE IF NOT EXISTS `products` (
   PRIMARY KEY (`idProducts`) USING BTREE,
   KEY `fk_Products_Suppliers1_idx` (`Suppliers_idSupplier`),
   KEY `fk_Products_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Volcado de datos para la tabla `products`
 --
 
-INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 100, '1', 3, 1),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1),
-(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1),
-(4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1),
-(7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, 32, '434', 1, 1),
-(8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1),
-(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 33, '707', 1, 1);
+INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`, `Active`) VALUES
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 99, '1', 3, 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1, b'1'),
+(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1, b'1'),
+(4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', 97, '7791337613027', 2, 1, b'1'),
+(7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, 32, '434', 1, 1, b'1'),
+(8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1, b'1'),
+(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 33, '707', 1, 1, b'1'),
+(17, 106, 'loljajasalu2', 0000081.00, 0000071.00, 0000082.00, NULL, 89, '891', 0, 1, b'0');
 
 -- --------------------------------------------------------
 
