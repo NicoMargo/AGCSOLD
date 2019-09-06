@@ -35,19 +35,19 @@
 
                     <table class="CRUDTable" id="ClientsTable">
                         <tr class="header">
-                            <th style="width:20%;">Apellido</th>
-                            <th style="width:15%;">Nombre</th>
-                            <th style="width:15%;">DNI/CUIT/CUIL</th>
-                            <th style="width:10%;">Celular</th>
-                            <th style="width:25%;">Email</th>
-                            <th style="width:10%;">Modificar</th>
-                            <th style="width:10%;">Eliminar</th>
+                            <th class="p-2" style="width:20%;">Apellido</th>
+                            <th class="p-2" style="width:15%;">Nombre</th>
+                            <th class="p-2" style="width:15%;">DNI/CUIT/CUIL</th>
+                            <th class="p-2" style="width:10%;">Celular</th>
+                            <th class="p-2" style="width:25%;">Email</th>
+                            <th class="p-2" style="width:10%;">Modificar</th>
+                            <th class="p-2" style="width:10%;">Eliminar</th>
                         </tr>
                         @{
                             for (int i = 0; i < ViewBag.Clients.Count; i++)
                             {
                                 <tr class="tableRow">
-                                    <td class="colSurname">@validString(ViewBag.Clients[i].Surname)</td>
+                                    <td class="colSurname pl-2">@validString(ViewBag.Clients[i].Surname)</td>
                                     <td class="colName">@validString(ViewBag.Clients[i].Name)</td>
                                     <td class="colDNI">@validInt(ViewBag.Clients[i].Dni)</td>
                                     <td>@validString(ViewBag.Clients[i].Cellphone)</td>

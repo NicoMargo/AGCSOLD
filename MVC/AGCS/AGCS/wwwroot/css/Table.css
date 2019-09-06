@@ -17,12 +17,12 @@
     border-collapse: collapse;
     width: 100%;
     border: 1px solid #ddd;
-    font-size: 19px;
+    font-size: 17px;
 }
 
 .CRUDTable th, .CRUDTable td {
     text-align: left;
-    padding: 6px;
+    padding: 2px;
 }
 
 .CRUDTable tr {

@@ -165,6 +165,7 @@ $("deleteButton").click(function () {
 $("#newUser").click(function () {
     valid = validate("CreateSurname", $("#modalCreateSurname").val() !== "");
     valid = validate("CreateName", $("#modalCreateName").val() !== "") && valid;
+    valid = validate("CreateDni", $("#modalCreateDni").val() !== "") && valid;
     valid = validate("CreatePassword", $("#modalCreatePassword").val() !== "") && valid;
     valid = validate("CreateConfirmPassword", $("#modalCreateConfirmPassword").val() !== "") && valid;
     valid = validate("CreateEmail", $("#modalCreateEmail").val() !== "") && valid;

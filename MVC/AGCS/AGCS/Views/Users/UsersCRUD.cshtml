@@ -52,25 +52,25 @@
 
                         <table id="UsersTable" class="CRUDTable">
                             <tr class="header">
-                                <th style="width:20%;">Apellido</th>
-                                <th style="width:15%;">Nombre</th>
-                                <th style="width:15%;">Dni</th>
-                                <th style="width:10%;">Celular</th>
-                                <th style="width:25%;">Email</th>
-                                <th style="width:10%;">Modificar</th>
-                                <th style="width:10%;">Eliminar</th>
+                                <th class="p-2" style="width:20%;">Apellido</th>
+                                <th class="p-2" style="width:15%;">Nombre</th>
+                                <th class="p-2" style="width:15%;">Dni</th>
+                                <th class="p-2" style="width:10%;">Celular</th>
+                                <th class="p-2" style="width:25%;">Email</th>
+                                <th class="p-2" style="width:10%;">Modificar</th>
+                                <th class="p-2" style="width:10%;">Eliminar</th>
                             </tr>
                             @{
                                 for (int i = 0; i < ViewBag.Users.Count; i++)
                                 {
                                     <tr class="tableRow">
-                                        <td class="colSurname">@validString(ViewBag.Users[i].Surname)</td>
+                                        <td class="colSurname pl-2">@validString(ViewBag.Users[i].Surname)</td>
                                         <td class="colName">@validString(ViewBag.Users[i].Name)</td>
                                         <td class="colDNI">@validInt(ViewBag.Users[i].Dni)</td>
                                         <td>@validString(ViewBag.Users[i].Cellphone)</td>
                                         <td>@validString(ViewBag.Users[i].Email)</td>
-                                        <td><a data-toggle="modal" data-target="#updateUser"><img position="@ViewBag.Users[i].Id" class="imgClientUpdate" src="~/images/edit.png" /></a></td>
-                                        <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@ViewBag.Users[i].Id"><img class="w-50" src="~/images/delete.png" /></deleteButton></a></td>
+                                        <td><a data-toggle="modal" data-target="#updateUser"><img position="@ViewBag.Users[i].Id" class="imgClientUpdate crudButton" src="~/images/edit.png" /></a></td>
+                                        <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@ViewBag.Users[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
                                     </tr>
                                 }
                             }
