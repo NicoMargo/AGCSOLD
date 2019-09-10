@@ -23,21 +23,23 @@ namespace AGCS.Models.BDD
             {
                 uint id;
                 ulong articleNumber;
+                string code;
                 string description;
                 float cost;
                 float price;
+                float priceW;
                 int stock;
-                string code;
                 try
                 {
                     id = Convert.ToUInt32(ConnectionReader["idProducts"]);
                     articleNumber = Helpers.ReadULong(ConnectionReader, "Article_Number");
-                    description = Helpers.ReadString(ConnectionReader, "Description");
                     code = Helpers.ReadString(ConnectionReader, "CodeProduct");
+                    description = Helpers.ReadString(ConnectionReader, "Description");
                     cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
+                    priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    Product product = new Product(id, (int) articleNumber,code, description, price, stock);
+                    Product product = new Product(id, articleNumber,code, description, price, priceW, stock);
                     productsList.Add(product);
                 }
                 catch { }
@@ -71,7 +73,7 @@ namespace AGCS.Models.BDD
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
                     codeProduct = Helpers.ReadString(ConnectionReader, "CodeProduct");
-                    product = new Product(id, description, price, stock, codeProduct);
+                    product = new Product(id, codeProduct, description, price, stock);
                 }
                 catch { }
             }
@@ -109,7 +111,7 @@ namespace AGCS.Models.BDD
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
                     idSupplier = (uint) Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier");
 
-                    product = new Product(idProducts, articleNumber, description, cost, price, priceW, stock, code, idSupplier);
+                    product = new Product(idProducts, articleNumber, code, description,  cost, price, priceW, stock,  idSupplier);
                 }
                 catch { }
             }

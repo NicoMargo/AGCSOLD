@@ -45,7 +45,7 @@ namespace AGCS.Controllers
             float fCost = parseFloat(cost);
             float fPrice = parseFloat(price);
             float fPriceW = parseFloat(priceW);
-            Product product = new Product(id, number, description, fCost, fPrice, fPriceW, stock, code,idSupplier);
+            Product product = new Product(id, number, code, description, fCost, fPrice, fPriceW, stock,idSupplier);
 
             try
             {
@@ -68,7 +68,7 @@ namespace AGCS.Controllers
             float fPrice = parseFloat(price);
             float fPriceW = parseFloat(priceW);
 
-            Product product = new Product( number, description, fCost, fPrice, fPriceW, stock, code, idSupplier);
+            Product product = new Product(number, code, description, fCost, fPrice, fPriceW, stock, idSupplier);
 
             try
             {

@@ -39,60 +39,51 @@ namespace AGCS.Models
 
 
         //private int _idSupplier o Supplier supplier;
+        
 
-
-        public Product(uint id, string description, float price, int stock)
-        {
+        public Product( uint id, string code, string description,float price, int stock) {
             _id = id;
-            _description = description;
-            _price = price;
-            _stock = stock;
-        }
-        public Product()
-        {         
-        }
-
-        public Product( uint id, string description,float price, int stock,string code) {
-            _id = id;
-            _description = description;
-            _price = price;
-            _stock = stock;
-            _code = code;
-        }
-
-        public Product(uint id, int articleNumber, string code , string description, float price, int stock)
-        {
-            _id = id;
-            _articleNumber = articleNumber;
             _code = code;
             _description = description;
             _price = price;
             _stock = stock;
         }
 
-        public Product(uint id, uint articleNumber, string description, float cost, float price, float priceW, int stock, string code, uint idSupplier)
+        public Product(uint id, ulong articleNumber, string code, string description, float price, float priceW, int stock)
+        {
+            _id = id;
+            _articleNumber = (int)articleNumber;
+            _code = code;
+            _description = description;
+            _price = price;
+            _priceW = priceW;
+            _stock = stock;
+        }
+
+        public Product(uint id, ulong articleNumber, string code, string description, float cost, float price, float priceW, int stock, uint idSupplier)
         {
             _id = id;
             _articleNumber =(int) articleNumber;
+            _code = code;
             _description = description;
             _cost = cost;
             _price = price;
             _priceW = priceW;
             _stock = stock;
-            _code = code;
             _idSupplier = idSupplier;
         }
 
-        public Product(uint articleNumber, string description, float cost, float price, float priceW, int stock, string code, uint idSupplier)
+        public Product(ulong articleNumber, string code, string description, float cost, float price, float priceW, int stock, uint idSupplier)
         {
             _articleNumber = (int)articleNumber;
+            _code = code;
             _description = description;
             _cost = cost;
             _price = price;
             _priceW = priceW;
             _stock = stock;
-            _code = code;
             _idSupplier = idSupplier;
         }
     }
+
 }
