@@ -55,8 +55,14 @@ namespace AGCS
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
+            app.UseMiddlewareSession();
+            /*
+            app.MapWhen(context => context.Request.Path.Value != "/", appBuilder =>
+            {              
+               appBuilder.UseMiddlewareSession();               
+            });*/
+            
             app.UseCookiePolicy();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
