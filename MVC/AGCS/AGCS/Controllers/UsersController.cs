@@ -34,16 +34,19 @@ namespace AGCS.Controllers
             if(new1 == new2)
             {
                 if (Convert.ToBoolean(UsersProvider.ChangePassword(original, new1)))
-                    return RedirectToAction("Index", "Backend");
+                {
+                    ViewBag.check = 3;
+                    return View();
+                }
                 else
                 {
-                    ViewBag.check = "Contraseña incorrecta";
+                    ViewBag.check = 2;
                     return View();
                 }
             }
             else
             {
-                ViewBag.check = "Las contraseas no coinciden";
+                ViewBag.check = 1;
                 return View();
             }
         }

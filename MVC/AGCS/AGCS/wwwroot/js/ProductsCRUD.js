@@ -124,7 +124,7 @@
                 $("#updtSupplier").val(Data.IdSupplier);
             },
             error: function () {
-                alert("ERROR");
+                CreateModal("Error", "Hubo un error al modificar el producto");
             }
         });
     });
@@ -151,7 +151,7 @@
                     $("#productUpdate").modal("toggle");
                 },
                 error: function () {
-                    alert("ERROR");
+                    CreateModal("Error", "Hubo un error al actualizar el cliente");
                 }
             });
         }
@@ -168,7 +168,7 @@
                     location.reload();
                 },
                 error: function () {
-                    alert("ERROR");
+                    CreateModal("Error", "Hubo un error al eliminar al producto");
                 }
             });
         });
@@ -197,7 +197,7 @@
                     $("#productCreate").modal("toggle");
                 },
                 error: function () {
-                    alert("ERROR");
+                    CreateModal("Error", "Hubo un error al crear el producto");
                 }
             });
         }
@@ -215,10 +215,10 @@
             success: function () {
                 
                 location.reload();
-                alert("Se Modifico el Stock");
+                CreateModal("Stock", "Se modifico el stock correctamente");
             },
             error: function () {
-                alert("ERROR");
+                CreateModal("Error", "Hubo un error al modificar el stock");
             }
         });
     });

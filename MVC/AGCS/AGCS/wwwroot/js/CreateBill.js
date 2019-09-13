@@ -30,21 +30,15 @@
                     $("#stockProdToEnter").append(D.Stock);
                     $("#quantProdToEnter").focus();
                 } else {
-                    alert("No existe el producto");
+                    CreateModal("Error de Producto","No existe el producto");
                 }
             },
             error: function () {
-                alert("ERROR");
+                CreateModal("Error", "Hubo un error al buscar el producto");
             }
         });
     }
-    $("#codProdToEnter").focus();
-    function validInt(number) {
-        if (number <= 0) {
-            number = "";
-        }
-        return number;
-    }
+    $("#codProdToEnter").focus();   
     
     $('#quantProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -192,22 +186,22 @@
                         },
                         success: function (success) {
                             if (success) {
-                                alert("se facturó");
+                                CreateModal("Factura", "Se facturo correctamente");
                             } else {
-                                alert("hubo un error");
+                                CreateModal("Error", "Hubo un error al Facturar");
                             }
                         },
                         error: function () {
-                            alert("ERROR");
+                            CreateModal("Error", "Hubo un error al Facturar");
                         }
                     });
                 } else {
-                    alert("ingrese datos a facturar");
+                    CreateModal("Error", "Ingrese los datos a Facturar");
                 }
             } else
-                alert("ingrese todo los datos del cliente");
+                CreateModal("Error", "Ingrese Todos los datos del cliente");
         } else {
-            alert("cantidades erroneas");
+            CreateModal("Error", "Cantidades Erroneas");
         }
     });
     function validateQ(id) {
@@ -257,7 +251,7 @@
 
             },
             error: function () {
-                alert("ERROR");
+                CreateModal("Error", "Hubo un error al buscar el cliente");
             }
         });
     });

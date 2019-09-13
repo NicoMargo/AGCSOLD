@@ -1,46 +1,6 @@
 ﻿
-$(document).ready(function () {
-    function validate(id, expectedCondition = true) {
-        if (!expectedCondition) {
-            $("#modal" + id).addClass("validation_error");
-            $("#msg" + id).removeClass("hidden");
-        }
-        else {
-            $("#modal" + id).removeClass("validation_error");
-            $("#msg" + id).addClass("hidden");
-        }
-        return expectedCondition;
-    }
-
-    function inputNormal(id) {
-        $("#modal" + id).removeClass("validation_error");
-        $("#msg" + id).addClass("hidden");
-    }
-
-    function modalNormal(modalType) { //Modal type: create , update
-        inputNormal(modalType + "Surname");
-        inputNormal(modalType + "Name");
-        inputNormal(modalType + "SecondName");
-        inputNormal(modalType + "Password");
-        inputNormal(modalType + "ConfirmPassword");
-        inputNormal(modalType + "Dni");
-        inputNormal(modalType + "Email");
-        inputNormal(modalType + "Telephone");
-        inputNormal(modalType + "Cellphone");
-        inputNormal(modalType + "Town");
-        inputNormal(modalType + "Address");
-        inputNormal(modalType + "Appartment");
-        inputNormal(modalType + "Number");
-        inputNormal(modalType + "Floor");
-    }
-    function validInt(number) {
-        if (number <= 0) {
-            number = "";
-        }
-        return number;
-    }
+$(document).ready(function () {   
     var Index;
-
     $("#searchInput").keyup(
         function () {
             var input, filter, i, txtValue;
@@ -88,7 +48,7 @@ $(document).ready(function () {
                 $("#modalUpdateSecondName").val(Data.SecondName);
             },
             error: function () {
-                alert("ERROR");
+                CreateModal("Error", "Hubo un error al buscar los datos del cliente");
             }
         });
     });
@@ -128,11 +88,11 @@ $(document).ready(function () {
                         location.reload();
                     }
                     else {
-                        alert("Ya existe un usuario con ese email o Dni");
+                        CreateModal("Datos no validos", "Ya existe un usuario con ese email o Dni");
                     }
                 },
                 error: function () {
-                    alert("Falla al registrar el usuario. Reintentar");
+                    CreateModal("Error", "Falla al registrar el usuario. Reintentar");
                 }
 
             });
@@ -156,7 +116,7 @@ $("deleteButton").click(function () {
                 location.reload();
             },
             error: function () {
-                alert("ERROR");
+                CreateModal("Error", "Error al eliminar el usuario. Reintentar");
             }
         });
     });
@@ -193,11 +153,11 @@ $("#newUser").click(function () {
                     if (success == "True")
                         location.reload();
                     else {
-                        alert(success);
+                        CreateModal("Error", "Error al crear el usuario. Reintentar");
                     }
                 },
                 error: function () {
-                    alert("Falla al registrar el usuario. Reintentar");
+                    CreateModal("Error", "Error al crear el usuario. Reintentar");
                 }
 
             });
@@ -208,7 +168,10 @@ $("#newUser").click(function () {
             }
         }
     } else {
-        alert("Las contraseñas no coinciden");
+        $("#modalCreateConfirmPassword").addClass("validation_error");
+        $("#msgCreatePassword2").removeClass("hidden");
+        $("#modalCreatePassword").addClass("validation_error");
+        $("#msgCreateConfirmPassword2").removeClass("hidden");
     }
 });
 });

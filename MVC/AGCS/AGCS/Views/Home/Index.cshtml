@@ -1,6 +1,10 @@
 ﻿@{
     Layout = "~/Views/Shared/_LogInLayout.cshtml";
 }
+@if (!(ViewBag.Body is null))
+{
+    <script>CreateModal("@ViewBag.Title", "@ViewBag.Body");</script>
+}
 
 <header class="bg-primary text-white">
     <section class="mt-2 jumbotron bg-primary text-center">
@@ -15,7 +19,7 @@
             <div class="container">
                 <button type="submit" class="col-md-9 mt-4 btn btn-success">Iniciar Sesion</button>
             </div>
-        </form>        
+        </form>
     </section>
 </header>
 <div class="container">

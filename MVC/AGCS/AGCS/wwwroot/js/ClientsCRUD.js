@@ -24,43 +24,73 @@
             }
         }
     );
-
-    function validate(id,expectedCondition = true) {
-        if (!expectedCondition) {
-            $("#modal" + id).addClass("validation_error");
-            $("#msg" + id).removeClass("hidden");
-        }
-        else {
-            $("#modal" + id).removeClass("validation_error");
-            $("#msg" + id).addClass("hidden");
-        }
-        return expectedCondition;
-    }
-
-    function inputNormal(id) {
-        $("#modal" + id).removeClass("validation_error");
-        $("#msg" + id).addClass("hidden");
-    }
-
-    function modalNormal(modalType) { //Modal type: create , update
-        inputNormal(modalType +"Surname");
-        inputNormal(modalType +"Name");
-        inputNormal(modalType +"Dni");
-        inputNormal(modalType +"Email");
-        inputNormal(modalType +"Telephone");
-        inputNormal(modalType +"Cellphone");
-        inputNormal(modalType +"Town");
-        inputNormal(modalType +"Address");
-        inputNormal(modalType +"Appartment");
-        inputNormal(modalType +"Number");
-        inputNormal(modalType +"Floor");
-    }
-    function validInt(number) {
-        if (number <= 0) {
-            number = "";
-        }
-        return number;
-    }
+    $("#Submit").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Clients/UpdateClient",
+            data: {
+                Surname: $("#modalSurname").val(),
+                Name: $("#modalName").val(),
+                dni: $("#modalDni").val(),
+                email: $("#modelEmail").val(),
+                Telephone: $("#modalTelephone").val(),
+                Cellphone: $("#modalCellphone").val(),
+                Town: $("#modelTown").val(),
+                Address: $("#modelAddress").val(),
+                Province: 1,
+                Leter: $("#modelAppartment").val(),
+                Number: $("#modelNumber").val(),
+                Floor: $("#modelFloor").val()
+            },
+            success: function () {
+                location.reload();
+            },
+            error: function () {
+                CreateModal("Error", "Hubo un error al buscar los datos del cliente");
+            }
+        });
+    });
+    $(".updateClient").click(function () {
+        let Index = $(this).attr("position");
+        $.ajax({
+            type: "POST",
+            url: "/Clients/GetDataClient",
+            data: { pos: Index },
+            success: function (DataJsonClient) {
+                var Data = JSON.parse(DataJsonClient);
+                $("#modalSurname").val(Data.Surname);
+                $("#modalName").val(Data.Name);
+                $("#modalDni").val(Data.Dni);
+                $("#modelEmail").val(Data.Email);
+                $("#modalTelephone").val(Data.Telephone);
+                $("#modalCellphone").val(Data.Cellphone);
+                $("#modelTown").val(Data.Town);
+                $("#modelAddress").val(Data.Address);
+                $("#modelAppartment").val(Data.Leter);
+                $("#modelNumber").val(Data.Number);
+                $("#modelFloor").val(Data.Floor);
+            },
+            error: function () {
+                CreateModal("Error", "Hubo un error al Actualizar el cliente");
+            }
+        });
+    });
+    $(".w-50").click(function () {
+        let Index = $(this).attr("position");
+        $("#confirm").click(function () {
+            $.ajax({
+                type: "DELETE",
+                url: "/Clients/DeleteClient",
+                data: { id: Index },
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    CreateModal("Error", "Hubo un error al eliminar el cliente");
+                }
+            });
+        });
+    });
 
     $(".updtModalBtn").click(function () {
         modalNormal("Update");
@@ -84,7 +114,7 @@
                 $("#modalUpdateFloor").val(Data.Floor);
             },
             error: function () {
-                alert("ERROR");
+                CreateModal("Error", "Hubo un error al buscar los datos del cliente");
             }
         });
     });
@@ -119,10 +149,9 @@
                 },
                 success: function () {
                     location.reload();
-                    $("#updateClient").modal("toggle");
                 },
                 error: function () {
-                    alert("ERROR");
+                    CreateModal("Error", "Hubo un error al buscar los datos del cliente");
                 }
             });
         }
@@ -139,7 +168,7 @@
                     location.reload();
                 },
                 error: function () {
-                    alert("ERROR");
+                    CreateModal("Error", "Hubo un error al eliminar al cliente");
                 }
             });
         });
@@ -169,10 +198,9 @@
                 },
                 success: function () {
                     location.reload();
-                    $("#createClient").modal("toggle");
                 },
                 error: function () {
-                    alert("ERROR");
+                    CreateModal("Error", "Hubo un error al crear el cliente");
                 }
             });
         }

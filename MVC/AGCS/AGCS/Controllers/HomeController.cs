@@ -32,14 +32,13 @@ namespace AGCS.Controllers
                     HttpContext.Session.SetInt32("idBusiness", Convert.ToInt32(LoginBusiness.Id));
                     HttpContext.Session.SetInt32("idUser", Convert.ToInt32(Loginuser.Id));
                     return RedirectToAction("Index", "Backend");
-                }
-                else
-                {
-                    return View();
-                }
+                }  
+                 return View();                
             }
             catch (NullReferenceException)
             {
+                ViewBag.Title = "Credenciales No Validas";
+                ViewBag.Body = "El Nombre de usuario o la Contraseña es incorrecta";
                 return View();
             }
                         

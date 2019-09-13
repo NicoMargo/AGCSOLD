@@ -10,9 +10,9 @@ namespace AGCS.Controllers
 {
     public class BackendController : BaseController
     {
-        // GET: Backend
+
         public ActionResult Index()
-        {           
+        {       
             return View();
         }
         public ActionResult Pruebas()
