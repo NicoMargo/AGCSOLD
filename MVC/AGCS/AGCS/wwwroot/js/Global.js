@@ -37,4 +37,31 @@ function modalNormal(modalType) { //Modal type: create , update
     inputNormal(modalType + "Number");
     inputNormal(modalType + "Floor");
 }
+
+function RowSearcher(tableId, searchInputId) {
+    $("#" + searchInputId).keyup(
+        function () {
+            let input, filter, table;
+            input = document.getElementById(searchInputId);
+            filter = input.value.toUpperCase();
+            table = document.getElementById(tableId);
+            rows = table.getElementsByClassName('tableRow');
+
+            // Loop through all list items, and hide those who don't match the search query
+            for (let i = 0; i < rows.length; i++) {
+                let cols = rows[i].getElementsByClassName('colToSearch');
+                let found = false;
+                for (let i = 0; i < cols.length; i++) {
+                    let text = cols[i].textContent || cols[i].innerText;
+                    found = found || (text.toUpperCase().indexOf(filter) > -1)
+                }
+                if (found) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    );
+}
     

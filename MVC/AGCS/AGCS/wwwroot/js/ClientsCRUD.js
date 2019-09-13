@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
     var clientId;
-    $("#searchInput").keyup(
+    RowSearcher("ClientsTable","searchInput")
+    /*$("#searchInput").keyup(
         function () {
             var input, filter, i, txtValue;
             input = document.getElementById('searchInput');
@@ -23,7 +24,7 @@
                 }
             }
         }
-    );
+    );*/
     $("#Submit").click(function () {
         $.ajax({
             type: "POST",

@@ -1,29 +1,6 @@
 ﻿$(document).ready(function () {
     var modelId;
-    $("#searchInput").keyup(
-        function () {
-            var input, filter, i, txtValue;
-            input = document.getElementById('searchInput');
-            filter = input.value.toUpperCase();
-            table = document.getElementById("ProductsTable");
-            rows = table.getElementsByClassName('productRow');
-
-            // Loop through all list items, and hide those who don't match the search query
-            for (i = 0; i < rows.length; i++) {
-                let tdn = rows[i].getElementsByClassName('colNumber')[0];
-                let number = tdn.textContent || tdn.innerText;
-                let tdd = rows[i].getElementsByClassName('colDescription')[0];
-                let desc = tdd.textContent || tdd.innerText;
-                let tdc = rows[i].getElementsByClassName('colCode')[0];
-                let code = tdc.textContent || tdc.innerText;
-                if (number.toUpperCase().indexOf(filter) > -1 || desc.toUpperCase().indexOf(filter) > -1 || code.toUpperCase().indexOf(filter) > -1) {
-                    rows[i].style.display = "";
-                } else {
-                    rows[i].style.display = "none";
-                }
-            }
-        }
-    );
+    RowSearcher("ProductsTable", "searchInput");
 
     function validInt(element, expectedCondition = true) {
         let valid = false;
