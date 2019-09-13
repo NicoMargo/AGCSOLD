@@ -4,7 +4,6 @@ using AGCS.Models;
 using AGCS.Models.BDD;
 using Newtonsoft.Json;
 using System;
-using Microsoft.AspNetCore.Http;
 
 namespace AGCS.Controllers
 {
@@ -60,7 +59,6 @@ namespace AGCS.Controllers
         
         public ActionResult Configuration()
         {
-
             return View();
         }
     }

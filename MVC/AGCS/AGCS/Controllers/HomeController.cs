@@ -38,7 +38,7 @@ namespace AGCS.Controllers
             catch (NullReferenceException)
             {
                 ViewBag.Title = "Credenciales No Validas";
-                ViewBag.Body = "El Nombre de usuario o la Contraseña es incorrecta";
+                ViewBag.Body = "El Nombre email o la Contraseña es incorrecta";
                 return View();
             }
                         
