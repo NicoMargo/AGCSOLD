@@ -213,8 +213,6 @@
                 stock: parseInt($(this).parent().find("input").val())
             },
             success: function () {
-                
-                location.reload();
                 CreateModal("Stock", "Se modifico el stock correctamente");
             },
             error: function () {
