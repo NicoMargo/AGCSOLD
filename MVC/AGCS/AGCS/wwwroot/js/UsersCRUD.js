@@ -14,10 +14,10 @@ $(document).ready(function () {
                 var Data = JSON.parse(DataJsonClient);
                 $("#modalUpdateSurname").val(Data.Surname);
                 $("#modalUpdateName").val(Data.Name);
-                $("#modalUpdateDni").val(validInt(Data.Dni));
+                $("#modalUpdateDni").val(checkInt(Data.Dni));
                 $("#modalUpdateEmail").val(Data.Email);
-                $("#modalUpdateTelephone").val(validInt(Data.Telephone));
-                $("#modalUpdateCellphone").val(validInt(Data.Cellphone));
+                $("#modalUpdateTelephone").val(checkInt(Data.Telephone));
+                $("#modalUpdateCellphone").val(checkInt(Data.Cellphone));
                 $("#modalUpdateTelephoneMother").val(Data.TelephoneM);
                 $("#modalUpdateTelephoneFather").val(Data.TelephoneF);
                 $("#modalUpdateTelephoneBrother").val(Data.TelephoneB);
