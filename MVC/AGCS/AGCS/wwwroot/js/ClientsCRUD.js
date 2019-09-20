@@ -1,12 +1,12 @@
 ﻿$(document).ready(function () {
-    var clientId;
-    RowSearcher("ClientsTable", "searchInput")
+    var modelId;
+    RowSearcher("CRUDTable", "searchInput")
 
-    $("#btnModalAdd").click(function () {
+    $("#btnModalCrt").click(function () {
         normalizeInputs("modalCrt", "crtInput");
     });
 
-    $("#addClient").click(function () {
+    $("#add").click(function () {
         if (validateInputs("modalCrt", "crtInput")) {
             $.ajax({
                 type: "POST",
@@ -36,13 +36,13 @@
         }
     });
 
-    $(".btnModalUpdt").click(function () {
+    $("updateButton").click(function () {
         normalizeInputs("modalUpdt", "updtInput");
-        clientId = $(this).attr("clientId");
+        modelId = $(this).attr("modelId");
         $.ajax({
             type: "POST",
             url: "/Clients/GetDataClient",
-            data: { id: clientId },
+            data: { id: modelId },
             success: function (DataJsonClient) {
                 var Data = JSON.parse(DataJsonClient);
                 $("#updtSurname").find("input").val(Data.Surname);
@@ -65,13 +65,13 @@
     });
 
 
-    $("#updateClient").click(function () {
+    $("#update").click(function () {
         if (validateInputs("modalUpdt", "updtInput")) {
             $.ajax({
                 type: "POST",
                 url: "/Clients/UpdateClient",
                 data: {
-                    id: clientId,
+                    id: modelId,
                     surname: $("#updtSurname").find("input").val(),
                     name: $("#updtName").find("input").val(),
                     dni: parseInt($("#updtDni").find("input").val()),
@@ -96,12 +96,12 @@
     });
 
     $("deleteButton").click(function () {
-        clientId = $(this).attr("clientId");
+        modelId = $(this).attr("modelId");
         $("#confirm").click(function () {
             $.ajax({
                 type: "DELETE",
                 url: "/Clients/DeleteClient",
-                data: { id: clientId },
+                data: { id: modelId },
                 success: function () {
                     location.reload();
                 },

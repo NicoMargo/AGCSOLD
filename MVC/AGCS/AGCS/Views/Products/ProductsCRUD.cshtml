@@ -45,11 +45,11 @@
                 </div>
                 <div class="card-body">
                     <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Producto (por descripción, nro de artículo o código)">
-                    <button type="button" id="addProduct" class="btn btn-primary w-100" data-toggle="modal" data-target="#productCreate">
+                    <button type="button" id="btnModalCrt" class="btn btn-primary w-100" data-toggle="modal" data-target="#modalCrt">
                         Agregar Product
                     </button>
 
-                    <table id="ProductsTable" class="CRUDTable">
+                    <table id="CRUDTable" class="CRUDTable">
                         <tr class="header">
                             <th class="p-2" style="width:5%;">Nro. de Artículo</th>
                             <th class="p-2" style="width:30%;">Descripción</th>
@@ -70,8 +70,8 @@
                             <td>@validFloat(ViewBag.Products[i].PriceW)</td>
                             <td>@validFloat(ViewBag.Products[i].Price)</td>
                             <td><input value=@ViewBag.Products[i].Stock type="number" step="1" class="form-control text-center display-inline" style="width:7rem" /> <img modelId="@ViewBag.Products[i].Id" class="btnStockUpdt crudButton display-inline" src="~/images/submit.png" style="width:50px" /> </td>
-                            <td><a data-toggle="modal" data-target="#productUpdate"><img modelId="@ViewBag.Products[i].Id" class="btnProductUpdate crudButton" src="~/images/edit.png" /></a></td>
-                            <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
+                            <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
+                            <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
                         </tr>
                             }
                         }
@@ -82,11 +82,11 @@
     </div>
 
     <!-- Modal Create Beg-->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5 class="modal-title" id="confirmationModal">Esta seguro que quiere eliminar el producto?</h5>
+                    <h5 class="modal-title">Esta seguro que quiere eliminar el producto?</h5>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -99,7 +99,7 @@
 
 
     <!-- Extra large modal Create-->
-    <div class="modal fade bd-example-modal-xl" id="productCreate" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-xl" id="modalCrt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -195,14 +195,14 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundary" id="createCancel" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" id="newProduct">Crear</button>
+                    <button class="btn btn-primary" id="add">Crear</button>
                 </div>
             </div>
         </div>
     </div>
     <!-- Modal Create END-->
     <!-- Modal Update Beginning-->
-    <div class="modal fade bd-example-modal-xl" id="productUpdate" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-xl" id="modalUpdt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -297,7 +297,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundary" id="updateCancel" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" id="UpdateSubmit">Guardar</button>
+                    <button class="btn btn-primary" id="update">Guardar</button>
                 </div>
             </div>
         </div>
