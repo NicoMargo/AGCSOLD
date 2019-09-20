@@ -6,11 +6,12 @@ namespace AGCS.Models.BDD
 {
     public static class ClientsProvider {
         //Methods for store procedures of Table Clients 
-        public static List<Client> GetClients()
+        public static List<Client> GetClients(ushort pag = 0)
         {
             List<Client> clientsList = new List<Client>();
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness",Session.GetSUInt32("idBusiness")}
+                {"pIdBusiness",Session.GetSUInt32("idBusiness")},
+                {"pPage",pag}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientsGet", args);
             while (ConnectionReader.Read())
@@ -105,24 +106,28 @@ namespace AGCS.Models.BDD
 
         public static bool InsertClient(Client client)
         {
-            Dictionary<string, object> args = new Dictionary<string, object> {
+            for (int i = 0; i <= 10000; i++)
+            {
+                Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", Session.GetSUInt32("idBusiness")},
                 {"pName", client.Name},
                 {"pSurname", client.Surname},
-                {"pDNI_CUIT", client.Dni},
+                {"pDNI_CUIT", i},
                 {"pEmail", client.Email},
                 {"pTelephone", client.Telephone},
                 {"pCellphone", client.Cellphone }
             };
-            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientInsert", args);
+                MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientInsert", args);
 
-            bool success = false;
-            if (ConnectionReader.Read())
-            {
-                success = Helpers.ReadBool(ConnectionReader, "success");
+                bool success = false;
+                if (ConnectionReader.Read())
+                {
+                    success = Helpers.ReadBool(ConnectionReader, "success");
+                }
+
+                Helpers.Disconect();
             }
-            Helpers.Disconect();
-            return success;
+            return true;
         }
 
         public static void UpdateClient(Client client)

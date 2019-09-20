@@ -19,9 +19,10 @@ namespace AGCS.Controllers
         {
             User Loginuser = new User(email,passUser);
             Business LoginBusiness;
-            Object[] Objects = UsersProvider.LogIn(Loginuser);
-            LoginBusiness = (Business)Objects[0];
-            Loginuser = (User)Objects[1];
+            Tuple<User, Business> objects = UsersProvider.LogIn(Loginuser);
+
+            LoginBusiness = objects.Item2;
+            Loginuser = objects.Item1;
             try
             {
                 if (Loginuser.Name != null)
