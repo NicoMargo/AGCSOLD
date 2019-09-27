@@ -64,9 +64,9 @@
                                 for (int i = 0; i < ViewBag.Users.Count; i++)
                                 {
                                     <tr class="tableRow">
-                                        <td class="colSurname pl-2">@validString(ViewBag.Users[i].Surname)</td>
-                                        <td class="colName">@validString(ViewBag.Users[i].Name)</td>
-                                        <td class="colDNI">@validInt(ViewBag.Users[i].Dni)</td>
+                                        <td class="colToSearch pl-2">@validString(ViewBag.Users[i].Surname)</td>
+                                        <td class="colToSearch">@validString(ViewBag.Users[i].Name)</td>
+                                        <td class="colToSearch">@validInt(ViewBag.Users[i].Dni)</td>
                                         <td>@validString(ViewBag.Users[i].Cellphone)</td>
                                         <td>@validString(ViewBag.Users[i].Email)</td>
                                         <td><a data-toggle="modal" data-target="#updateUser"><img position="@ViewBag.Users[i].Id" class="imgClientUpdate crudButton" src="~/images/edit.png" /></a></td>

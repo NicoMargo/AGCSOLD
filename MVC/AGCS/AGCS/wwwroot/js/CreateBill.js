@@ -239,7 +239,7 @@
                     $("#cellphone").attr('disabled', true);
                     $("#surname").val(Data.Surname);
                     $("#thisName").val(Data.Name);
-                    $("#cellphone").val(validInt(Data.Cellphone));
+                    $("#cellphone").val(checkInt(Data.Cellphone));
                 } else {
                     $("#surname").attr('disabled', false);
                     $("#thisName").attr('disabled', false);
