@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 06-09-2019 a las 15:15:01
+-- Tiempo de generación: 27-09-2019 a las 14:14:50
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -241,10 +241,33 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN 
     end if;
 END$$
 
+DROP PROCEDURE IF EXISTS `spSupplierInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spSupplierInsert` (IN `pIdBusiness` INT(20), IN `pName` VARCHAR(100), IN `pSurname` VARCHAR(100), IN `pTelephone` INT(20), IN `pCellphone` INT(20), IN `pFactory` VARCHAR(100), IN `pAddress` VARCHAR(200), IN `pMail` VARCHAR(100))  NO SQL
+if not EXISTS(select idSupplier from suppliers where Name = pName and Surname = pSurname and Business_idBusiness = pIdBusiness)
+then
+    INSERT INTO suppliers (Business_idBusiness, Name, Surname, Telephone, Cellphone, Factory, Address, Mail) VALUES(pIdBusiness, pName, pSurname, pTelephone, pCellphone, pFactory, pAddress, pMail);
+end if$$
+
 DROP PROCEDURE IF EXISTS `spSuppliersGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spSuppliersGet` (IN `pIdBusiness` INT)  BEGIN
 	select idSupplier,Name,Surname from suppliers where Business_idBusiness = pIdBusiness;
 END$$
+
+DROP PROCEDURE IF EXISTS `spSupplierUpdate`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spSupplierUpdate` (IN `pId` INT(20), IN `pIdBusiness` INT(20), IN `pName` VARCHAR(100), IN `pSurname` VARCHAR(100), IN `pTelephone` VARCHAR(20), IN `pCellphone` VARCHAR(20), IN `pFactory` VARCHAR(100), IN `pAddress` VARCHAR(200), IN `pMail` VARCHAR(100))  NO SQL
+if EXISTS(select idSupplier from suppliers where idSupplier = pId and Business_idBusiness = pIdBusiness)
+THEN
+	if not EXISTS(select idSupplier from suppliers where Name = pName and Surname = pSurname and Business_idBusiness = pIdBusiness)
+    THEN
+		update suppliers set Name = pName where idSupplier = pId and Business_idBusiness = pIdBusiness;
+        update suppliers set Surname = pSurname where idSupplier = pId and Business_idBusiness = pIdBusiness;
+    end if;
+    update suppliers set Telephone = pTelephone where idSupplier = pId and Business_idBusiness = pIdBusiness;
+    update suppliers set Cellphone = pCellphone where idSupplier = pId and Business_idBusiness = pIdBusiness;
+    update suppliers set Factory = pFactory where idSupplier = pId and Business_idBusiness = pIdBusiness;
+    update suppliers set address = pAddress where idSupplier = pId and Business_idBusiness = pIdBusiness;
+    update suppliers set Mail = pMail where idSupplier = pId and Business_idBusiness = pIdBusiness;
+end if$$
 
 DROP PROCEDURE IF EXISTS `spUserChangePassword`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserChangePassword` (IN `pOriginal` VARCHAR(60), IN `pNew` VARCHAR(60), IN `pId` BIGINT)  NO SQL
@@ -454,7 +477,7 @@ INSERT INTO `bills` (`idBills`, `DateBill`, `Clients_idClients`, `Employee_Code`
 (2, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (3, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (4, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(60, '2019-09-06', 56, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 160.00, NULL, NULL, NULL, 2);
+(60, '2019-09-06', 56, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 2);
 
 -- --------------------------------------------------------
 
@@ -724,7 +747,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `Mail` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`idSupplier`) USING BTREE,
   KEY `fk_Supplier_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `suppliers`
@@ -735,7 +758,9 @@ INSERT INTO `suppliers` (`idSupplier`, `Name`, `Surname`, `Telephone`, `Cellphon
 (1, 'Aquiles', 'Traigo', 43216543, 13111111, 'Nose q va aK xd', 1, 'En la loma del ort', NULL),
 (2, 'Aquiles', 'Doy', 45678912, 1513317546, 'yo tampoco jaja salu2', 1, 'viste china, bueno doblando a la izquierda', NULL),
 (3, 'Ivrea', NULL, NULL, 154321321, 'EEEEEEEE', 1, 'Cabildo 6000', NULL),
-(4, 'void', NULL, NULL, 154321321, 'EEEEEEEE', 1, 'Cabildo 6000', NULL);
+(4, 'void', 'main', NULL, 154321321, 'EEEEEEEE', 1, 'Cabildo 6000', NULL),
+(5, 'Unpro', 'vedor', 15115, 14115, 'F', 2, 'Acala vuelta 0', 'correo@correo'),
+(7, 'd', 'd', 1, 1, 'g', 1, 'q', 'r');
 
 -- --------------------------------------------------------
 
@@ -756,7 +781,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Dni` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idUser`) USING BTREE,
   KEY `fk_Users_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `users`
@@ -765,7 +790,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`idUser`, `eMail`, `Password`, `Admin`, `Name`, `Surname`, `Name_Second`, `Business_idBusiness`, `Dni`) VALUES
 (27, 'admin@admin', '21232f297a57a5a743894a0e4a801fc3', b'1', 'admin', 'admin', 'admin', 1, '13'),
 (28, 'nicolasmargossian@gmail.com', '7510d498f23f5815d3376ea7bad64e29', b'0', 'Nicolas', 'hola', 'Alejandro Anushavan', 1, '43994080'),
-(32, 'bo@bo', '21232f297a57a5a743894a0e4a801fc3', b'0', 'ParaBorrar', 'Borrar', 'borrar', 1, '334'),
+(32, 'bo@boa', '21232f297a57a5a743894a0e4a801fc3', b'0', 'ParaBorrar a', 'Borrar a', 'borrar a', 1, '300'),
 (34, 'n@n', '21232f297a57a5a743894a0e4a801fc3', b'1', 'nico', 'margo', 'Alejandro Anushavan', 2, '43994080'),
 (35, 'mati@mati', '4d186321c1a7f0f354b297e8914ab240', b'0', 'Matias', 'Santoro', 'Javier', 2, '43994857'),
 (37, 'm@m', '21232f297a57a5a743894a0e4a801fc3', b'0', 'nombre modificar ', 'apellido modificar ', NULL, 2, '11111');
@@ -790,7 +815,7 @@ CREATE TABLE IF NOT EXISTS `user_extrainfo` (
   `Cellphone` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`idUser_ExtraInfo`) USING BTREE,
   KEY `fk_User_ExtraInfo_Users1_idx` (`idUser`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `user_extrainfo`
@@ -799,7 +824,7 @@ CREATE TABLE IF NOT EXISTS `user_extrainfo` (
 INSERT INTO `user_extrainfo` (`idUser_ExtraInfo`, `Address`, `Tel_Father`, `Tel_Mother`, `Tel_Brother`, `Tel_User`, `Healthcare_Company`, `Sallary`, `idUser`, `Cellphone`) VALUES
 (1, 'Admin', '4444444', '333333', '5555555', '011', NULL, NULL, 27, '12'),
 (2, 'Av Rivadavia 6015 13C', '01144404555', '01149607853', '01164538472', '44322210', NULL, NULL, 28, '11617306599'),
-(6, 'para borrar usuario', '888', '999', '777', '122', NULL, NULL, 32, '233'),
+(6, 'para borrar usuario a', '889', '1000', '778', '110', NULL, NULL, 32, '200'),
 (8, 'Formosa 430', '888', '999', '777', '12', NULL, NULL, 35, '13'),
 (10, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 37, NULL);
 

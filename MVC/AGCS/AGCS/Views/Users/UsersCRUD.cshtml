@@ -236,7 +236,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -266,23 +265,28 @@
                             <div class="text-center">
                                 <strong><span>Apellido</span></strong>
                             </div>
-                            <input id="modalUpdateSurname" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateSurname">Ingrese un apellido válido</div>
+                            <div class="updtInput notEmpty" id="updtSurname">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nombre</span></strong>
                             </div>
-                            <input id="modalUpdateName" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateName">Ingrese un nombre válido</div>
+                            <div class="updtInput notEmpty" id="updtName">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
-
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Segundo Nombre</span></strong>
                             </div>
-                            <input id="modalUpdateSecondName" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateSecondName">Ingrese un Segundo nombre válido</div>
+                            <div class="updtInput notEmpty" id="updtSecond">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                     </div>
                     <div class="row justify-content-center mt-4">
@@ -290,32 +294,39 @@
                             <div class="text-center">
                                 <strong><span>Email</span></strong>
                             </div>
-                            <input id="modalUpdateEmail" class="form-control text-center" type="email">
-                            <div class="validation_msg hidden text-center" id="msgUpdateEmail">Ingrese un email válido</div>
+                            <div class="updtInput notEmpty" id="updtMail">
+                                <input class="form-control text-center" type="email">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                     </div>
-
                     <div class="row justify-content-center mt-4">
                         <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono</span></strong>
                             </div>
-                            <input id="modalUpdateTelephone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgUpdateTelephone">Ingrese un teléfono válido</div>
+                            <div class="updtInput notEmpty validInt" id="updtTelephone">
+                                <input class="form-control text-center" type="number" min="0">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Celular</span></strong>
                             </div>
-                            <input id="modalUpdateCellphone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgUpdateCellphone">Ingrese un nro. celular válido</div>
+                            <div class="updtInput notEmpty validInt" id="updtCellphone">
+                                <input class="form-control text-center" type="number" min="0">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Dni</span></strong>
                             </div>
-                            <input id="modalUpdateDni" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgUpdateDni">Ingrese Dni</div>
+                            <div class="updtInput notEmpty validInt" id="updtDni">
+                                <input class="form-control text-center" type="number" min="0">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                     </div>
                     <div class="text-center offset-md-1 mt-5">
@@ -323,8 +334,10 @@
                     </div>
                     <div class="row justify-content-center mt-4">
                         <div class="col-md-10">
-                            <input id="modalUpdateAddress" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateTelephone">Ingrese una Dirección</div>
+                            <div class="updtInput notEmpty" id="updtAddress">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                     </div>
 
@@ -333,29 +346,34 @@
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono Madre</span></strong>
                             </div>
-                            <input id="modalUpdateTelephoneMother" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateTelephone">Ingrese un teléfono válido</div>
+                            <div class="updtInput notEmpty validInt" id="updtTelM">
+                                <input class="form-control text-center" type="number">
+                                <div class="validation_msg hidden text-center">Ingrese un teléfono válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono Padre</span></strong>
                             </div>
-                            <input id="modalUpdateTelephoneFather" class="form-control text-center">
-                            <div class="validation_msg hidden text-center" id="msgUpdateCellphone">Ingrese un nro. celular válido</div>
+                            <div class="updtInput notEmpty validInt" id="updtTelF">
+                                <input class="form-control text-center" type="number">
+                                <div class="validation_msg hidden text-center">Ingrese un nro. celular válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono Hermano</span></strong>
                             </div>
-                            <input id="modalUpdateTelephoneBrother" class="form-control text-center" type="email">
-                            <div class="validation_msg hidden text-center" id="msgUpdateEmail">Ingrese un email válido</div>
+                            <div class="updtInput notEmpty validInt" id="updtTelB">
+                                <input class="form-control text-center" type="number">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secundary" id="UpdateCancel" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secundary" id="updtCancel" data-dismiss="modal">Cerrar</button>
                     <button class="btn btn-primary" id="update">Modificar</button>
                 </div>
 
