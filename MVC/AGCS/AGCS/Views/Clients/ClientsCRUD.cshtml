@@ -1,6 +1,6 @@
 ﻿@{
     @model AGCS.Models.Client
-    string validInt(ulong number) {
+    string validInt(long number) {
         string value;
         if (number <= 0)
         {
@@ -30,11 +30,11 @@
                 </div>
                 <div class="card-body">
                     <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Cliente (por nombre, apellido o DNI)">
-                    <button type="button" id="btnModalAdd" class="btn btn-primary w-100" data-toggle="modal" data-target="#modalCrt">
+                    <button type="button" id="btnModalCrt" class="btn btn-primary w-100" data-toggle="modal" data-target="#modalCrt">
                         Agregar Cliente
                     </button>
 
-                    <table class="CRUDTable" id="ClientsTable">
+                    <table class="CRUDTable" id="CRUDTable">
                         <tr class="header">
                             <th class="p-2" style="width:20%;">Apellido</th>
                             <th class="p-2" style="width:15%;">Nombre</th>
@@ -50,11 +50,11 @@
                                 <tr class="tableRow">
                                     <td class="colToSearch pl-2">@validString(ViewBag.Clients[i].Surname)</td>
                                     <td class="colToSearch">@validString(ViewBag.Clients[i].Name)</td>
-                                    <td class="colToSearch">@validInt(ViewBag.Clients[i].Dni)</td>
-                                    <td>@validString(ViewBag.Clients[i].Cellphone)</td>
+                                    <td class="colToSearch">@validInt((long)ViewBag.Clients[i].Dni)</td>
+                                    <td>@validInt(Convert.ToInt64(ViewBag.Clients[i].Cellphone))</td>
                                     <td>@validString(ViewBag.Clients[i].Email)</td>
-                                    <td><a data-toggle="modal" data-target="#modalUpdt"><img clientId="@ViewBag.Clients[i].Id" class="crudButton btnModalUpdt" src="~/images/edit.png" /></a></td>
-                                    <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton clientId="@ViewBag.Clients[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
+                                    <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Clients[i].Id" ><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
+                                    <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Clients[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
                                 </tr>
                             }
                         }
@@ -65,7 +65,7 @@
     </div>
 
     <!-- Modal delete confirmation-->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
@@ -153,8 +153,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secundary" id="createCancel" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" id="addClient">Crear</button>
+                    <button type="button" class="btn btn-secundary" id="crtCancel" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" id="add">Crear</button>
                 </div>
             </div>
         </div>
@@ -287,7 +287,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundary" id="updateCancel" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" id="updateClient">Guardar</button>
+                    <button class="btn btn-primary" id="update">Guardar</button>
                 </div>
             </div>
         </div>

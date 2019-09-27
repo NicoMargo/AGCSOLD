@@ -1,9 +1,37 @@
 ﻿$(document).ready(function () {
     var modelId;
-    RowSearcher("ProductsTable", "searchInput");
+    RowSearcher("CRUDTable", "searchInput");
+    
+    $("#btnModalCrt").click(function () {
+    });
 
-    $(".btnProductUpdate").click(function () {
-        normalizeInputs("productUpdate", "updtInput");
+    $("#add").click(function () {
+        if (validateInputs("modalCrt", "crtInput")) {
+            $.ajax({
+                type: "POST",
+                url: "/Products/CreateProduct",
+                data: {
+                    number: parseInt($("#crtNumber").find("input").val()),
+                    description: $("#crtDescription").find("input").val(),
+                    code: $("#crtCode").find("input").val(),
+                    cost: parseFloat($("#crtCost").find("input").val()),
+                    price: parseFloat($("#crtPrice").find("input").val()),
+                    priceW: parseFloat($("#crtPriceW").find("input").val()),
+                    stock: parseInt($("#crtStock").find("input").val()),
+                    idSupplier: parseInt($("#crtSupplier").val())
+                },
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    CreateModal("Error", "Hubo un error al crear el producto");
+                }
+            });
+        }
+    });
+
+    $("updateButton").click(function () {
+        normalizeInputs("modalUpdt", "updtInput");
         modelId = $(this).attr("modelId");
         $.ajax({
             type: "POST",
@@ -27,8 +55,8 @@
     });
 
 
-    $("#UpdateSubmit").click(function () {
-        if (validateInputs("productUpdate","updtInput")) {
+    $("#update").click(function () {
+        if (validateInputs("modalUpdt","updtInput")) {
             $.ajax({
                 type: "POST",
                 url: "/Products/UpdateProduct",
@@ -45,7 +73,6 @@
                 },
                 success: function () {
                     location.reload();
-                    $("#productUpdate").modal("toggle");
                 },
                 error: function () {
                     CreateModal("Error", "Hubo un error al actualizar el cliente");
@@ -71,34 +98,6 @@
         });
     });
     
-    $("#addProduct").click(function () {
-    });
-
-    $("#newProduct").click(function () {
-        if (validateInputs("productCreate", "crtInput")) {
-            $.ajax({
-                type: "POST",
-                url: "/Products/CreateProduct",
-                data: {
-                    number: parseInt($("#crtNumber").find("input").val()),
-                    description: $("#crtDescription").find("input").val(),
-                    code: $("#crtCode").find("input").val(),
-                    cost: parseFloat($("#crtCost").find("input").val()),
-                    price: parseFloat($("#crtPrice").find("input").val()),
-                    priceW: parseFloat($("#crtPriceW").find("input").val()),
-                    stock: parseInt($("#crtStock").find("input").val()),
-                    idSupplier: parseInt($("#crtSupplier").val()) 
-                },
-                success: function () {
-                    location.reload();
-                    $("#productCreate").modal("toggle");
-                },
-                error: function () {
-                    CreateModal("Error", "Hubo un error al crear el producto");
-                }
-            });
-        }
-    });
 
     $(".btnStockUpdt").click(function () {
         modelId = $(this).attr("modelId");

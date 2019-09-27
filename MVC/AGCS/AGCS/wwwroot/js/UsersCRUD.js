@@ -1,15 +1,50 @@
 ﻿
 $(document).ready(function () {   
-    var Index;
-    RowSearcher("UsersTable", "searchInput");
+    var modelId;;
+    RowSearcher("CRUDTable", "searchInput");
+    
+    $("#add").click(function () {
+        let valid = validString(document.getElementById("crtPassConfirm"), ($("#crtPass").find("input").val() === $("#crtPassConfirm").find("input").val()));
+        if (validateInputs("modalCrt", "crtInput") && valid) {
+            $.ajax({
+                type: "POST",
+                url: "/Users/CreateUser",
+                data: {
+                    surname: $("#crtSurname").find("input").val(),
+                    name: $("#crtName").find("input").val(),
+                    secondName: $("#crtSecond").find("input").val(),
+                    email: $("#crtEmail").find("input").val(),
+                    passUser: $("#crtPass").find("input").val(),
+                    cPassUser: $("#crtPassConfirm").find("input").val(),
+                    telephone: parseInt($("#crtTelephone").find("input").val()),
+                    cellphone: parseInt($("#crtCellphone").find("input").val()),
+                    dni: parseInt($("#crtDni").find("input").val()),
+                    address: $("#crtAddress").find("input").val(),
+                    telephoneM: parseInt($("#crtTelM").find("input").val()),
+                    telephoneF: parseInt($("#crtTelF").find("input").val()),
+                    telephoneB: parseInt($("#crtTelB").find("input").val()),
+                },
+                success: function (success) {
+                    if (success == "True")
+                        location.reload();
+                    else {
+                        CreateModal("Error", "Error al crear el usuario. Reintentar");
+                    }
+                },
+                error: function () {
+                    CreateModal("Error", "Error al crear el usuario. Reintentar");
+                }
+            });
+        }
+    });
 
-    $(".imgClientUpdate").click(function () {
-        modalNormal("Update");
-        Index = $(this).attr("position");
+    $("updateButton").click(function () {
+        normalizeInputs("modalUpdt", "updtInput");
+        modelId = $(this).attr("modelId");
         $.ajax({
             type: "POST",
             url: "/Users/GetDataUser",
-            data: { id: Index },
+            data: { id: modelId },
             success: function (DataJsonClient) {
                 var Data = JSON.parse(DataJsonClient);
                 $("#modalUpdateSurname").val(Data.Surname);
@@ -30,11 +65,7 @@ $(document).ready(function () {
         });
     });
 
-    $("#UpdateUser").click(function () {
-        modalNormal("Update");
-    });
-
-    $("#UpdateSubmit").click(function () {
+    $("#update").click(function () {
         valid = validate("UpdateSurname", $("#modalUpdateSurname").val() !== "");
         valid = validate("UpdateName", $("#modalUpdateName").val() !== "") && valid;
         valid = validate("UpdateDni", $("#modalUpdateDni").val() !== "") && valid;
@@ -47,7 +78,7 @@ $(document).ready(function () {
                 type: "POST",
                 url: "/Users/UpdateUser",
                 data: {
-                    id: Index,
+                    id: modelId,
                     surname: $("#modalUpdateSurname").val(),
                     name: $("#modalUpdateName").val(),
                     secondName: $("#modalUpdateSecondName").val(),
@@ -82,73 +113,21 @@ $(document).ready(function () {
     });
 
 
-$("deleteButton").click(function () {
-    let Index = $(this).attr("position");
-    $("#confirm").click(function () {
-        $.ajax({
-            type: "DELETE",
-            url: "/Users/DeleteUser",
-            data: { id: Index },
-            success: function () {
-                location.reload();
-            },
-            error: function () {
-                CreateModal("Error", "Error al eliminar el usuario. Reintentar");
-            }
-        });
-    });
-});
-
-$("#newUser").click(function () {
-    valid = validate("CreateSurname", $("#modalCreateSurname").val() !== "");
-    valid = validate("CreateName", $("#modalCreateName").val() !== "") && valid;
-    valid = validate("CreateDni", $("#modalCreateDni").val() !== "") && valid;
-    valid = validate("CreatePassword", $("#modalCreatePassword").val() !== "") && valid;
-    valid = validate("CreateConfirmPassword", $("#modalCreateConfirmPassword").val() !== "") && valid;
-    valid = validate("CreateEmail", $("#modalCreateEmail").val() !== "") && valid;
-    if ($("#modalCreateConfirmPassword").val() === $("#modalCreatePassword").val()) {
-        if (valid) {
+    $("deleteButton").click(function () {
+        let modelId = $(this).attr("modelId");
+        $("#confirm").click(function () {
             $.ajax({
-                type: "POST",
-                url: "/Users/CreateUser",
-                data: {
-                    surname: $("#modalCreateSurname").val(),
-                    name: $("#modalCreateName").val(),
-                    secondName: $("#modalCreateSecondName").val(),
-                    passUser: $("#modalCreatePassword").val(),
-                    cPassUser: $("#modalCreateConfirmPassword").val(),
-                    dni: $("#modalCreateDni").val(),
-                    email: $("#modalCreateEmail").val(),
-                    telephone: $("#modalCreateTelephone").val(),
-                    cellphone: $("#modalCreateCellphone").val(),
-                    address: $("#modalCreateAddress").val(),
-                    telephoneM: $("#modalCreateTelephoneMother").val(),
-                    telephoneF: $("#modalCreateTelephoneFather").val(),
-                    telephoneB: $("#modalCreateTelephoneBrother").val()
-                },
-                success: function (success) {
-                    if (success == "True")
-                        location.reload();
-                    else {
-                        CreateModal("Error", "Error al crear el usuario. Reintentar");
-                    }
+                type: "DELETE",
+                url: "/Users/DeleteUser",
+                data: { id: modelId },
+                success: function () {
+                    location.reload();
                 },
                 error: function () {
-                    CreateModal("Error", "Error al crear el usuario. Reintentar");
+                    CreateModal("Error", "Error al eliminar el usuario. Reintentar");
                 }
-
             });
-        }
-        else {
-            if ($("#modalCreateName").val() === "") {
-                $("#modalCreateName").addClass("validation_error");
-            }
-        }
-    } else {
-        $("#modalCreateConfirmPassword").addClass("validation_error");
-        $("#msgCreatePassword2").removeClass("hidden");
-        $("#modalCreatePassword").addClass("validation_error");
-        $("#msgCreateConfirmPassword2").removeClass("hidden");
-    }
-});
+        });
+    });
+
 });

@@ -1,6 +1,6 @@
 ﻿@{
     @model AGCS.Models.Client
-    string validInt(ulong number)
+    string validInt(long number)
     {
         string value;
         if (number <= 0)
@@ -46,11 +46,11 @@
                     </div>
                     <div class="card-body">
                         <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Usuario">
-                        <button type="button" id="createUser" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
+                        <button type="button" id="btnModalCrt" class="btn btn-primary w-100" data-toggle="modal" data-target=".bd-example-modal-xl">
                             Agregar Usuario
                         </button>
 
-                        <table id="UsersTable" class="CRUDTable">
+                        <table id="CRUDTable" class="CRUDTable">
                             <tr class="header">
                                 <th class="p-2" style="width:20%;">Apellido</th>
                                 <th class="p-2" style="width:15%;">Nombre</th>
@@ -63,15 +63,15 @@
                             @{
                                 for (int i = 0; i < ViewBag.Users.Count; i++)
                                 {
-                                    <tr class="tableRow">
-                                        <td class="colToSearch pl-2">@validString(ViewBag.Users[i].Surname)</td>
-                                        <td class="colToSearch">@validString(ViewBag.Users[i].Name)</td>
-                                        <td class="colToSearch">@validInt(ViewBag.Users[i].Dni)</td>
-                                        <td>@validString(ViewBag.Users[i].Cellphone)</td>
-                                        <td>@validString(ViewBag.Users[i].Email)</td>
-                                        <td><a data-toggle="modal" data-target="#updateUser"><img position="@ViewBag.Users[i].Id" class="imgClientUpdate crudButton" src="~/images/edit.png" /></a></td>
-                                        <td><a data-toggle="modal" data-target="#confirmationModal"><deleteButton position="@ViewBag.Users[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
-                                    </tr>
+                            <tr class="tableRow">
+                                <td class="colToSearch pl-2">@validString(ViewBag.Users[i].Surname)</td>
+                                <td class="colToSearch">@validString(ViewBag.Users[i].Name)</td>
+                                <td class="colToSearch">@validInt((long)ViewBag.Users[i].Dni)</td>
+                                <td>@validInt(Convert.ToInt64(ViewBag.Users[i].Cellphone))</td>
+                                <td>@validString(ViewBag.Users[i].Email)</td>
+                                <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Users[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
+                                <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Users[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
+                            </tr>
                                 }
                             }
                         </table>
@@ -82,11 +82,11 @@
     </div>
 
     <!-- Modal Create Beg-->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5 class="modal-title" id="confirmationModal">Esta seguro que quiere eliminar al usuario?</h5>
+                    <h5 class="modal-title">Esta seguro que quiere eliminar al usuario?</h5>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -97,7 +97,7 @@
     </div>
 
     <!-- Extra large modal Create-->
-    <div class="modal fade bd-example-modal-xl" id="createUser" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-xl" id="modalCrt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -113,23 +113,28 @@
                             <div class="text-center">
                                 <strong><span>Apellido</span></strong>
                             </div>
-                            <input id="modalCreateSurname" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateSurname">Ingrese un apellido válido</div>
+                            <div class="crtInput notEmpty" id="crtSurname">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nombre</span></strong>
                             </div>
-                            <input id="modalCreateName" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateName">Ingrese un nombre válido</div>
+                            <div class="crtInput notEmpty" id="crtName">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
-
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Segundo Nombre</span></strong>
                             </div>
-                            <input id="modalCreateSecondName" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateSecondName">Ingrese un Segundo nombre válido</div>
+                            <div class="crtInput notEmpty" id="crtSecond">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                     </div>
                     <div class="row justify-content-center mt-4">
@@ -137,48 +142,57 @@
                             <div class="text-center">
                                 <strong><span>Email</span></strong>
                             </div>
-                            <input id="modalCreateEmail" class="form-control text-center" type="email">
-                            <div class="validation_msg hidden text-center" id="msgCreateEmail">Ingrese un email válido</div>
+                            <div class="crtInput notEmpty" id="crtMail">
+                                <input class="form-control text-center" type="email">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Contraseña</span></strong>
                             </div>
-                            <input id="modalCreatePassword" class="form-control text-center" type="password">
-                            <div class="validation_msg hidden text-center" id="msgCreatePassword">Ingrese una contraseña válida</div>
-                            <div class="validation_msg hidden text-center" id="msgCreatePassword2">Las contraseñas no coinciden</div>
+                            <div class="crtInput notEmpty" id="crtPass">
+                                <input class="form-control text-center" type="password">
+                                <div class="validation_msg hidden text-center">Ingrese una contraseña válida</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Confirmar Contraseña</span></strong>
                             </div>
-                            <input id="modalCreateConfirmPassword" class="form-control text-center" type="password">
-                            <div class="validation_msg hidden text-center" id="msgCreateConfirmPassword">Confirmar contraseña</div>
-                            <div class="validation_msg hidden text-center" id="msgCreateConfirmPassword2">Las contraseñas no coinciden</div>
+                            <div class="crtInput notEmpty" id="crtPassConfirm">
+                                <input class="form-control text-center" type="password">
+                                <div class="validation_msg hidden text-center" >Las contraseñas no coinciden</div>
+                            </div>
                         </div>
                     </div>
-
                     <div class="row justify-content-center mt-4">
                         <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono</span></strong>
                             </div>
-                            <input id="modalCreateTelephone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateTelephone">Ingrese un teléfono válido</div>
+                            <div class="crtInput notEmpty validInt" id="crtTelephone">
+                                <input class="form-control text-center" type="number" min="0">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Celular</span></strong>
                             </div>
-                            <input id="modalCreateCellphone" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateCellphone">Ingrese un nro. celular válido</div>
+                            <div class="crtInput notEmpty validInt" id="crtCellphone">
+                                <input class="form-control text-center" type="number" min="0">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Dni</span></strong>
                             </div>
-                            <input id="modalCreateDni" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgCreateDni">Ingrese Dni</div>
+                            <div class="crtInput notEmpty validInt" id="crtDni">
+                                <input class="form-control text-center" type="number" min="0">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                     </div>
                     <div class="text-center offset-md-1 mt-5">
@@ -186,8 +200,10 @@
                     </div>
                     <div class="row justify-content-center mt-4">
                         <div class="col-md-10">
-                            <input id="modalCreateAddress" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateTelephone">Ingrese una Dirección</div>
+                            <div class="crtInput notEmpty" id="crtAddress">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                     </div>
 
@@ -196,30 +212,36 @@
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono Madre</span></strong>
                             </div>
-                            <input id="modalCreateTelephoneMother" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgCreateTelephone">Ingrese un teléfono válido</div>
+                            <div class="crtInput notEmpty validInt" id="crtTelM">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un teléfono válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono Padre</span></strong>
                             </div>
-                            <input id="modalCreateTelephoneFather" class="form-control text-center">
-                            <div class="validation_msg hidden text-center" id="msgCreateCellphone">Ingrese un nro. celular válido</div>
+                            <div class="crtInput notEmpty validInt" id="crtTelF">
+                                <input class="form-control text-center">
+                                <div class="validation_msg hidden text-center">Ingrese un nro. celular válido</div>
+                            </div>
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono Hermano</span></strong>
                             </div>
-                            <input id="modalCreateTelephoneBrother" class="form-control text-center" type="email">
-                            <div class="validation_msg hidden text-center" id="msgCreateEmail">Ingrese un email válido</div>
+                            <div class="crtInput notEmpty validInt" id="crtTelB">
+                                <input class="form-control text-center" type="email">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
                         </div>
                     </div>
 
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secundary" id="createCancel" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" id="newUser">Crear</button>
+                    <button type="button" class="btn btn-secundary" id="crtCancel" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" id="add">Crear</button>
                 </div>
 
             </div>
@@ -228,7 +250,7 @@
     <!-- Modal Create END-->
     <!-- Modal Update Beginning-->
 
-    <div class="modal fade bd-example-modal-xl" id="updateUser" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-xl" id="modalUpdt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -334,7 +356,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundary" id="UpdateCancel" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" id="UpdateSubmit">Modificar</button>
+                    <button class="btn btn-primary" id="update">Modificar</button>
                 </div>
 
             </div>
