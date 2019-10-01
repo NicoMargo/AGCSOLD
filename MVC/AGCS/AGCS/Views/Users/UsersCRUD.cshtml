@@ -56,7 +56,7 @@
                                 <th class="p-2" style="width:15%;">Nombre</th>
                                 <th class="p-2" style="width:15%;">Dni</th>
                                 <th class="p-2" style="width:10%;">Celular</th>
-                                <th class="p-2" style="width:25%;">Email</th>
+                                <th class="p-2" style="width:25%;">Mail</th>
                                 <th class="p-2" style="width:10%;">Modificar</th>
                                 <th class="p-2" style="width:10%;">Eliminar</th>
                             </tr>
@@ -68,7 +68,7 @@
                                 <td class="colToSearch">@validString(ViewBag.Users[i].Name)</td>
                                 <td class="colToSearch">@validInt((long)ViewBag.Users[i].Dni)</td>
                                 <td>@validInt(Convert.ToInt64(ViewBag.Users[i].Cellphone))</td>
-                                <td>@validString(ViewBag.Users[i].Email)</td>
+                                <td>@validString(ViewBag.Users[i].Mail)</td>
                                 <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Users[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
                                 <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Users[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
                             </tr>
@@ -140,10 +140,11 @@
                     <div class="row justify-content-center mt-4">
                         <div class="col-md-3">
                             <div class="text-center">
-                                <strong><span>Email</span></strong>
+                                <strong><span>Mail</span></strong>
                             </div>
                             <div class="crtInput notEmpty" id="crtMail">
-                                <input class="form-control text-center" type="email">
+                                <input class="form-control text-center" type="
+                                       ">
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
@@ -292,7 +293,7 @@
                     <div class="row justify-content-center mt-4">
                         <div class="col-md-10">
                             <div class="text-center">
-                                <strong><span>Email</span></strong>
+                                <strong><span>Mail</span></strong>
                             </div>
                             <div class="updtInput notEmpty" id="updtMail">
                                 <input class="form-control text-center" type="email">

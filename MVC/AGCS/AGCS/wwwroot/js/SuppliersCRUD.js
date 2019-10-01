@@ -10,27 +10,21 @@
         if (validateInputs("modalCrt", "crtInput")) {
             $.ajax({
                 type: "POST",
-                url: "/Clients/CreateClient",
+                url: "/Suppliers/CreateSupplier",
                 data: {
                     surname: $("#crtSurname").find("input").val(),
                     name: $("#crtName").find("input").val(),
-                    dni: parseInt($("#crtDni").find("input").val()),
                     mail: $("#crtMail").find("input").val(),
                     telephone: parseInt($("#crtTelephone").find("input").val()),
                     cellphone: parseInt($("#crtCellphone").find("input").val()),
-                    /*
-                    town: $("#modalCreateTown").val(),
-                    address: $("#modalCreateAddressC").val(),
-                    province: 1,
-                    leter: $("#modalCreateAppartment").val(),
-                    number: $("#modalCreateNumber").val(),
-                    floor: $("#modalCreateFloor").val()*/
+                    factory: $("#crtFactory").find("input").val(),
+                    address: $("#crtAddress").find("input").val()
                 },
                 success: function () {
                     location.reload();
                 },
                 error: function () {
-                    CreateModal("Error", "Hubo un error al crear el cliente");
+                    CreateModal("Error", "Hubo un error al crear el proveedor");
                 }
             });
         }
@@ -41,25 +35,20 @@
         modelId = $(this).attr("modelId");
         $.ajax({
             type: "POST",
-            url: "/Clients/GetDataClient",
+            url: "/Suppliers/GetDataSupplier",
             data: { id: modelId },
             success: function (DataJson) {
                 var Data = JSON.parse(DataJson);
                 $("#updtSurname").find("input").val(Data.Surname);
                 $("#updtName").find("input").val(Data.Name);
-                $("#updtDni").find("input").val(checkInt(Data.Dni));
                 $("#updtMail").find("input").val(Data.Mail);
                 $("#updtTelephone").find("input").val(checkInt(Data.Telephone));
                 $("#updtCellphone").find("input").val(checkInt(Data.Cellphone));
-                /*
-                $("#modalUpdateTown").val(Data.Town);
-                $("#modalUpdateAddress").val(Data.Address);
-                $("#modalUpdateAppartment").val(Data.Leter);
-                $("#modalUpdateNumber").val(Data.Number);
-                $("#modalUpdateFloor").val(Data.Floor);*/
+                $("#updtFactory").find("input").val(Data.Factory);
+                $("#updtAddress").find("input").val(Data.Address);
             },
             error: function () {
-                CreateModal("Error", "Hubo un error al buscar los datos del cliente");
+                CreateModal("Error", "Hubo un error al buscar los datos del proveedor");
             }
         });
     });
@@ -69,27 +58,22 @@
         if (validateInputs("modalUpdt", "updtInput")) {
             $.ajax({
                 type: "POST",
-                url: "/Clients/UpdateClient",
+                url: "/Suppliers/UpdateSupplier",
                 data: {
                     id: modelId,
                     surname: $("#updtSurname").find("input").val(),
                     name: $("#updtName").find("input").val(),
-                    dni: parseInt($("#updtDni").find("input").val()),
                     mail: $("#updtMail").find("input").val(),
                     telephone: parseInt($("#updtTelephone").find("input").val()),
-                    cellphone: parseInt($("#updtCellphone").find("input").val())/*,
-                    Town: $("#modalUpdateTown").val(),
-                    Address: $("#modalUpdateAddress").val(),
-                    Province: 1,
-                    Leter: $("#modalUpdateAppartment").val(),
-                    Number: $("#modalUpdateNumber").val(),
-                    Floor: $("#modalUpdateFloor").val()*/
+                    cellphone: parseInt($("#updtCellphone").find("input").val()),
+                    factory: $("#updtFactory").find("input").val(),
+                    address: $("#updtAddress").find("input").val()
                 },
                 success: function () {
                     location.reload();
                 },
                 error: function () {
-                    CreateModal("Error", "Hubo un error al buscar los datos del cliente");
+                    CreateModal("Error", "Hubo un error al buscar los datos del proveedor");
                 }
             });
         }
@@ -100,13 +84,13 @@
         $("#confirm").click(function () {
             $.ajax({
                 type: "DELETE",
-                url: "/Clients/DeleteClient",
+                url: "/Suppliers/DeleteSupplier",
                 data: { id: modelId },
                 success: function () {
                     location.reload();
                 },
                 error: function () {
-                    CreateModal("Error", "Hubo un error al eliminar al cliente");
+                    CreateModal("Error", "Hubo un error al eliminar al proveedor");
                 }
             });
         });

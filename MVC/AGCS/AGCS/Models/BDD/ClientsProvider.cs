@@ -19,19 +19,19 @@ namespace AGCS.Models.BDD
                 string name;
                 string surname;
                 ulong dni;
-                string eMail;
+                string mail;
                 string telephone;
                 string cellphone;
                 try
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idClients"]);
+                    id = Convert.ToUInt32(ConnectionReader["idClient"]);
                     name = Helpers.ReadString(ConnectionReader, "Name");
                     surname = Helpers.ReadString(ConnectionReader, "Surname");
                     dni = Helpers.ReadULong(ConnectionReader, "DNI_CUIT");
-                    eMail = Helpers.ReadString(ConnectionReader, "eMail");
+                    mail = Helpers.ReadString(ConnectionReader, "Mail");
                     telephone = Helpers.ReadString(ConnectionReader, "Telephone");
                     cellphone = Helpers.ReadString(ConnectionReader, "Cellphone");
-                    Client client = new Client(id, name, surname, dni, eMail, cellphone);
+                    Client client = new Client(id, name, surname, dni, mail, cellphone);
                     clientsList.Add(client);
                 }
                 catch { }
@@ -52,21 +52,21 @@ namespace AGCS.Models.BDD
 
             if (ConnectionReader.Read())
             {
-                string name, surname, email;
+                string name, surname, mail;
                 ulong dni;
                 string telephone, cellphone;
                 uint id;
                 /*Addres info ...*/
                 try
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idClients"]);
+                    id = Convert.ToUInt32(ConnectionReader["idClient"]);
                     name = Helpers.ReadString(ConnectionReader, "Name");
                     surname = Helpers.ReadString(ConnectionReader, "Surname");
                     dni = Helpers.ReadULong(ConnectionReader, "DNI_CUIT");
-                    email = Helpers.ReadString(ConnectionReader, "eMail");
+                    mail = Helpers.ReadString(ConnectionReader, "Mail");
                     telephone = Helpers.ReadString(ConnectionReader, "Telephone");
                     cellphone = Helpers.ReadString(ConnectionReader, "Cellphone");
-                    client = new Client(id, name, surname, dni, email, cellphone, telephone);
+                    client = new Client(id, name, surname, dni, mail, cellphone, telephone);
                 }
                 catch { }
             }
@@ -85,17 +85,17 @@ namespace AGCS.Models.BDD
 
             if (ConnectionReader.Read())
             {
-                string name, surname, email;
+                string name, surname, mail;
                 string cellphone;
                 uint id;
                 try
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idClients"]);
+                    id = Convert.ToUInt32(ConnectionReader["idClient"]);
                     name = Helpers.ReadString(ConnectionReader, "Name");
                     surname = Helpers.ReadString(ConnectionReader, "Surname");
-                    email = Helpers.ReadString(ConnectionReader, "eMail");
+                    mail = Helpers.ReadString(ConnectionReader, "Mail");
                     cellphone = Helpers.ReadString(ConnectionReader, "Cellphone");
-                    client = new Client(id, name, surname, email, cellphone);
+                    client = new Client(id, name, surname, mail, cellphone);
                 }
                 catch { }
             }
@@ -110,17 +110,12 @@ namespace AGCS.Models.BDD
                 {"pName", client.Name},
                 {"pSurname", client.Surname},
                 {"pDNI_CUIT", client.Dni},
-                {"pEmail", client.Email},
+                {"pMail", client.Mail},
                 {"pTelephone", client.Telephone},
                 {"pCellphone", client.Cellphone }
             };
-            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientInsert", args);
 
-            bool success = false;
-            if (ConnectionReader.Read())
-            {
-                success = Helpers.ReadBool(ConnectionReader, "success");
-            }
+            bool success = Helpers.CallNonQuery("spClientInsert", args) > 0;
             Helpers.Disconect();
             return success;
         }
@@ -133,7 +128,7 @@ namespace AGCS.Models.BDD
                 {"pName", client.Name},
                 {"pSurname", client.Surname},
                 {"pDNI_CUIT", client.Dni},
-                {"pEmail", client.Email},
+                {"pMail", client.Mail},
                 {"pTelephone", client.Telephone},
                 { "pCellphone", client.Cellphone}
             };

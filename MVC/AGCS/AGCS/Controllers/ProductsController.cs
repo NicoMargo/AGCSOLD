@@ -26,7 +26,7 @@ namespace AGCS.Controllers
         public ActionResult ProductsCRUD()
         {
             ViewBag.Products = ProductsProvider.GetProducts();
-            ViewBag.Suppliers = SupplierProvider.GetSuppliersShort();
+            ViewBag.Suppliers = SuppliersProvider.GetSuppliersShort();
             return View();
         }
 

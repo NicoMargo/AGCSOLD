@@ -31,7 +31,7 @@ namespace AGCS.Models.BDD
                 int stock;
                 try
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idProducts"]);
+                    id = Convert.ToUInt32(ConnectionReader["idProduct"]);
                     articleNumber = Helpers.ReadULong(ConnectionReader, "Article_Number");
                     code = Helpers.ReadString(ConnectionReader, "CodeProduct");
                     description = Helpers.ReadString(ConnectionReader, "Description");
@@ -68,7 +68,7 @@ namespace AGCS.Models.BDD
                 /*Addres info ...*/
                 try
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idProducts"]);
+                    id = Convert.ToUInt32(ConnectionReader["idProduct"]);
                     description = Helpers.ReadString(ConnectionReader, "Description");
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
@@ -81,13 +81,13 @@ namespace AGCS.Models.BDD
             return product;
         }
 
-        public static Product GetProductById(uint idProducts)
+        public static Product GetProductById(uint idProduct)
         {
             Product product = null;
 
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", Session.GetSUInt32("idBusiness")},
-                {"pId", idProducts}
+                {"pId", idProduct}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetById", args);
 
@@ -111,7 +111,7 @@ namespace AGCS.Models.BDD
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
                     idSupplier = (uint) Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier");
 
-                    product = new Product(idProducts, articleNumber, code, description,  cost, price, priceW, stock,  idSupplier);
+                    product = new Product(idProduct, articleNumber, code, description,  cost, price, priceW, stock,  idSupplier);
                 }
                 catch { }
             }
@@ -170,11 +170,11 @@ namespace AGCS.Models.BDD
             return bInserted;
         }
 
-        public static bool UpdateStock(uint idProducts, int stock)
+        public static bool UpdateStock(uint idProduct, int stock)
         {
             Dictionary<string, object> args = new Dictionary<string, object>
             {
-                { "pIdProducts", idProducts },
+                { "pIdProduct", idProduct },
                 { "pIdBusiness", Session.GetSUInt32("idBusiness")} ,
                 { "pStock", stock } 
             };

@@ -28,7 +28,7 @@ namespace AGCS.Models.BDD
             {
                 try
                 {
-                    uint id = Convert.ToUInt32(ConnectionReader["idBills"]);
+                    uint id = Convert.ToUInt32(ConnectionReader["idBill"]);
                     ConnectionReader.Close();
                     if (id >= 0)
                     {

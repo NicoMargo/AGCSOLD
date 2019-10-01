@@ -13,7 +13,7 @@ $(document).ready(function () {
                     surname: $("#crtSurname").find("input").val(),
                     name: $("#crtName").find("input").val(),
                     secondName: $("#crtSecond").find("input").val(),
-                    email: $("#crtMail").find("input").val(),
+                    mail: $("#crtMail").find("input").val(),
                     passUser: $("#crtPass").find("input").val(),
                     cPassUser: $("#crtPassConfirm").find("input").val(),
                     telephone: parseInt($("#crtTelephone").find("input").val()),
@@ -45,13 +45,13 @@ $(document).ready(function () {
             type: "POST",
             url: "/Users/GetDataUser",
             data: { id: modelId },
-            success: function (DataJsonClient) {
-                var Data = JSON.parse(DataJsonClient);
+            success: function (DataJson) {
+                var Data = JSON.parse(DataJson);
                 $("#updtSurname").find("input").val(Data.Surname);
                 $("#updtName").find("input").val(Data.Name);
                 $("#updtSecond").find("input").val(Data.SecondName);
                 $("#updtDni").find("input").val(checkInt(Data.Dni));
-                $("#updtMail").find("input").val(Data.Email);
+                $("#updtMail").find("input").val(Data.Mail);
                 $("#updtTelephone").find("input").val(checkInt(Data.Telephone));
                 $("#updtCellphone").find("input").val(checkInt(Data.Cellphone));
                 $("#updtAddress").find("input").val(Data.Address);
@@ -76,7 +76,7 @@ $(document).ready(function () {
                     name: $("#updtName").find("input").val(),
                     secondName: $("#updtSecond").find("input").val(),
                     dni: parseInt($("#updtDni").find("input").val()),
-                    email: $("#updtMail").find("input").val(),
+                    mail: $("#updtMail").find("input").val(),
                     telephone: parseInt($("#updtTelephone").find("input").val()),
                     cellphone: parseInt($("#updtCellphone").find("input").val()),
                     address: $("#updtAddress").find("input").val(),
@@ -89,7 +89,7 @@ $(document).ready(function () {
                         location.reload();
                     }
                     else {
-                        CreateModal("Datos no validos", "Ya existe un usuario con ese email o Dni");
+                        CreateModal("Datos no validos", "Ya existe un usuario con ese mail o Dni");
                     }
                 },
                 error: function () {

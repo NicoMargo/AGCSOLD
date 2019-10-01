@@ -37,8 +37,8 @@
             type: "POST",
             url: "/Products/GetProduct",
             data: { id: modelId },
-            success: function (DataJsonClient) {
-                var Data = JSON.parse(DataJsonClient);
+            success: function (DataJson) {
+                var Data = JSON.parse(DataJson);
                 $("#updtNumber").find("input").val(Data.ArticleNumber);
                 $("#updtDescription").find("input").val(Data.Description);
                 $("#updtCode").find("input").val(Data.Code);

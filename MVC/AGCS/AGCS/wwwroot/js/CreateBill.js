@@ -21,8 +21,8 @@
             type: "POST",
             url: "/Backend/GetProductToEnter",
             data: { code: $("#codProdToEnter").val() },
-            success: function (DataJsonClient) {
-                D = JSON.parse(DataJsonClient);
+            success: function (DataJson) {
+                D = JSON.parse(DataJson);
                 if (D != null) {
                     idOfProd = D.Id;
                     $("#descProdToEnter").append(D.Description);
@@ -231,8 +231,8 @@
             type: "POST",
             url: "/Clients/GetDataClientByDNI",
             data: { dni: $("#dni").val() },
-            success: function (DataJsonClient) {
-                var Data = JSON.parse(DataJsonClient);
+            success: function (DataJson) {
+                var Data = JSON.parse(DataJson);
                 if (Data != null) {
                     $("#surname").attr('disabled', true);
                     $("#thisName").attr('disabled', true);

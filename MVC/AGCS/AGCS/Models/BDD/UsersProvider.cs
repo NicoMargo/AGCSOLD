@@ -9,7 +9,7 @@ namespace AGCS.Models.BDD
         public static Object[] LogIn(User user)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"Email",user.Email},
+                {"Mail",user.Mail},
                 {"Password",user.PassUser}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spUserLogin", args);
@@ -39,7 +39,7 @@ namespace AGCS.Models.BDD
             {
                 try
                 {
-                    User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadULong(ConnectionReader, "Dni"), Helpers.ReadString(ConnectionReader, "Email"), Helpers.ReadString(ConnectionReader, "Cellphone"), Convert.ToUInt32(ConnectionReader["idUser"]));
+                    User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadULong(ConnectionReader, "Dni"), Helpers.ReadString(ConnectionReader, "Mail"), Helpers.ReadString(ConnectionReader, "Cellphone"), Convert.ToUInt32(ConnectionReader["idUser"]));
                     ListOfUsers.Add(DataUser);
                 }
                 catch { }
@@ -70,7 +70,7 @@ namespace AGCS.Models.BDD
                 {"pName", user.Name},
                 {"pSurname", user.Surname},
                 {"pDni", user.Dni},
-                {"pEmail", user.Email},
+                {"pMail", user.Mail},
                 {"pTelephone", user.Telephone},
                 {"pPass", user.PassUser},
                 {"pTelephoneM", user.TelephoneM},
@@ -101,7 +101,7 @@ namespace AGCS.Models.BDD
             {
                 try
                 {
-                    user = new User(Convert.ToUInt32(ConnectionReader["idUser"]), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadString(ConnectionReader, "Name_Second"), Helpers.ReadULong(ConnectionReader, "Dni"), Helpers.ReadString(ConnectionReader, "eMail"), Helpers.ReadString(ConnectionReader, "Cellphone"), Helpers.ReadString(ConnectionReader, "Tel_User"), Helpers.ReadString(ConnectionReader, "Tel_Mother"), Helpers.ReadString(ConnectionReader, "Tel_Father"), Helpers.ReadString(ConnectionReader, "Tel_Brother"), Helpers.ReadString(ConnectionReader, "Address"));
+                    user = new User(Convert.ToUInt32(ConnectionReader["idUser"]), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadString(ConnectionReader, "Name_Second"), Helpers.ReadULong(ConnectionReader, "Dni"), Helpers.ReadString(ConnectionReader, "Mail"), Helpers.ReadString(ConnectionReader, "Cellphone"), Helpers.ReadString(ConnectionReader, "Tel_User"), Helpers.ReadString(ConnectionReader, "Tel_Mother"), Helpers.ReadString(ConnectionReader, "Tel_Father"), Helpers.ReadString(ConnectionReader, "Tel_Brother"), Helpers.ReadString(ConnectionReader, "Address"));
                 }
                 catch { }
             }
@@ -116,7 +116,7 @@ namespace AGCS.Models.BDD
                 {"pName", user.Name},
                 {"pSurname", user.Surname},
                 {"pDNI_CUIT", user.Dni},
-                {"pEmail", user.Email},
+                {"pMail", user.Mail},
                 {"pTelephone", user.Telephone},
                 {"pCellphone", user.Cellphone},
                 {"pTelephoneM", user.TelephoneM},
