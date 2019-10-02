@@ -19,9 +19,10 @@ namespace AGCS.Models
             _surname = surname;
         }
 
-        public Supplier(uint id, string name, string surname, string mail, string cellphone, string address) : base(id, name, surname, mail, cellphone)
+        public Supplier(uint id, string name, string surname, string mail, string cellphone, string address, string factory) : base(id, name, surname, mail, cellphone)
         {
             _address = address;
+            _factory = factory;
         }
 
         public Supplier(uint id, string name, string surname, string mail, string cellphone, string telephone, string address, string factory) : base(id, name, surname, mail, cellphone, telephone)

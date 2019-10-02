@@ -29,33 +29,35 @@
                     <strong class="card-title">Proveedores</strong>
                 </div>
                 <div class="card-body">
-                    <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Proveedor (por nombre, apellido)">
+                    <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Proveedor (por nombre, apellido,fábrica)">
                     <button type="button" id="btnModalCrt" class="btn btn-primary w-100" data-toggle="modal" data-target="#modalCrt">
                         Agregar Proveedor
                     </button>
 
                     <table class="CRUDTable" id="CRUDTable">
                         <tr class="header">
-                            <th class="p-2" style="width:15%;">Apellido</th>
-                            <th class="p-2" style="width:15%;">Nombre</th>
+                            <th class="p-2" style="width:13%;">Apellido</th>
+                            <th class="p-2" style="width:12%;">Nombre</th>
+                            <th class="p-2" style="width:15%;">Fábrica</th>
                             <th class="p-2" style="width:15%;">Celular</th>
-                            <th class="p-2" style="width:15%;">Mail</th>
-                            <th class="p-2" style="width:20%;">Dirección</th>
-                            <th class="p-2" style="width:10%;">Modificar</th>
-                            <th class="p-2" style="width:10%;">Eliminar</th>
+                            <th class="p-2" style="width:20%;">Mail</th>
+                            <th class="p-2" style="width:15%;">Dirección</th>
+                            <th class="p-2" style="width:5%;">Modificar</th>
+                            <th class="p-2" style="width:5%;">Eliminar</th>
                         </tr>
                         @{
                             for (int i = 0; i < ViewBag.Suppliers.Count; i++)
                             {
-                                <tr class="tableRow">
-                                    <td class="colToSearch pl-2">@validString(ViewBag.Suppliers[i].Surname)</td>
-                                    <td class="colToSearch">@validString(ViewBag.Suppliers[i].Name)</td>
-                                    <td>@validInt(Convert.ToInt64(ViewBag.Suppliers[i].Cellphone))</td>
-                                    <td>@validString(ViewBag.Suppliers[i].Mail)</td>
-                                    <td>@validString(ViewBag.Suppliers[i].Address)</td>
-                                    <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Suppliers[i].Id" ><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
-                                    <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Suppliers[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
-                                </tr>
+                        <tr class="tableRow">
+                            <td class="colToSearch pl-2">@validString(ViewBag.Suppliers[i].Surname)</td>
+                            <td class="colToSearch">@validString(ViewBag.Suppliers[i].Name)</td>
+                            <td class="colToSearch">@validString(ViewBag.Suppliers[i].Factory)</td>
+                            <td>@validInt(Convert.ToInt64(ViewBag.Suppliers[i].Cellphone))</td>
+                            <td>@validString(ViewBag.Suppliers[i].Mail)</td>
+                            <td>@validString(ViewBag.Suppliers[i].Address)</td>
+                            <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Suppliers[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
+                            <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Suppliers[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
+                        </tr>
                             }
                         }
                     </table>
@@ -94,7 +96,7 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Apellido</span></strong>
                             </div>
@@ -103,7 +105,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="col-md-4">
                             <div class="text-center">
                                 <strong><span>Nombre</span></strong>
                             </div>
@@ -112,7 +114,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Fábrica</span></strong>
                             </div>
@@ -123,7 +125,7 @@
                         </div>
                     </div>
                     <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono</span></strong>
                             </div>
@@ -132,7 +134,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="col-md-4">
                             <div class="text-center">
                                 <strong><span>Nro. Celular</span></strong>
                             </div>
@@ -141,7 +143,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Mail</span></strong>
                             </div>
@@ -185,7 +187,7 @@
                 <div class="modal-body">
 
                     <div class="row">
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Apellido</span></strong>
                             </div>
@@ -194,7 +196,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese valor un apellido válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="col-md-4">
                             <div class="text-center">
                                 <strong><span>Nombre</span></strong>
                             </div>
@@ -203,7 +205,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Fábrica</span></strong>
                             </div>
@@ -214,7 +216,7 @@
                         </div>
                      </div>
                     <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Telefono</span></strong>
                             </div>
@@ -223,7 +225,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un teléfono válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="col-md-4">
                             <div class="text-center">
                                 <strong><span>Nro. Celular</span></strong>
                             </div>
@@ -232,7 +234,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un nro. celular válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Mail</span></strong>
                             </div>

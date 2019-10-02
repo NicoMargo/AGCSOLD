@@ -47,7 +47,7 @@ namespace AGCS.Models.BDD
             while (ConnectionReader.Read())
             {
                 uint id;
-                string name, surname, mail, cellphone, address;
+                string name, surname, mail, cellphone, address, factory;
                 try
                 {
                     id = Convert.ToUInt32(ConnectionReader["idSupplier"]);
@@ -56,7 +56,8 @@ namespace AGCS.Models.BDD
                     mail = Helpers.ReadString(ConnectionReader, "Mail");
                     cellphone = Helpers.ReadString(ConnectionReader, "Cellphone");
                     address = Helpers.ReadString(ConnectionReader, "Address");
-                    Supplier supplier = new Supplier(id,name,surname,mail,cellphone,address);
+                    factory = Helpers.ReadString(ConnectionReader, "Factory");
+                    Supplier supplier = new Supplier(id,name,surname,mail,cellphone,address,factory);
                     suppliersList.Add(supplier);
                 }
                 catch { }
