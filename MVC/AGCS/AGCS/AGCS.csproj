@@ -18,7 +18,7 @@
     <PackageReference Include="MySql.Data" Version="8.0.17" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="Views\Backend\purchaseCRU.cshtml">
+    <Content Update="Views\Backend\purchase.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Products\ProductsCRUD.cshtml">
