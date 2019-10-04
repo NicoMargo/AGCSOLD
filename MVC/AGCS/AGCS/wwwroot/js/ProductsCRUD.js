@@ -17,7 +17,6 @@
                     cost: parseFloat($("#crtCost").find("input").val()),
                     price: parseFloat($("#crtPrice").find("input").val()),
                     priceW: parseFloat($("#crtPriceW").find("input").val()),
-                    stock: parseInt($("#crtStock").find("input").val()),
                     idSupplier: parseInt($("#crtSupplier").val())
                 },
                 success: function () {
@@ -45,7 +44,6 @@
                 $("#updtCost").find("input").val(Data.Cost);
                 $("#updtPrice").find("input").val(Data.Price);
                 $("#updtPriceW").find("input").val(Data.PriceW);
-                $("#updtStock").find("input").val(Data.Stock);
                 $("#updtSupplier").val(Data.IdSupplier);
             },
             error: function () {
@@ -68,7 +66,6 @@
                     cost: $("#updtCost").find("input").val(),
                     price: $("#updtPrice").find("input").val(),
                     priceW: $("#updtPriceW").find("input").val(),
-                    stock: parseInt($("#updtStock").find("input").val()),
                     idSupplier: parseInt($("#updtSupplier").val())
                 },
                 success: function () {
@@ -95,25 +92,6 @@
                     CreateModal("Error", "Hubo un error al eliminar al producto");
                 }
             });
-        });
-    });
-    
-
-    $(".btnStockUpdt").click(function () {
-        modelId = $(this).attr("modelId");
-        $.ajax({
-            type: "POST",
-            url: "/Products/UpdateStock",
-            data: {
-                id: parseInt(modelId),
-                stock: parseInt($(this).parent().find("input").val())
-            },
-            success: function () {
-                CreateModal("Stock", "Se modifico el stock correctamente");
-            },
-            error: function () {
-                CreateModal("Error", "Hubo un error al modificar el stock");
-            }
         });
     });
 });

@@ -51,12 +51,12 @@
 
                     <table id="CRUDTable" class="CRUDTable">
                         <tr class="header">
-                            <th class="p-2" style="width:5%;">Nro. de Artículo</th>
+                            <th class="p-2" style="width:10%;">Nro. de Artículo</th>
                             <th class="p-2" style="width:30%;">Descripción</th>
-                            <th class="p-2" style="width:15%;">Código de Producto</th>
+                            <th class="p-2" style="width:20%;">Código de Producto</th>
                             <th class="p-2" style="width:10%;">Precio por mayor</th>
                             <th class="p-2" style="width:10%;">Precio por menor</th>
-                            <th class="p-2" style="width:20%;">Stock</th>
+                            <th class="p-2" style="width:10%;">Stock</th>
                             <th class="p-2" style="width:5%;">Modificar</th>
                             <th class="p-2" style="width:5%;">Eliminar</th>
                         </tr>
@@ -67,9 +67,9 @@
                             <td class="colToSearch">@validInt(ViewBag.Products[i].ArticleNumber)</td>
                             <td class="colToSearch">@validString(ViewBag.Products[i].Description)</td>
                             <td class="colToSearch">@validString(ViewBag.Products[i].Code)</td>
-                            <td>@validFloat(ViewBag.Products[i].PriceW)</td>
-                            <td>@validFloat(ViewBag.Products[i].Price)</td>
-                            <td><input value=@ViewBag.Products[i].Stock type="number" step="1" class="form-control text-center display-inline" style="width:7rem" /> <img modelId="@ViewBag.Products[i].Id" class="btnStockUpdt crudButton display-inline" src="~/images/submit.png" style="width:50px" /> </td>
+                            <td>@validFloat(ViewBag.Products[i].PriceW)$</td>
+                            <td>@validFloat(ViewBag.Products[i].Price)$</td>
+                            <td>@validInt(@ViewBag.Products[i].Stock) </td>
                             <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
                             <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
                         </tr>
@@ -110,7 +110,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. de Artículo</span></strong>
                             </div>
@@ -119,7 +119,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="col-md-4">
                             <div class="text-center">
                                 <strong><span>Descripción</span></strong>
                             </div>
@@ -128,7 +128,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Código</span></strong>
                             </div>
@@ -139,7 +139,7 @@
                         </div>
                     </div>
                     <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Costo</span></strong>
                             </div>
@@ -148,7 +148,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="col-md-4">
                             <div class="text-center">
                                 <strong><span>Precio por Menor</span></strong>
                             </div>
@@ -157,7 +157,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Precio por Mayor</span></strong>
                             </div>
@@ -168,16 +168,7 @@
                         </div>
                     </div>
                     <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Stock</span></strong>
-                            </div>
-                            <div class="crtInput notEmpty" id="crtStock">
-                                <input class="form-control text-center" type="number" step="1">
-                                <div class="validation_msg hidden text-center">Ingrese una cantidad válida</div>
-                            </div>
-                        </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Proveedor</span></strong>
                             </div>
@@ -213,7 +204,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. de Artículo</span></strong>
                             </div>
@@ -222,7 +213,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="col-md-4">
                             <div class="text-center">
                                 <strong><span>Descripción</span></strong>
                             </div>
@@ -231,7 +222,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Código</span></strong>
                             </div>
@@ -242,7 +233,7 @@
                         </div>
                     </div>
                     <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Costo</span></strong>
                             </div>
@@ -251,7 +242,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-3">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Precio por Menor</span></strong>
                             </div>
@@ -260,7 +251,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
                         </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="col-md-3">
                             <div class="text-center">
                                 <strong><span>Precio por Mayor</span></strong>
                             </div>
@@ -271,16 +262,7 @@
                         </div>
                     </div>
                     <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Stock</span></strong>
-                            </div>
-                            <div class="updtInput notEmpty" id="updtStock">
-                                <input class="form-control text-center" type="number" step="1">
-                                <div class="validation_msg hidden text-center">Ingrese una cantidad válida</div>
-                            </div>
-                        </div>
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Proveedor</span></strong>
                             </div>

@@ -95,7 +95,6 @@ namespace AGCS.Models.BDD
             {
                 string description;
                 float price,cost,priceW;
-                int stock;
                 uint idSupplier, articleNumber;
 
                 string code;//arreglar
@@ -108,10 +107,8 @@ namespace AGCS.Models.BDD
                     cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
-                    stock = Helpers.ReadInt(ConnectionReader, "Stock");
                     idSupplier = (uint) Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier");
-
-                    product = new Product(idProduct, articleNumber, code, description,  cost, price, priceW, stock,  idSupplier);
+                    product = new Product(idProduct, articleNumber, code, description,  cost, price, priceW, idSupplier);
                 }
                 catch { }
             }
@@ -130,7 +127,6 @@ namespace AGCS.Models.BDD
                 { "pCost",product.Cost } ,
                 { "pPrice",product.Price } ,
                 { "pPriceW",product.PriceW } ,
-                { "pStock",product.Stock } ,
                 { "pIdSupplier", product.IdSupplier} 
             };
             bInserted = (Helpers.CallNonQuery("spProductInsert", args) > 0);
@@ -150,7 +146,6 @@ namespace AGCS.Models.BDD
                 { "pCost",product.Cost } ,
                 { "pPrice",product.Price } ,
                 { "pPriceW",product.PriceW } ,
-                { "pStock",product.Stock } ,
                 { "pIdSupplier", product.IdSupplier}
             };
             Helpers.CallNonQuery("spProductUpdate", args);
@@ -168,19 +163,6 @@ namespace AGCS.Models.BDD
             bInserted = (Helpers.CallNonQuery("spProductDelete", args) > 0);
             Helpers.Disconect();
             return bInserted;
-        }
-
-        public static bool UpdateStock(uint idProduct, int stock)
-        {
-            Dictionary<string, object> args = new Dictionary<string, object>
-            {
-                { "pIdProduct", idProduct },
-                { "pIdBusiness", Session.GetSUInt32("idBusiness")} ,
-                { "pStock", stock } 
-            };
-            bool success = (Helpers.CallNonQuery("spProductStockUpdate", args) > 0);
-            Helpers.Disconect();
-            return success;
         }
     }
 }

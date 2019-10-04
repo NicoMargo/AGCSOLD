@@ -68,7 +68,7 @@ namespace AGCS.Controllers
             float fPrice = parseFloat(price);
             float fPriceW = parseFloat(priceW);
 
-            Product product = new Product(number, code, description, fCost, fPrice, fPriceW, stock, idSupplier);
+            Product product = new Product(number, code, description, fCost, fPrice, fPriceW, idSupplier);
 
             try
             {
@@ -95,23 +95,6 @@ namespace AGCS.Controllers
             {
                 success = false;
             }
-            return success;
-        }
-
-        [HttpPost]
-        public bool UpdateStock(uint id, int stock)
-        {
-            bool success = true;      
-
-            try
-            {
-                success = ProductsProvider.UpdateStock(id, stock);
-            }
-            catch
-            {
-                success = false;
-            }
-
             return success;
         }
     }
