@@ -14,8 +14,15 @@ namespace AGCS.Controllers
         {       
             return View();
         }
-        public ActionResult Pruebas()
+        public ActionResult purchase()
         {
+            ViewBag.purchases = PruchaseProvider.GetPurchases();
+            return View();
+        }
+        [HttpPost]
+        public ActionResult purchase(uint idEmployee, List<uint> idProduct, List<uint> idProvider, List<uint> quant)
+        {
+            //Purchase purchase = new Purchase(idEmployee, idProduct, quant);
             return View();
         }
 

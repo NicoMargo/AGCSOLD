@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var modelId;
-    RowSearcher("CRUDTable", "searchInput")
+    RowSearcher("CRUDTable", "searchInput");
 
     $("#btnModalCrt").click(function () {
         normalizeInputs("modalCrt", "crtInput");
@@ -17,7 +17,7 @@
                     dni: parseInt($("#crtDni").find("input").val()),
                     email: $("#crtEmail").find("input").val(),
                     telephone: parseInt($("#crtTelephone").find("input").val()),
-                    cellphone: parseInt($("#crtCellphone").find("input").val()),
+                    cellphone: parseInt($("#crtCellphone").find("input").val())
                     /*
                     town: $("#modalCreateTown").val(),
                     address: $("#modalCreateAddressC").val(),
