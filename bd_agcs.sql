@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 04-10-2019 a las 12:03:43
+-- Tiempo de generación: 04-10-2019 a las 14:21:37
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -54,10 +54,7 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spClientDelete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientDelete` (IN `id` INT, IN `pIdBusiness` INT)  NO SQL
-if(EXISTS(SELECT clients.idClient FROM clients WHERE clients.idClient = id and clients.Business_idBusiness = pIdBusiness))
-THEN
-	Update clients set clients.Active = 0 where clients.idClient = id and clients.Business_idBusiness = pIdBusiness and clients.Active = 1;
-end IF$$
+Update clients set clients.Active = 0 where clients.idClient = id and clients.Business_idBusiness = pIdBusiness and clients.Active = 1$$
 
 DROP PROCEDURE IF EXISTS `spClientGetByDNI`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientGetByDNI` (IN `pDNI` BIGINT, IN `pIdBusiness` INT)  NO SQL
@@ -77,18 +74,17 @@ then
 	
     if(@lastId is not null)
     then
-    
-		if( pMail is not null  /*and pMail != (SELECT clients.Mail from clients where clients.idClient = @lastId)*/) 
+		if( pMail is not null) 
 		THEN
 			UPDATE clients set clients.Mail = pMail WHERE clients.idClient = @lastId and clients.Business_idBusiness = pIdBusiness; 
 		end if;
 		
-		if( pTelephone is not null  /*and pTelephone != (SELECT clients.Telephone from clients where clients.idClient = @lastId)*/) 
+		if( pTelephone is not null) 
 		THEN
 			UPDATE clients set clients.Telephone = pTelephone WHERE clients.idClient = @lastId and clients.Business_idBusiness = pIdBusiness; 
 		end if;
 		
-		if( pCellphone is not null /*and pCellphone != (SELECT clients.Cellphone from clients where clients.idClient = @lastId)*/) 
+		if( pCellphone is not null) 
 		THEN
 			UPDATE clients set clients.Cellphone = pCellphone WHERE clients.idClient = @lastId and clients.Business_idBusiness = pIdBusiness; 
 		end if;
@@ -105,17 +101,17 @@ if(EXISTS(SELECT clients.idClient from clients WHERE clients.idClient = id and c
 THEN
 	if(pName != "" and pSurname != "" and pDNI_CUIT > 0 and pDNI_CUIT != ""  )
     then
-		if( pName is not null and pName!= (SELECT clients.Name from clients where clients.idClient = id) ) 
+		if( pName is not null ) 
 		THEN
 			UPDATE clients set Name = pName WHERE clients.idClient = id and clients.Business_idBusiness = pIdBusiness; 
 		end if;
 		
-		if( pSurname is not null and pSurname != (SELECT clients.Surname from clients where clients.idClient = id)) 
+		if( pSurname is not null) 
 		THEN
 			UPDATE clients set clients.Surname = pSurname WHERE clients.idClient = id and clients.Business_idBusiness = pIdBusiness; 
 		end if;
 		
-		if( pDNI_CUIT is not null and pDNI_CUIT != (SELECT clients.DNI_CUIT from clients where clients.idClient = id) and not exists(SELECT clients.DNI_CUIT from clients where clients.DNI_CUIT = pDNI_CUIT and clients.Business_idBusiness = pIdBusiness)) 
+		if( pDNI_CUIT is not null and not exists(SELECT clients.DNI_CUIT from clients where clients.DNI_CUIT = pDNI_CUIT and clients.Business_idBusiness = pIdBusiness)) 
 		THEN
 			UPDATE clients set clients.DNI_CUIT = pDNI_CUIT WHERE clients.idClient = id and clients.Business_idBusiness = pIdBusiness; 
 		end if;
@@ -244,10 +240,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spSupplierGetById` (IN `pId` INT, I
 END$$
 
 DROP PROCEDURE IF EXISTS `spSupplierInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spSupplierInsert` (IN `pIdBusiness` INT(20), IN `pName` VARCHAR(100), IN `pSurname` VARCHAR(100), IN `pTelephone` INT(20), IN `pCellphone` INT(20), IN `pFactory` VARCHAR(100), IN `pAddress` VARCHAR(200), IN `pMail` VARCHAR(100))  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spSupplierInsert` (IN `pIdBusiness` INT(20), IN `pName` VARCHAR(100), IN `pSurname` VARCHAR(100), IN `pTelephone` VARCHAR(20), IN `pCellphone` VARCHAR(20), IN `pFactory` VARCHAR(100), IN `pAddress` VARCHAR(200), IN `pMail` VARCHAR(100))  NO SQL
 if not EXISTS(select idSupplier from suppliers where Name = pName and Surname = pSurname and Business_idBusiness = pIdBusiness)
 then
-    INSERT INTO suppliers (Business_idBusiness, Name, Surname, Telephone, Cellphone, Factory, Address, Mail) VALUES(pIdBusiness, pName, pSurname, pTelephone, pCellphone, pFactory, pAddress, pMail);
+	if NOT((pName = "" or pName is null) and (pSurname = "" or pSurname is null))
+    THEN
+  	  INSERT INTO suppliers (Business_idBusiness, Name, Surname, Telephone, Cellphone, Factory, Address, Mail) VALUES(pIdBusiness, pName, pSurname, pTelephone, pCellphone, pFactory, pAddress, pMail);
+    end if;
 end if$$
 
 DROP PROCEDURE IF EXISTS `spSuppliersGet`$$
@@ -258,11 +257,14 @@ END$$
 DROP PROCEDURE IF EXISTS `spSupplierUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spSupplierUpdate` (IN `pId` INT(20), IN `pIdBusiness` INT(20), IN `pName` VARCHAR(100), IN `pSurname` VARCHAR(100), IN `pTelephone` VARCHAR(20), IN `pCellphone` VARCHAR(20), IN `pFactory` VARCHAR(100), IN `pAddress` VARCHAR(200), IN `pMail` VARCHAR(100))  NO SQL
 if EXISTS(select idSupplier from suppliers where idSupplier = pId and Business_idBusiness = pIdBusiness and Active = 1)
-THEN
-	if not EXISTS(select idSupplier from suppliers where Name = pName and Surname = pSurname and Business_idBusiness = pIdBusiness)
+THEN	
+    if NOT((pName = "" or pName is null) and (pSurname = "" or pSurname is null))
     THEN
-		update suppliers set Name = pName where idSupplier = pId and Business_idBusiness = pIdBusiness;
-        update suppliers set Surname = pSurname where idSupplier = pId and Business_idBusiness = pIdBusiness;
+		if not EXISTS(select idSupplier from suppliers where Name = pName and Surname = pSurname and Business_idBusiness = pIdBusiness)	
+        then
+			update suppliers set Name = pName where idSupplier = pId and Business_idBusiness = pIdBusiness;
+			update suppliers set Surname = pSurname where idSupplier = pId and Business_idBusiness = pIdBusiness;
+		end if;
     end if;
     update suppliers set Telephone = pTelephone where idSupplier = pId and Business_idBusiness = pIdBusiness;
     update suppliers set Cellphone = pCellphone where idSupplier = pId and Business_idBusiness = pIdBusiness;
@@ -279,11 +281,7 @@ if exists(select users.idUser from users where users.idUser = pId and users.Pass
     end if$$
 
 DROP PROCEDURE IF EXISTS `spUserDelete`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserDelete` (IN `pId` INT, IN `pIdBusiness` INT)  if(EXISTS(SELECT users.idUser FROM users WHERE users.idUser = pId and users.Business_idBusiness = pIdBusiness))
-THEN
-	DELETE from user_extrainfo WHERE  user_extrainfo.idUser = pId;
-	DELETE from users WHERE users.idUser = pId and users.Business_idBusiness = pIdBusiness;
-end IF$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserDelete` (IN `pId` INT, IN `pIdBusiness` INT)  Update users set Active = 0 where idUser = pId and Business_idBusiness = pIdBusiness and Active = 1$$
 
 DROP PROCEDURE IF EXISTS `spUserGetById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserGetById` (IN `pId` INT, IN `pIdBusiness` INT)  NO SQL
@@ -348,65 +346,25 @@ DROP PROCEDURE IF EXISTS `spUserUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(60), IN `pSurname` VARCHAR(60), IN `pDNI_CUIT` INT, IN `pMail` VARCHAR(60), IN `pTelephone` VARCHAR(60), IN `pCellphone` VARCHAR(60), IN `pTelephoneM` VARCHAR(60), IN `pTelephoneF` VARCHAR(60), IN `pTelephoneB` VARCHAR(60), IN `pAddress` VARCHAR(60), IN `pSecondN` VARCHAR(60))  NO SQL
 if(EXISTS(SELECT users.idUser from users WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness))
 THEN
-	if(pName != "" and pSurname != "" and pDNI_CUIT != "" and pMail!= "" )
+	if(pDNI_CUIT >0 and pDNI_CUIT is not null and pMail!= "" and pMail is not null and not exists(SELECT users.Dni from users where users.Mail = pMail or (users.Dni = pDNI_CUIT and users.Business_idBusiness = pIdBusiness)))
     then
-        
-         if( pName is not null and pName!= (SELECT users.Name from users where users.idUser = id) ) 
+        if( pName is not null and pName != "") 
 		THEN
 			UPDATE users set Name = pName WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
 		end if;
-        
-        if( pSecondN is not null and pSecondN!= (SELECT users.Name_Second from users where users.idUser = id) ) 
-		THEN
-			UPDATE users set Name_Second = pSecondN WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
-		end if;
-		
-		if( pSurname is not null and pSurname != (SELECT users.Surname from users where users.idUser = id)) 
+		UPDATE users set Name_Second = pSecondN WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
+		if( pSurname is not null and pSurname != "") 
 		THEN
 			UPDATE users set users.Surname = pSurname WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
 		end if;
-		
-		if( pDNI_CUIT is not null and pDNI_CUIT != (SELECT users.Dni from users where users.idUser = id) and not exists(SELECT users.Dni from users where users.Dni = pDNI_CUIT and users.Business_idBusiness = pIdBusiness)) 
-		THEN
-			UPDATE users set users.Dni = pDNI_CUIT WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
-		end if;
-		
-		if( pMail is not null and pMail != (SELECT users.Mail from users where users.idUser = id) and not exists(SELECT users.Mail from users where users.Mail = pMail and users.Business_idBusiness = pIdBusiness)) 
-		THEN
-			UPDATE users set users.Mail = pMail WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
-		end if;
-		
-		if( pTelephone is not null and pTelephone != "") 
-		THEN
-			UPDATE user_ExtraInfo set user_ExtraInfo.Tel_User = pTelephone WHERE user_ExtraInfo.idUser = id; 
-		end if;
-		
-		if( pCellphone is not null and pCellphone != "") 
-		THEN
-			UPDATE user_ExtraInfo set user_ExtraInfo.Cellphone = pCellphone WHERE user_ExtraInfo.idUser = id; 
-		end if;
-        
-        if( pTelephoneM is not null and pTelephoneM != "") 
-		THEN
-			UPDATE user_ExtraInfo set user_ExtraInfo.Tel_Mother = pTelephoneM WHERE user_ExtraInfo.idUser = id; 
-		end if;
-        
-        if( pTelephoneF is not null and pTelephoneF != "") 
-		THEN
-			UPDATE user_ExtraInfo set user_ExtraInfo.Tel_Father = pTelephoneF WHERE user_ExtraInfo.idUser = id; 
-		end if;
-        
-        if( pTelephoneB is not null and pTelephoneB != "") 
-		THEN
-			UPDATE user_ExtraInfo set user_ExtraInfo.Tel_Brother = pTelephoneB WHERE user_ExtraInfo.idUser = id; 
-		end if;
-        
-        if( pAddress is not null and pAddress != "") 
-		THEN
-			UPDATE user_ExtraInfo set user_ExtraInfo.Address = pAddress WHERE user_ExtraInfo.idUser = id; 
-		end if;
-        
-        
+		UPDATE users set users.Dni = pDNI_CUIT WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
+		UPDATE users set users.Mail = pMail WHERE users.idUser = id and users.Business_idBusiness = pIdBusiness; 
+		UPDATE user_ExtraInfo set user_ExtraInfo.Tel_User = pTelephone WHERE user_ExtraInfo.idUser = id; 
+		UPDATE user_ExtraInfo set user_ExtraInfo.Cellphone = pCellphone WHERE user_ExtraInfo.idUser = id; 
+		UPDATE user_ExtraInfo set user_ExtraInfo.Tel_Mother = pTelephoneM WHERE user_ExtraInfo.idUser = id; 
+		UPDATE user_ExtraInfo set user_ExtraInfo.Tel_Father = pTelephoneF WHERE user_ExtraInfo.idUser = id; 
+		UPDATE user_ExtraInfo set user_ExtraInfo.Tel_Brother = pTelephoneB WHERE user_ExtraInfo.idUser = id; 
+		UPDATE user_ExtraInfo set user_ExtraInfo.Address = pAddress WHERE user_ExtraInfo.idUser = id; 
 	end if;
 end if$$
 
@@ -740,33 +698,33 @@ INSERT INTO `provinces` (`idProvince`, `Province`) VALUES
 DROP TABLE IF EXISTS `suppliers`;
 CREATE TABLE IF NOT EXISTS `suppliers` (
   `idSupplier` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(45) DEFAULT NULL,
-  `Surname` varchar(45) DEFAULT NULL,
-  `Telephone` int(11) DEFAULT NULL,
-  `Cellphone` int(11) NOT NULL,
-  `Factory` varchar(45) DEFAULT NULL,
+  `Name` varchar(50) DEFAULT NULL,
+  `Surname` varchar(50) DEFAULT NULL,
+  `Telephone` varchar(20) DEFAULT NULL,
+  `Cellphone` varchar(20) NOT NULL,
+  `Factory` varchar(50) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   `Address` varchar(200) DEFAULT NULL,
   `Mail` varchar(60) DEFAULT NULL,
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idSupplier`) USING BTREE,
   KEY `fk_Supplier_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `suppliers`
 --
 
 INSERT INTO `suppliers` (`idSupplier`, `Name`, `Surname`, `Telephone`, `Cellphone`, `Factory`, `Business_idBusiness`, `Address`, `Mail`, `Active`) VALUES
-(0, NULL, NULL, NULL, 0, NULL, 0, NULL, NULL, b'1'),
-(1, 'Aquiles', 'Traigo', 43216543, 13111111, 'Nose q va aK xd', 1, 'En la loma del ort', 'jonylocliu@hotmail.coml.ar', b'1'),
-(2, 'Aquiles', 'Doy', 45678912, 1513317546, 'yo tampoco jaja salu2', 1, 'viste china, bueno doblando a la izquierda', NULL, b'1'),
-(3, 'Ivrea', 'La', 1, 1, 'EEEE', 1, 'Avenida San juan bautista de lasalle 720', 'a', b'1'),
-(4, 'void', 'main', 3, 2, 'EEEEEEEE', 1, 'v', 'a', b'1'),
-(5, 'Unpro', 'vedor', 15115, 14115, 'F', 2, 'Acala vuelta 0', 'correo@correo', b'1'),
-(7, 'd', 'd', 1, 1, 'g', 1, 'q', 'r', b'0'),
-(8, 'y', 'y', 4, 4, 'y', 1, 'y', 'y', b'1'),
-(9, 'X', 'X', 5, 2, 'X', 1, 'x', 'x', b'0');
+(0, NULL, NULL, NULL, '0', NULL, 0, NULL, NULL, b'1'),
+(1, 'Aquiles', 'Traigo', '43216543', '13111111', 'Nose q va aK xd', 1, 'En la loma del ort', 'jonylocliu@hotmail.coml.ar', b'1'),
+(2, 'Aquiles', 'Doy', '45678912', '1513317546', 'yo tampoco jaja salu2', 1, 'viste china, bueno doblando a la izquierda', NULL, b'1'),
+(3, 'Ivrea', 'La', '1', '1', 'EEEE', 1, 'Avenida San juan bautista de lasalle 720', 'a', b'1'),
+(4, 'void', 'main', '1', '1', 'EEEEEEEE', 1, 'a', 'a', b'1'),
+(5, 'Unpro', 'vedor', '15115', '14115', 'F', 2, 'Acala vuelta 0', 'correo@correo', b'1'),
+(7, 'd', 'd', '1', '1', 'g', 1, 'q', 'r', b'0'),
+(8, 'y', 'y', '40', '5', 'y', 1, NULL, NULL, b'1'),
+(9, 'X', 'X', '5', '2', 'X', 1, 'x', 'x', b'0');
 
 -- --------------------------------------------------------
 
@@ -785,21 +743,22 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Name_Second` varchar(45) DEFAULT NULL,
   `Business_idBusiness` int(11) NOT NULL,
   `Dni` varchar(45) DEFAULT NULL,
+  `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idUser`) USING BTREE,
   KEY `fk_Users_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`idUser`, `Mail`, `Password`, `Admin`, `Name`, `Surname`, `Name_Second`, `Business_idBusiness`, `Dni`) VALUES
-(27, 'admin@admin', '21232f297a57a5a743894a0e4a801fc3', b'1', 'admin', 'admin', 'admin', 1, '13'),
-(28, 'nicolasmargossian@gmail.com', '7510d498f23f5815d3376ea7bad64e29', b'0', 'Nicolas', 'hola', 'Alejandro Anushavan', 1, '43994080'),
-(32, 'bo@boa', '21232f297a57a5a743894a0e4a801fc3', b'0', 'ParaBorrar a', 'Borrar a', 'borrar a', 1, '300'),
-(34, 'n@n', '21232f297a57a5a743894a0e4a801fc3', b'1', 'nico', 'margo', 'Alejandro Anushavan', 2, '43994080'),
-(35, 'mati@mati', '4d186321c1a7f0f354b297e8914ab240', b'0', 'Matias', 'Santoro', 'Javier', 2, '43994857'),
-(37, 'm@m', '21232f297a57a5a743894a0e4a801fc3', b'0', 'nombre modificar ', 'apellido modificar ', NULL, 2, '11111');
+INSERT INTO `users` (`idUser`, `Mail`, `Password`, `Admin`, `Name`, `Surname`, `Name_Second`, `Business_idBusiness`, `Dni`, `Active`) VALUES
+(27, 'admin@admin', '21232f297a57a5a743894a0e4a801fc3', b'1', 'admin', 'admin', 'admin', 1, '13', b'1'),
+(28, 'nicolasmargossian@gmail.com', '7510d498f23f5815d3376ea7bad64e29', b'0', 'Nicolas', 'hola', 'Alejandro Anushavan', 1, '43994080', b'1'),
+(32, 'bo@boa', '21232f297a57a5a743894a0e4a801fc3', b'0', 'ParaBorrar a', 'Borrar a', 'borrar a', 1, '300', b'1'),
+(34, 'n@n', '21232f297a57a5a743894a0e4a801fc3', b'1', 'nico', 'margo', 'Alejandro Anushavan', 2, '43994080', b'1'),
+(35, 'mati@mati', '4d186321c1a7f0f354b297e8914ab240', b'0', 'Matias', 'Santoro', 'Javier', 2, '43994857', b'1'),
+(37, 'm@m', '21232f297a57a5a743894a0e4a801fc3', b'0', 'nombre modificar ', 'apellido modificar ', NULL, 2, '11111', b'1');
 
 -- --------------------------------------------------------
 
@@ -821,7 +780,7 @@ CREATE TABLE IF NOT EXISTS `user_extrainfo` (
   `Cellphone` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`idUser_ExtraInfo`) USING BTREE,
   KEY `fk_User_ExtraInfo_Users1_idx` (`idUser`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `user_extrainfo`

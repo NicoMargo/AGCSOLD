@@ -1,13 +1,18 @@
 ﻿@{
     @model AGCS.Models.Supplier
-    string validInt(long number) {
-        string value;
-        if (number <= 0)
+    string validInt(string number)
+    {
+        string value = "-"; ;
+        try
         {
-            value = "-";
+            int parsedNumber = Convert.ToInt32(number);
+            if (parsedNumber > 0)
+            {
+                value = parsedNumber.ToString();
+            }
         }
-        else {
-            value = number.ToString();
+        catch
+        {
         }
         return value;
     }
@@ -52,7 +57,7 @@
                             <td class="colToSearch pl-2">@validString(ViewBag.Suppliers[i].Surname)</td>
                             <td class="colToSearch">@validString(ViewBag.Suppliers[i].Name)</td>
                             <td class="colToSearch">@validString(ViewBag.Suppliers[i].Factory)</td>
-                            <td>@validInt(Convert.ToInt64(ViewBag.Suppliers[i].Cellphone))</td>
+                            <td>@validInt((ViewBag.Suppliers[i].Cellphone))</td>
                             <td>@validString(ViewBag.Suppliers[i].Mail)</td>
                             <td>@validString(ViewBag.Suppliers[i].Address)</td>
                             <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Suppliers[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
