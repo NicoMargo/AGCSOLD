@@ -16,7 +16,7 @@ namespace AGCS.Controllers
         }
         public ActionResult purchase()
         {
-            ViewBag.purchases = PruchaseProvider.GetPurchases();
+            //ViewBag.purchases = PruchaseProvider.GetPurchases();
             return View();
         }
         [HttpPost]

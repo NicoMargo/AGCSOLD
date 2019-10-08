@@ -114,5 +114,13 @@ namespace AGCS.Controllers
 
             return success;
         }
+
+        public ActionResult ProductStock(uint id)
+        {
+            ViewBag.StockMovement = 5;
+            ViewBag.Product = ProductsProvider.GetProductById(id);
+            ViewBag.Products = ProductsProvider.GetProducts();
+            return View();
+        }
     }
 }

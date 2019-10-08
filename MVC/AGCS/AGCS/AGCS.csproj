@@ -21,6 +21,9 @@
     <Content Update="Views\Backend\purchase.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Products\ProductStock.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Products\ProductsCRUD.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
