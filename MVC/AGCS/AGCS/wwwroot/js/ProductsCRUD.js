@@ -99,21 +99,28 @@
     });
     
 
-    $(".btnStockUpdt").click(function () {
+    $("#updt").click(function () {
         modelId = $(this).attr("modelId");
-        $.ajax({
-            type: "POST",
-            url: "/Products/UpdateStock",
-            data: {
-                id: parseInt(modelId),
-                stock: parseInt($(this).parent().find("input").val())
-            },
-            success: function () {
-                CreateModal("Stock", "Se modifico el stock correctamente");
-            },
-            error: function () {
-                CreateModal("Error", "Hubo un error al modificar el stock");
-            }
-        });
+        let stock = parseInt($("#subtractStock").val());
+        let a = parseInt($("#quant").val());
+        if (stock >a ) {
+            stock = a;
+        }
+            $.ajax({
+                type: "POST",
+                url: "/Products/UpdateStock",
+                data: {
+                    id: parseInt(modelId),
+                    stock: stock,
+                    description: $(this).parent().find("#description").val()
+                },
+                success: function () {
+                    CreateModal("Stock", "Se modifico el stock correctamente");
+                },
+                error: function () {
+                    CreateModal("Error", "Hubo un error al modificar el stock");
+                }
+            });
+        
     });
 });
