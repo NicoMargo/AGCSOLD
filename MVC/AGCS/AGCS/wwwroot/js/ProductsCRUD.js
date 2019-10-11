@@ -101,20 +101,22 @@
 
     $("#updt").click(function () {
         modelId = $(this).attr("modelId");
-        let stock = parseInt($("#subtractStock").val());
-        let a = parseInt($("#quant").val());
-        if (stock >a ) {
-            stock = a;
+        var sstock = parseInt($("#subtractStock").val());
+        if (sstock > a && a > 0) {
+            sstock = a;
         }
             $.ajax({
                 type: "POST",
                 url: "/Products/UpdateStock",
                 data: {
                     id: parseInt(modelId),
-                    stock: stock,
+                    stock: sstock,
                     description: $(this).parent().find("#description").val()
                 },
                 success: function () {
+                    $("#actualstock").empty();
+                    $("#actualstock").append(a - sstock);
+                    a -= sstock;
                     CreateModal("Stock", "Se modifico el stock correctamente");
                 },
                 error: function () {
