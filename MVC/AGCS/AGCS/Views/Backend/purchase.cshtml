@@ -1,0 +1,274 @@
+﻿@{
+    @model AGCS.Models.Client
+    string validInt(long number) {
+        string value;
+        if (number <= 0)
+        {
+            value = "-";
+        }
+        else {
+            value = number.ToString();
+        }
+        return value;
+    }
+
+    string validString(string words)
+    {
+        if (words == "")
+        {
+            words = "-";
+        }
+        return words;
+    }
+}
+    <script src="~/js/ClientCRUD.js"></script>
+    <div class="content mt-3">
+        <div class="animated fadeIn">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Clientes</strong>
+                </div>
+                <div class="card-body">
+                    <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Compra (por nombre, Fecha o empleado)">
+                    <button type="button" id="btnModalCrt" class="btn btn-primary w-100" data-toggle="modal" data-target="#modalCrt">
+                        Nueva Compra
+                    </button>
+
+                    <table class="CRUDTable" id="CRUDTable">
+                        <tr class="header">
+                            <th class="p-2" style="width:25%;">Producto</th>
+                            <th class="p-2" style="width:20%;">Cantidad del producto</th>
+                            <th class="p-2" style="width:15%;">Fecha</th>                            
+                            <th class="p-2" style="width:25%;">Empleado</th>
+                        </tr>
+                        @{/*
+                            for (int i = 0; i < ViewBag.Clients.Count; i++)
+                            {
+                                <tr class="tableRow">
+                                    <td class="colToSearch pl-2">@validString(ViewBag.Clients[i].Surname)</td>
+                                    <td class="colToSearch">@validString(ViewBag.Clients[i].Name)</td>
+                                    <td class="colToSearch">@validInt((long)ViewBag.Clients[i].Dni)</td>
+                                    <td>@validInt(Convert.ToInt64(ViewBag.Clients[i].Cellphone))</td>
+                                    <td>@validString(ViewBag.Clients[i].Email)</td>
+                                </tr>
+                            }
+                        */}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Extra large modal Create-->
+    <div class="modal fade bd-example-modal-xl" id="modalCrt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Crear Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Apellido</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty" id="crtSurname">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nombre</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty" id="crtName">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>DNI/CUIT/CUIL</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty validPositive" id="crtDni">
+                                <input class="form-control text-center" type="number" min="0" step="1">
+                                <div class="validation_msg hidden text-center">Ingrese valor válido</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Nro. Teléfono</span></strong>
+                            </div>
+                            <div class="crtInput validPositive" id="crtTelephone">
+                                <input class="form-control text-center" type="number" min="0">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nro. Celular</span></strong>
+                            </div>
+                            <div class="crtInput validPositive" id="crtCellphone">
+                                <input class="form-control text-center" type="number" min="0">
+                                <div class="validation_msg hidden text-center" >Ingrese un valor válido</div>
+                            </div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Email</span></strong>
+                            </div>
+                            <div class="crtInput" id="crtEmail">
+                                <input class="form-control text-center" type="email">
+                                <div class="validation_msg hidden text-center">Ingrese un email válido</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secundary" id="crtCancel" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" id="add">Crear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Create END-->
+    <!-- Modal Update Beginning-->
+    <div class="modal fade bd-example-modal-xl" id="modalUpdt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Datos Del Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Apellido</span></strong>
+                            </div>
+                            <div class="updtInput notEmpty" id="updtSurname">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese valor un apellido válido</div>
+                            </div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nombre</span></strong>
+                            </div>
+                            <div class="updtInput notEmpty" id="updtName">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>DNI/CUIT/CUIL</span></strong>
+                            </div>
+                            <div class="updtInput notEmpty" id="updtDni">
+                                <input class="form-control text-center" type="number" min="0">
+                                <div class="validation_msg hidden text-center" >Ingrese un DNI o CUIT válido</div>
+                            </div>
+                        </div>
+                     </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Nro. Telefono</span></strong>
+                            </div>
+                            <div class="updtInput validPositive" id="updtTelephone">
+                                <input class="form-control text-center" type="number" min="0" step="1">
+                                <div class="validation_msg hidden text-center">Ingrese un teléfono válido</div>
+                            </div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nro. Celular</span></strong>
+                            </div>
+                            <div class="updtInput validPositive" id="updtCellphone">
+                                <input class="form-control text-center" type="number" min="0" step="1">
+                                <div class="validation_msg hidden text-center">Ingrese un nro. celular válido</div>
+                            </div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Email</span></strong>
+                            </div>
+                            <div class="updtInput" id="updtEmail">
+                                <input class="form-control text-center" type="email">
+                                <div class="validation_msg hidden text-center">Ingrese un email válido</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-5">
+                        <h4 class="badge-pill badge-danger">Dirección</h4>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Localidad</span></strong>
+                            </div>
+                            <input id="modalUpdateTown" class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center" id="msgUpdateTown">Ingrese un  válido</div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Direccion</span></strong>
+                            </div>
+                            <input id="modalUpdateAddress" class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center" id="msgUpdateAddress">Ingrese un  válido</div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Provincia</span></strong>
+                            </div>
+                            <select class="form-control">
+                                <option value="CABA">CABA</option>
+                                <option value="Buenos Aires">Buenos Aires</option>
+                                <option value="Mendoza">Mendoza</option>
+                                <option value="Santa Fé">Santa Fe</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Número</span></strong>
+                            </div>
+                            <input id="modalUpdateNumber" class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center" id="msgUpdateNumber">Ingrese un  válido</div>
+                        </div>
+                        <div class="offset-md-1 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Piso</span></strong>
+                            </div>
+                            <input id="modalUpdateFloor" class="form-control text-center" type="number" min="0">
+                            <div class="validation_msg hidden text-center" id="msgUpdateFloor">Ingrese un  válido</div>
+                        </div>
+                        <div class="offset-md-1 col-md-2">
+                            <div class="text-center">
+                                <strong><span>Letra</span></strong>
+                            </div>
+                            <input id="modalUpdateAppartment" class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center" id="msgUpdateAppartment">Ingrese un  válido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secundary" id="updateCancel" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" id="update">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+   

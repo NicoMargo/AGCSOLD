@@ -67,9 +67,9 @@
                             <td class="colToSearch">@validInt(ViewBag.Products[i].ArticleNumber)</td>
                             <td class="colToSearch">@validString(ViewBag.Products[i].Description)</td>
                             <td class="colToSearch">@validString(ViewBag.Products[i].Code)</td>
-                            <td>@validFloat(ViewBag.Products[i].PriceW)$</td>
-                            <td>@validFloat(ViewBag.Products[i].Price)$</td>
-                            <td>@validInt(@ViewBag.Products[i].Stock) </td>
+                            <td>@validFloat(ViewBag.Products[i].PriceW)</td>
+                            <td>@validFloat(ViewBag.Products[i].Price)</td>
+                            <td>@ViewBag.Products[i].Stock <a href="@Url.Action("ProductStock", "Products", new { id = @ViewBag.Products[i].Id })"><img class="crudButton display-inline" src="~/images/submit.png" style="width:50px" /> </a></td>
                             <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
                             <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
                         </tr>

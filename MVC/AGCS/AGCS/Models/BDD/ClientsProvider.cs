@@ -6,11 +6,12 @@ namespace AGCS.Models.BDD
 {
     public static class ClientsProvider {
         //Methods for store procedures of Table Clients 
-        public static List<Client> GetClients()
+        public static List<Client> GetClients(ushort pag = 0)
         {
             List<Client> clientsList = new List<Client>();
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness",Session.GetSUInt32("idBusiness")}
+                {"pIdBusiness",Session.GetSUInt32("idBusiness")},
+                {"pPage",pag}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientsGet", args);
             while (ConnectionReader.Read())

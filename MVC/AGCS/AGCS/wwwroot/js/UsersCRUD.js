@@ -1,6 +1,6 @@
 ﻿
 $(document).ready(function () {   
-    var modelId;;
+    var modelId;
     RowSearcher("CRUDTable", "searchInput");
     
     $("#add").click(function () {
@@ -22,7 +22,7 @@ $(document).ready(function () {
                     address: $("#crtAddress").find("input").val(),
                     telephoneM: parseInt($("#crtTelM").find("input").val()),
                     telephoneF: parseInt($("#crtTelF").find("input").val()),
-                    telephoneB: parseInt($("#crtTelB").find("input").val()),
+                    telephoneB: parseInt($("#crtTelB").find("input").val())
                 },
                 success: function (success) {
                     if (success == "True")

@@ -1,0 +1,85 @@
+﻿@{
+    @model AGCS.Models.Product
+    string validInt(int number)
+    {
+        string value;
+        if (number <= 0)
+        {
+            value = "-";
+        }
+        else
+        {
+            value = number.ToString();
+        }
+        return value;
+    }
+
+    string validString(string words)
+    {
+        if (words == "")
+        {
+            words = "-";
+        }
+        return words;
+    }
+
+    string validFloat(float number)
+    {
+        string value;
+        if (number <= 0)
+        {
+            value = "-";
+        }
+        else
+        {
+            value = number.ToString();
+        }
+        return value;
+    }
+
+}
+
+<div class="content mt-3">
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Movimiento de stock: @ViewBag.Product.Description</strong>
+            </div>
+            <div class="card-body">
+                <div class="row border ml-1 mr-1">                    
+                    <span class="col-md-2 mt-3 mb-4 pt-2">Stock actual: <strong id="actualstock">@ViewBag.Product.Stock</strong></span>
+                        <input placeholder="Restar stock" id="subtractStock" min="0" class="col-md-2 mt-3 mb-4 form-control" type="number" />
+                        <input placeholder="Motivo ajuste de stock" id="description" class="col-md-3 ml-3 mt-3 mb-4 form-control" type="text" />
+                        <button class="col-md-2 ml-3 mt-3 mb-4 form-control btn btn-primary" modelId="@ViewBag.Product.Id" id="updt">Ajustar Stock</button>
+                </div>
+                <hr />
+
+                <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Movimiento de Stock (por Fecha)">
+                <table id="CRUDTable" class="CRUDTable">
+                    <tr class="header">
+                        <th class="p-2" style="width:15%;">Tipo de movimiento</th>
+                        <th class="p-2" style="width:10%;">Cantidad</th>
+                        <th class="p-2" style="width:15%;">Fecha</th>
+                        <th class="p-2" style="width:25%;">Empleado</th>
+                        <th class="p-2" style="width:35%;">Descripcion</th>
+                    </tr>
+                    @{
+                        for (int i = 0; i < ViewBag.Products.Count; i++)
+                        {
+                            <tr class="tableRow">
+                                <td class="colToSearch">@validInt(ViewBag.Products[i].ArticleNumber)</td>
+                                <td class="colToSearch">@validString(ViewBag.Products[i].Description)</td>
+                                <td class="colToSearch">@validString(ViewBag.Products[i].Code)</td>
+                                <td>@validFloat(ViewBag.Products[i].PriceW)</td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>var a = @ViewBag.Product.Stock;</script>
+
+
+<script src="~/js/ProductsCRUD.js"></script>

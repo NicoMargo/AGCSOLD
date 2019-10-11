@@ -6,27 +6,26 @@ namespace AGCS.Models.BDD
 {
     public class UsersProvider
     {
-        public static Object[] LogIn(User user)
+        public static Tuple<User, Business> LogIn(User user)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"Mail",user.Mail},
                 {"Password",user.PassUser}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spUserLogin", args);
-            Object[] TwoObjects = new Object[2];
+            Tuple<User, Business> objects = null;
             if (ConnectionReader.Read())
             {
                 try
                 {
                     User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Convert.ToUInt32(ConnectionReader["idUser"]), Convert.ToBoolean(ConnectionReader["Admin"]));
                     Business DataBuisness = new Business(Convert.ToUInt32(ConnectionReader["idBusiness"]), Helpers.ReadString(ConnectionReader, "NameB"));
-                    TwoObjects[0] = DataBuisness;
-                    TwoObjects[1] = DataUser;
+                    objects = new Tuple<User, Business>(DataUser, DataBuisness);
                 }
                 catch { }
             }
             Helpers.Disconect();
-            return TwoObjects;
+            return objects;
         }
         public static List<User> GetUsers()
         {
