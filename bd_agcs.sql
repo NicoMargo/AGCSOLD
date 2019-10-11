@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 08-10-2019 a las 15:13:13
+-- Tiempo de generación: 11-10-2019 a las 14:54:48
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -230,6 +230,30 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN 
     end if;
 END$$
 
+DROP PROCEDURE IF EXISTS `spPurchaseInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseInsert` (IN `pIdBusiness` INT(11) UNSIGNED, IN `pDate` DATE, IN `pTotal` FLOAT(10,2), IN `pIdSupplier` INT UNSIGNED)  NO SQL
+if EXISTS(select idSupplier from suppliers where idSupplier = pIdSupplier and Business_idBusiness = pIdBusiness and Active = 1)
+THEN
+	SET  @idSupplier = (select idSupplier from suppliers where idSupplier = pIdSupplier and Business_idBusiness = pIdBusiness);
+    Insert into purchases(purchases.date,purchases.total,purchases.idBusiness,purchases.idSupplier) values( pDate, pTotal, pIdBusiness,@idSupplier);
+    select idPurchase from purchases where idPurchase = LAST_INSERT_ID() and date = pDate and total = pTotal and purchases.idBusiness = pIdBusiness and purchases.idSupplier = @idSupplier;
+ELSE
+	select -1 as idPurchase;
+end if$$
+
+DROP PROCEDURE IF EXISTS `spPurchaseXProductInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseXProductInsert` (IN `pIdPurchase` INT(11) UNSIGNED, IN `pIdProduct` INT(11) UNSIGNED, IN `pQuantity` INT(11) UNSIGNED, IN `pCost` FLOAT(10,2), IN `pIdBusiness` INT(11) UNSIGNED)  NO SQL
+if exists(select idProduct from products where idProduct = pIdProduct and Business_idBusiness = pIdBusiness and Active = 1) and exists(select idPurchase from purchases where idPurchase = pIdPurchase and Business_idBusiness = pIdBusiness)
+then
+	if(pQuantity > 0 and pQuantity is not null)
+    then
+		insert into purchases_x_products(idPurchase,idProduct,Quantity,Cost) values(pIdPurchase,pIdProduct,pQuantity,pCost);
+        update products set Stock = products.Stock - pQuantity where idProduct = pIdProduct and Business_idBusiness = pIdBusiness and Active = 1;
+	else
+		insert into purchases_x_products(idPurchase,idProduct,Quantity,Cost) values(pIdPurchase,pIdProduct,0,pCost);
+    end if;
+end if$$
+
 DROP PROCEDURE IF EXISTS `spSupplierDelete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spSupplierDelete` (IN `pId` INT, IN `pIdBusiness` INT)  BEGIN
 if(EXISTS(SELECT suppliers.idSupplier FROM suppliers WHERE suppliers.idSupplier = pId and suppliers.Business_idBusiness = pIdBusiness))
@@ -452,9 +476,10 @@ INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_idClient`, `Employee_Code`, 
 DROP TABLE IF EXISTS `bills_x_products`;
 CREATE TABLE IF NOT EXISTS `bills_x_products` (
   `idBills_X_Products` int(11) NOT NULL AUTO_INCREMENT,
-  `Quantity` int(11) DEFAULT NULL,
-  `Products_idProduct` int(11) NOT NULL,
   `Bills_idBill` int(11) NOT NULL,
+  `Products_idProduct` int(11) NOT NULL,
+  `Quantity` int(11) DEFAULT NULL,
+  `Price` float(10,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProduct`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBill`) USING BTREE
@@ -464,9 +489,9 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
 -- Volcado de datos para la tabla `bills_x_products`
 --
 
-INSERT INTO `bills_x_products` (`idBills_X_Products`, `Quantity`, `Products_idProduct`, `Bills_idBill`) VALUES
-(7, 5, 1, 2),
-(70, 1, 23, 60);
+INSERT INTO `bills_x_products` (`idBills_X_Products`, `Bills_idBill`, `Products_idProduct`, `Quantity`, `Price`) VALUES
+(7, 2, 1, 5, 0.00),
+(70, 60, 23, 1, 0.00);
 
 -- --------------------------------------------------------
 
@@ -696,6 +721,45 @@ INSERT INTO `provinces` (`idProvince`, `Province`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `purchases`
+--
+
+DROP TABLE IF EXISTS `purchases`;
+CREATE TABLE IF NOT EXISTS `purchases` (
+  `idPurchase` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idSupplier` int(11) NOT NULL,
+  `idEmployee` int(11) DEFAULT NULL,
+  `date` date NOT NULL,
+  `total` float(10,2) UNSIGNED NOT NULL,
+  `cond` varchar(100) NOT NULL,
+  `idBusiness` int(11) NOT NULL,
+  PRIMARY KEY (`idPurchase`),
+  KEY `fk_Purchases_Suppliers_idx` (`idSupplier`) USING BTREE,
+  KEY `fk_Purchases_idEmployee_idx` (`idEmployee`) USING BTREE,
+  KEY `fk_Purchases_Business_idx` (`idBusiness`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `purchases_x_products`
+--
+
+DROP TABLE IF EXISTS `purchases_x_products`;
+CREATE TABLE IF NOT EXISTS `purchases_x_products` (
+  `idPurchases_x_Products` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idPurchase` int(11) UNSIGNED NOT NULL,
+  `idProduct` int(11) NOT NULL,
+  `Quantity` int(11) NOT NULL,
+  `Cost` float(10,2) DEFAULT '0.00',
+  PRIMARY KEY (`idPurchases_x_Products`),
+  KEY `fk_PurchasesXProducts_Purchases_idx` (`idPurchase`),
+  KEY `fk_PurchasesXProducts_Products_idx` (`idProduct`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `suppliers`
 --
 
@@ -854,6 +918,21 @@ ALTER TABLE `macs`
 ALTER TABLE `products`
   ADD CONSTRAINT `fk_Products_Business1` FOREIGN KEY (`Business_idBusiness`) REFERENCES `business` (`idBusiness`),
   ADD CONSTRAINT `fk_Products_Suppliers1` FOREIGN KEY (`Suppliers_idSupplier`) REFERENCES `suppliers` (`idSupplier`);
+
+--
+-- Filtros para la tabla `purchases`
+--
+ALTER TABLE `purchases`
+  ADD CONSTRAINT `fk_Purchases_Business` FOREIGN KEY (`idBusiness`) REFERENCES `business` (`idBusiness`),
+  ADD CONSTRAINT `fk_Purchases_Employee` FOREIGN KEY (`idEmployee`) REFERENCES `users` (`idUser`),
+  ADD CONSTRAINT `fk_Purchases_Suppliers` FOREIGN KEY (`idSupplier`) REFERENCES `suppliers` (`idSupplier`);
+
+--
+-- Filtros para la tabla `purchases_x_products`
+--
+ALTER TABLE `purchases_x_products`
+  ADD CONSTRAINT `fk_PurchasesXProducts_Products` FOREIGN KEY (`idProduct`) REFERENCES `products` (`idProduct`),
+  ADD CONSTRAINT `fk_PurchasesXProducts_Purchases` FOREIGN KEY (`idPurchase`) REFERENCES `purchases` (`idPurchase`);
 
 --
 -- Filtros para la tabla `suppliers`
