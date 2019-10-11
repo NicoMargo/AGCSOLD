@@ -19,7 +19,7 @@ namespace AGCS.Models
         private string _type;//no
         private int _employeeCode;//ni
 
-        private float calculateSubtotal() {
+        private float CalculateSubtotal() {
             float subtotal = 0;
             
             if (_products.Count > 0)
@@ -32,7 +32,7 @@ namespace AGCS.Models
             return subtotal;
         }
 
-        private float calculateTotal()
+        private float CalculateTotal()
         {
             float total = 0;
 
@@ -49,10 +49,10 @@ namespace AGCS.Models
         {
             _date = date;
             _products = products;
-            _subtotal = calculateSubtotal();
+            _subtotal = CalculateSubtotal();
             _ivaRecharge = ivaRecharge;
             _discount = discount;
-            _total = calculateTotal();
+            _total = CalculateTotal();
             _dniClient = DniClient;
         }
 
