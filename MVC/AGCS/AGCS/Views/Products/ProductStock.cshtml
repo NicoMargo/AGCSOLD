@@ -48,7 +48,7 @@
             <div class="card-body">
                 <div class="row border ml-1 mr-1">                    
                         <span  class="col-md-2 mt-3 mb-4 pt-2">Stock actual: <strong id="quant">@ViewBag.Product.Stock</strong></span>
-                        <input placeholder="Restar stock" id="subtractStock" class="col-md-2 mt-3 mb-4 form-control" type="number" />
+                        <input placeholder="Restar stock" min="0" id="subtractStock" class="col-md-2 mt-3 mb-4 form-control" type="number" />
                         <input placeholder="Motivo ajuste de stock" id="description" class="col-md-3 ml-3 mt-3 mb-4 form-control" type="text" />
                         <button class="col-md-2 ml-3 mt-3 mb-4 form-control btn btn-primary" modelId="@ViewBag.Product.Id" id="updt">Ajustar Stock</button>
                 </div>

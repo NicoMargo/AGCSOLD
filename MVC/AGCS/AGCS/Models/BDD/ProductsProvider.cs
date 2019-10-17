@@ -175,7 +175,6 @@ namespace AGCS.Models.BDD
             Dictionary<string, object> args = new Dictionary<string, object>
             {
                 { "pIdProducts", idProducts },
-                { "pIdBusiness", Session.GetSUInt32("idBusiness")} ,
                 { "pStock", stock } 
             };
             bool success = (Helpers.CallNonQuery("spProductStockUpdate", args) > 0);

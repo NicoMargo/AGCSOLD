@@ -1,5 +1,0 @@
-control F <system.net>, despues de eso pegar:
-
-<defaultProxy enabled="true" useDefaultCredentials="true">
-			<proxy bypassonlocal="True" proxyaddress="http://10.152.2.254"/>
-		</defaultProxy>

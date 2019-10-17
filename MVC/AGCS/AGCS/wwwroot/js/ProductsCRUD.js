@@ -101,26 +101,30 @@
 
     $("#updt").click(function () {
         modelId = $(this).attr("modelId");
-        let stock = parseInt($("#subtractStock").val());
-        let a = parseInt($("#quant").val());
-        if (stock >a ) {
-            stock = a;
+        if (parseInt($('#subtractStock').val()) < 0) {
+            CreateModal("Error", "No puedes restar stock negativo");
+        } else {
+            if (parseInt($("#subtractStock").val()) <= parseInt($('#quant').html())) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Products/UpdateStock",
+                    data: {
+                        id: parseInt(modelId),
+                        stock: $("#subtractStock").val(),
+                        description: $(this).parent().find("#description").val()
+                    },
+                    success: function () {
+                        $('#quant').html("hoal");
+                        CreateModal("Stock", "Se modifico el stock correctamente");
+                    },
+                    error: function () {
+                        CreateModal("Error", "Hubo un error al modificar el stock");
+                    }
+                });
+            } else {
+                CreateModal("Error", "No puedes quitar mas stock del que hay");
+            }
         }
-            $.ajax({
-                type: "POST",
-                url: "/Products/UpdateStock",
-                data: {
-                    id: parseInt(modelId),
-                    stock: stock,
-                    description: $(this).parent().find("#description").val()
-                },
-                success: function () {
-                    CreateModal("Stock", "Se modifico el stock correctamente");
-                },
-                error: function () {
-                    CreateModal("Error", "Hubo un error al modificar el stock");
-                }
-            });
         
     });
 });

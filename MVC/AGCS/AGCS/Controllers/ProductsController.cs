@@ -101,8 +101,7 @@ namespace AGCS.Controllers
         [HttpPost]
         public bool UpdateStock(uint id, int stock)
         {
-            bool success = true;      
-
+            bool success;
             try
             {
                 success = ProductsProvider.UpdateStock(id, stock);
@@ -111,7 +110,6 @@ namespace AGCS.Controllers
             {
                 success = false;
             }
-
             return success;
         }
 
