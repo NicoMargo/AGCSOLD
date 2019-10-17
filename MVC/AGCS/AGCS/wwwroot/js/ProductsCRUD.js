@@ -124,7 +124,6 @@
             } else {
                 CreateModal("Error", "No puedes quitar mas stock del que hay");
             }
-        }
-        
+        }        
     });
 });
