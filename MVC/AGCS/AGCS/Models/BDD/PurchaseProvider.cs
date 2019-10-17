@@ -20,29 +20,33 @@ namespace AGCS.Models.BDD
                 {"pIdBusiness", Session.GetSUInt32("idBusiness")},
                 {"pDate", purchase.Date},
                 {"pTotal", purchase.Total},
-                {"pIdSupplier", supplier.Id}
+                {"pIdSupplier", supplier.Id},
+                {"pIdEmployee", Session.GetSUInt32("idUser")}
             };
-            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spPurchaseInsert", args);
-
-            if (ConnectionReader.Read())
+            try
             {
-                try
+                MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spPurchaseInsert", args);
+                if (ConnectionReader.Read())
                 {
-                    uint id = Convert.ToUInt32(ConnectionReader["idPurchase"]);
-                    ConnectionReader.Close();
-                    if (id >= 0)
+                    try
                     {
-                        purchase.Id = id;
-                        foreach (Product product in purchase.Products)
-                        {
-                            InsertPurchaseXProduct(purchase.Id, product);
-                        }
                         success = true;
+                        uint id = Convert.ToUInt32(ConnectionReader["idPurchase"]);
+                        ConnectionReader.Close();
+                        if (id >= 0)
+                        {
+                            purchase.Id = id;
+                            foreach (Product product in purchase.Products)
+                            {
+                                success &= InsertPurchaseXProduct(purchase.Id, product);
+                            }
+                        }
                     }
+                    catch (OverflowException)
+                    { }
                 }
-                catch (OverflowException)
-                { }
             }
+            catch { }
             Helpers.Disconect();
             return success;
         }
@@ -58,8 +62,7 @@ namespace AGCS.Models.BDD
                 {"pCost", product.Cost},
                 {"pIdBusiness", Session.GetSUInt32("idBusiness") },
             };
-            Helpers.CallNonQuery("spPurchaseXProductInsert", args);
-
+            success = Helpers.CallNonQuery("spPurchaseXProductInsert", args)>0;
             return success;
         }
     }

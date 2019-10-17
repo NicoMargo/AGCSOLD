@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 11-10-2019 a las 14:54:48
+-- Tiempo de generación: 17-10-2019 a las 17:58:27
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -231,12 +231,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN 
 END$$
 
 DROP PROCEDURE IF EXISTS `spPurchaseInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseInsert` (IN `pIdBusiness` INT(11) UNSIGNED, IN `pDate` DATE, IN `pTotal` FLOAT(10,2), IN `pIdSupplier` INT UNSIGNED)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseInsert` (IN `pIdBusiness` INT(11) UNSIGNED, IN `pDate` DATE, IN `pTotal` FLOAT(10,2), IN `pIdSupplier` INT(11) UNSIGNED, IN `pIdEmployee` INT(11) UNSIGNED)  NO SQL
 if EXISTS(select idSupplier from suppliers where idSupplier = pIdSupplier and Business_idBusiness = pIdBusiness and Active = 1)
 THEN
-	SET  @idSupplier = (select idSupplier from suppliers where idSupplier = pIdSupplier and Business_idBusiness = pIdBusiness);
-    Insert into purchases(purchases.date,purchases.total,purchases.idBusiness,purchases.idSupplier) values( pDate, pTotal, pIdBusiness,@idSupplier);
-    select idPurchase from purchases where idPurchase = LAST_INSERT_ID() and date = pDate and total = pTotal and purchases.idBusiness = pIdBusiness and purchases.idSupplier = @idSupplier;
+	if exists(select idSupplier from suppliers where idSupplier = pIdSupplier and Business_idBusiness = pIdBusiness) and exists(select idUser from users where idUser = pIdEmployee and Business_idBusiness = pIdBusiness)
+    THEN
+    	Insert into purchases(date,total,idBusiness,idSupplier,idEmployee) values( pDate, pTotal, pIdBusiness,pIdSupplier, pIdEmployee);
+    	select idPurchase from purchases where idPurchase = LAST_INSERT_ID() and date = pDate and total = pTotal and purchases.idBusiness = pIdBusiness and purchases.idSupplier = @idSupplier;
+	end if;
 ELSE
 	select -1 as idPurchase;
 end if$$
@@ -465,7 +467,7 @@ INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_idClient`, `Employee_Code`, 
 (2, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (3, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (4, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(60, '2019-09-06', 56, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 2);
+(60, '2019-09-06', 56, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 8);
 
 -- --------------------------------------------------------
 

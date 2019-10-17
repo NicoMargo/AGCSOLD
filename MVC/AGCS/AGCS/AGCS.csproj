@@ -30,7 +30,7 @@
     <Content Update="Views\Clients\ClientsCRUD.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Purchases\InsertPurchase.cshtml">
+    <Content Update="Views\Purchases\CreatePurchase.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Suppliers\SuppliersCRUD.cshtml">

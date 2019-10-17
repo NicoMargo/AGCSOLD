@@ -15,9 +15,7 @@ namespace AGCS.Models
         private string _condition;
         //que categoria tiene frente al iva (responsable inscripto, monotributista o excento de iva)
         //deberia ser un emun pq lo vamos a usar muchas veces en distintas pasrtes del proyecto, no se bien como es
-
-        //new purchase
-
+        
         private float CalculateSubtotal()
         {
             float subtotal = 0;
