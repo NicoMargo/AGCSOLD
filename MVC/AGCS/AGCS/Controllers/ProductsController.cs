@@ -17,7 +17,7 @@ namespace AGCS.Controllers
             Single.TryParse(value, out result);      
             return result;
         }
-        public IActionResult Index()
+        public ActionResult Index()
         {
             return View();
         }
@@ -106,7 +106,7 @@ namespace AGCS.Controllers
             {
                 success = ProductsProvider.UpdateStock(id, stock);
             }
-            catch
+            catch(Exception e)
             {
                 success = false;
             }

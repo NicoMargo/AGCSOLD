@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 08-10-2019 a las 15:13:13
+-- Tiempo de generación: 18-10-2019 a las 12:00:05
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -189,9 +189,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` IN
 	select * from Products where Products.Business_idBusiness = pIdBusiness and products.Active = 1;
 END$$
 
-DROP PROCEDURE IF EXISTS `spProductStockUpdate`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductStockUpdate` (IN `pIdProducts` INT, IN `pIdBusiness` INT, IN `pStock` INT)  BEGIN
-	update products set products.stock = products.stock- pStock where products.idProducts = pIdProducts and products.Business_idBusiness = pIdBusiness and products.Active = 1;
+DROP PROCEDURE IF EXISTS `spProductStockMovment`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductStockMovment` (IN `pIdProducts` INT, IN `pStock` INT)  BEGIN
+	update products set products.stock = products.stock- pStock where products.idProducts = pIdProducts and products.Active = 1;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductUpdate`$$
@@ -1936,7 +1936,7 @@ CREATE TABLE IF NOT EXISTS `products` (
 
 INSERT INTO `products` (`idProducts`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`, `Active`) VALUES
 (1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', -10, '1', 3, 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', 120, '2', 3, 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', 80, '2', 3, 1, b'1'),
 (3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1, b'1'),
 (4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', -1, '7791337613027', 2, 1, b'1'),
 (7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, -1, '434', 1, 1, b'1'),
@@ -1970,6 +1970,24 @@ CREATE TABLE IF NOT EXISTS `provinces` (
 INSERT INTO `provinces` (`idProvince`, `Province`) VALUES
 (1, 'CABA'),
 (2, 'Buenos Aires');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `stock_movement`
+--
+
+DROP TABLE IF EXISTS `stock_movement`;
+CREATE TABLE IF NOT EXISTS `stock_movement` (
+  `idStockMovement` int(20) NOT NULL,
+  `type` tinyint(3) DEFAULT NULL,
+  `idProduct` int(11) NOT NULL,
+  `quant` int(11) DEFAULT NULL,
+  `description` varchar(800) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  PRIMARY KEY (`idStockMovement`),
+  KEY `fk_stock_movement_products_idx` (`idProduct`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -2126,6 +2144,12 @@ ALTER TABLE `macs`
 ALTER TABLE `products`
   ADD CONSTRAINT `fk_Products_Business1` FOREIGN KEY (`Business_idBusiness`) REFERENCES `business` (`idBusiness`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Products_Suppliers1` FOREIGN KEY (`Suppliers_idSupplier`) REFERENCES `suppliers` (`idSupplier`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `stock_movement`
+--
+ALTER TABLE `stock_movement`
+  ADD CONSTRAINT `fk_stock_movement_products` FOREIGN KEY (`idProduct`) REFERENCES `products` (`idProducts`);
 
 --
 -- Filtros para la tabla `suppliers`

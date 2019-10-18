@@ -113,9 +113,13 @@
                         stock: $("#subtractStock").val(),
                         description: $(this).parent().find("#description").val()
                     },
-                    success: function () {
-                        $('#quant').html("hoal");
-                        CreateModal("Stock", "Se modifico el stock correctamente");
+                    success: function (s) {
+                        if (s) {
+                            $('#quant').html(parseInt($('#quant').html()) - parseInt($("#subtractStock").val()));
+                            CreateModal("Stock", "Se modifico el stock correctamente");
+                        } else {
+                            CreateModal("Error", "Hubo un error al modificar el stock");
+                        }
                     },
                     error: function () {
                         CreateModal("Error", "Hubo un error al modificar el stock");
