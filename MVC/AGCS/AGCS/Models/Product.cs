@@ -59,7 +59,8 @@ namespace AGCS.Models
             _priceW = priceW;
             _stock = stock;
         }
-
+        
+        
         public Product(uint id, ulong articleNumber, string code, string description, float cost, float price, float priceW, int stock, uint idSupplier)
         {
             _id = id;
@@ -73,7 +74,19 @@ namespace AGCS.Models
             _idSupplier = idSupplier;
         }
 
-        public Product(ulong articleNumber, string code, string description, float cost, float price, float priceW, int stock, uint idSupplier)
+        public Product(uint id, ulong articleNumber, string code, string description, float cost, float price, float priceW, uint idSupplier)
+        {
+            _id = id;
+            _articleNumber = (int)articleNumber;
+            _code = code;
+            _description = description;
+            _cost = cost;
+            _price = price;
+            _priceW = priceW;
+            _idSupplier = idSupplier;
+        }
+
+        public Product(ulong articleNumber, string code, string description, float cost, float price, float priceW, uint idSupplier)
         {
             _articleNumber = (int)articleNumber;
             _code = code;
@@ -81,9 +94,7 @@ namespace AGCS.Models
             _cost = cost;
             _price = price;
             _priceW = priceW;
-            _stock = stock;
             _idSupplier = idSupplier;
         }
     }
-
 }

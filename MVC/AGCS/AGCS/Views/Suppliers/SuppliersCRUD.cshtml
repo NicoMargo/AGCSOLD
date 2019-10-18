@@ -1,13 +1,18 @@
 ﻿@{
-    @model AGCS.Models.Client
-    string validInt(long number) {
-        string value;
-        if (number <= 0)
+    @model AGCS.Models.Supplier
+    string validInt(string number)
+    {
+        string value = "-"; ;
+        try
         {
-            value = "-";
+            int parsedNumber = Convert.ToInt32(number);
+            if (parsedNumber > 0)
+            {
+                value = parsedNumber.ToString();
+            }
         }
-        else {
-            value = number.ToString();
+        catch
+        {
         }
         return value;
     }
@@ -21,41 +26,43 @@
         return words;
     }
 }
-    <script src="~/js/ClientsCRUD.js"></script>
+    <script src="~/js/SuppliersCRUD.js"></script>
     <div class="content mt-3">
         <div class="animated fadeIn">
             <div class="card">
                 <div class="card-header">
-                    <strong class="card-title">Clientes</strong>
+                    <strong class="card-title">Proveedores</strong>
                 </div>
                 <div class="card-body">
-                    <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Cliente (por nombre, apellido o DNI)">
+                    <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Proveedor (por nombre, apellido,fábrica)">
                     <button type="button" id="btnModalCrt" class="btn btn-primary w-100" data-toggle="modal" data-target="#modalCrt">
-                        Agregar Cliente
+                        Agregar Proveedor
                     </button>
 
                     <table class="CRUDTable" id="CRUDTable">
                         <tr class="header">
-                            <th class="p-2" style="width:20%;">Apellido</th>
-                            <th class="p-2" style="width:15%;">Nombre</th>
-                            <th class="p-2" style="width:15%;">DNI/CUIT/CUIL</th>
-                            <th class="p-2" style="width:10%;">Celular</th>
-                            <th class="p-2" style="width:25%;">Mail</th>
-                            <th class="p-2" style="width:10%;">Modificar</th>
-                            <th class="p-2" style="width:10%;">Eliminar</th>
+                            <th class="p-2" style="width:13%;">Apellido</th>
+                            <th class="p-2" style="width:12%;">Nombre</th>
+                            <th class="p-2" style="width:15%;">Fábrica</th>
+                            <th class="p-2" style="width:15%;">Celular</th>
+                            <th class="p-2" style="width:20%;">Mail</th>
+                            <th class="p-2" style="width:15%;">Dirección</th>
+                            <th class="p-2" style="width:5%;">Modificar</th>
+                            <th class="p-2" style="width:5%;">Eliminar</th>
                         </tr>
                         @{
-                            for (int i = 0; i < ViewBag.Clients.Count; i++)
+                            for (int i = 0; i < ViewBag.Suppliers.Count; i++)
                             {
-                                <tr class="tableRow">
-                                    <td class="colToSearch pl-2">@validString(ViewBag.Clients[i].Surname)</td>
-                                    <td class="colToSearch">@validString(ViewBag.Clients[i].Name)</td>
-                                    <td class="colToSearch">@validInt((long)ViewBag.Clients[i].Dni)</td>
-                                    <td>@validInt(Convert.ToInt64(ViewBag.Clients[i].Cellphone))</td>
-                                    <td>@validString(ViewBag.Clients[i].Mail)</td>
-                                    <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Clients[i].Id" ><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
-                                    <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Clients[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
-                                </tr>
+                        <tr class="tableRow">
+                            <td class="colToSearch pl-2">@validString(ViewBag.Suppliers[i].Surname)</td>
+                            <td class="colToSearch">@validString(ViewBag.Suppliers[i].Name)</td>
+                            <td class="colToSearch">@validString(ViewBag.Suppliers[i].Factory)</td>
+                            <td>@validInt((ViewBag.Suppliers[i].Cellphone))</td>
+                            <td>@validString(ViewBag.Suppliers[i].Mail)</td>
+                            <td>@validString(ViewBag.Suppliers[i].Address)</td>
+                            <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Suppliers[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
+                            <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Suppliers[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
+                        </tr>
                             }
                         }
                     </table>
@@ -69,7 +76,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h5 class="modal-title" id="confirmationModal">Esta seguro que quiere eliminar al cliente?</h5>
+                    <h5 class="modal-title" id="confirmationModal">Esta seguro que quiere eliminar al proveedor?</h5>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -86,7 +93,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Crear Cliente</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Crear Proveedor</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -114,10 +121,10 @@
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
-                                <strong><span>DNI/CUIT/CUIL</span></strong>
+                                <strong><span>Fábrica</span></strong>
                             </div>
-                            <div class="crtInput notEmpty validPositive" id="crtDni">
-                                <input class="form-control text-center" type="number" min="0" step="1">
+                            <div class="crtInput notEmpty" id="crtFactory">
+                                <input class="form-control text-center" type="text">
                                 <div class="validation_msg hidden text-center">Ingrese valor válido</div>
                             </div>
                         </div>
@@ -138,7 +145,7 @@
                             </div>
                             <div class="crtInput validPositive" id="crtCellphone">
                                 <input class="form-control text-center" type="number" min="0">
-                                <div class="validation_msg hidden text-center" >Ingrese un valor válido</div>
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
                         <div class="ml-5 col-md-3">
@@ -148,6 +155,17 @@
                             <div class="crtInput" id="crtMail">
                                 <input class="form-control text-center" type="email">
                                 <div class="validation_msg hidden text-center">Ingrese un mail válido</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-10">
+                            <div class="text-center">
+                                <strong><span>Dirección</span></strong>
+                            </div>
+                            <div class="crtInput" id="crtAddress">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
                     </div>
@@ -165,7 +183,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Datos Del Cliente</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Datos Del Proveedor</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -194,11 +212,11 @@
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
-                                <strong><span>DNI/CUIT/CUIL</span></strong>
+                                <strong><span>Fábrica</span></strong>
                             </div>
-                            <div class="updtInput notEmpty" id="updtDni">
-                                <input class="form-control text-center" type="number" min="0">
-                                <div class="validation_msg hidden text-center" >Ingrese un DNI o CUIT válido</div>
+                            <div class="updtInput notEmpty" id="updtFactory">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center" >Ingrese un Factory o CUIT válido</div>
                             </div>
                         </div>
                      </div>
@@ -231,61 +249,17 @@
                             </div>
                         </div>
                     </div>
-                    <!--
-                    <div class="text-center mt-5">
-                        <h4 class="badge-pill badge-danger">Dirección</h4>
-                    </div>
                     <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
+                        <div class="offset-md-1 col-md-10">
                             <div class="text-center">
-                                <strong><span>Localidad</span></strong>
+                                <strong><span>Dirección</span></strong>
                             </div>
-                            <input id="modalUpdateTown" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateTown">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-3">
-                            <div class="text-center">
-                                <strong><span>Direccion</span></strong>
+                            <div class="crtInput" id="updtAddress">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
-                            <input id="modalUpdateAddress" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateAddress">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Provincia</span></strong>
-                            </div>
-                            <select class="form-control">
-                                <option value="CABA">CABA</option>
-                                <option value="Buenos Aires">Buenos Aires</option>
-                                <option value="Mendoza">Mendoza</option>
-                                <option value="Santa Fé">Santa Fe</option>
-                            </select>
                         </div>
                     </div>
-                    <div class="row mt-4">
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Número</span></strong>
-                            </div>
-                            <input id="modalUpdateNumber" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateNumber">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-3">
-                            <div class="text-center">
-                                <strong><span>Piso</span></strong>
-                            </div>
-                            <input id="modalUpdateFloor" class="form-control text-center" type="number" min="0">
-                            <div class="validation_msg hidden text-center" id="msgUpdateFloor">Ingrese un  válido</div>
-                        </div>
-                        <div class="offset-md-1 col-md-2">
-                            <div class="text-center">
-                                <strong><span>Letra</span></strong>
-                            </div>
-                            <input id="modalUpdateAppartment" class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center" id="msgUpdateAppartment">Ingrese un  válido</div>
-                        </div>
-                    </div>
-                    -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundary" id="updateCancel" data-dismiss="modal">Cerrar</button>

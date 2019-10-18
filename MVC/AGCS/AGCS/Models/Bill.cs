@@ -19,7 +19,7 @@ namespace AGCS.Models
         private string _type;//no
         private int _employeeCode;//ni
 
-        private float calculateSubtotal() {
+        private float CalculateSubtotal() {
             float subtotal = 0;
             
             if (_products.Count > 0)
@@ -32,7 +32,7 @@ namespace AGCS.Models
             return subtotal;
         }
 
-        private float calculateTotal()
+        private float CalculateTotal()
         {
             float total = 0;
 
@@ -49,10 +49,10 @@ namespace AGCS.Models
         {
             _date = date;
             _products = products;
-            _subtotal = calculateSubtotal();
+            _subtotal = CalculateSubtotal();
             _ivaRecharge = ivaRecharge;
             _discount = discount;
-            _total = calculateTotal();
+            _total = CalculateTotal();
             _dniClient = DniClient;
         }
 
@@ -90,22 +90,7 @@ namespace AGCS.Models
         public float Discount { get => _discount; set => _discount = value; }
         public float IvaRecharge { get => _ivaRecharge; set => _ivaRecharge = value; }
         public uint DniClient { get => _dniClient; set => _dniClient = value; }
+        
 
-        /*
-  `idSales` int(11) NOT NULL AUTO_INCREMENT,
-  `Date` date DEFAULT NULL,
-  `DNI/CUIT` int(11) DEFAULT NULL,
-  `Employee_Code` int(11) DEFAULT NULL,
-  `IVA_Condition` varchar(45) DEFAULT NULL,
-  `Type` varchar(1) DEFAULT NULL,
-  `Total` int(11) DEFAULT NULL,
-  `Discount` int(11) DEFAULT NULL,
-  `IVA_Recharge` int(11) DEFAULT NULL,
-  `WholeSaler` bit(1) DEFAULT NULL,
-  `Branches_idBranch` int(11) NOT NULL,
-  `Payment_Methods_idPayment_Methods` int(11) NOT NULL,
-  `Macs_idMacs` int(11) NOT NULL,
-  `Business_idBusiness` int(11) NOT NULL,
-            */
     }
 }

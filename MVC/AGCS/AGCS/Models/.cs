@@ -26,17 +26,17 @@ namespace AGCS.Models
 
 
         //Only a few data for ABM client
-        public Client(uint id,string name, string surname, ulong dni, string email, string cellphone ) : base(id,name,surname,email,cellphone)
+        public Client(uint id,string name, string surname, ulong dni, string mail, string cellphone ) : base(id,name,surname,mail,cellphone)
         {          
             _dni = dni;
         }
         //Full Client
-        public Client(uint id, string name, string surname, ulong dni, string email, string cellphone, string telephone) :base(id,name,surname,email,cellphone,telephone)
+        public Client(uint id, string name, string surname, ulong dni, string mail, string cellphone, string telephone) :base(id,name,surname,mail,cellphone,telephone)
         {
             _dni = dni;
         }
         //New Client
-        public Client(string name, string surname, ulong dni, string email, string telephone, string cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(0, name, surname, email, telephone, cellphone)
+        public Client(string name, string surname, ulong dni, string mail, string telephone, string cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor): base(0, name, surname, mail, telephone, cellphone)
         {
             _dni = dni;
             _town = Town;
@@ -46,12 +46,12 @@ namespace AGCS.Models
             _number = Number;
             _floor = Floor;
         }
-        public Client(string name, string surname, ulong dni, string email, string telephone, string cellphone) : base(0, name, surname, email, cellphone, telephone)
+        public Client(string name, string surname, ulong dni, string mail, string telephone, string cellphone) : base(0, name, surname, mail, cellphone, telephone)
         {
             _dni = dni;
         }
 
-        public Client(uint id, string name, string surname, string email, string cellphone) : base(id, name, surname, email, cellphone) {
+        public Client(uint id, string name, string surname, string mail, string cellphone) : base(id, name, surname, mail, cellphone) {
 
         }
         public Client(ulong dni, string name, string surname, string cellphone, string telephone) :base(name, surname, cellphone, telephone)

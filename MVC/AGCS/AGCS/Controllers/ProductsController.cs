@@ -26,7 +26,7 @@ namespace AGCS.Controllers
         public ActionResult ProductsCRUD()
         {
             ViewBag.Products = ProductsProvider.GetProducts();
-            ViewBag.Suppliers = SupplierProvider.GetSuppliersShort();
+            ViewBag.Suppliers = SuppliersProvider.GetSuppliersShort();
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace AGCS.Controllers
             float fPrice = parseFloat(price);
             float fPriceW = parseFloat(priceW);
 
-            Product product = new Product(number, code, description, fCost, fPrice, fPriceW, stock, idSupplier);
+            Product product = new Product(number, code, description, fCost, fPrice, fPriceW, idSupplier);
 
             try
             {
@@ -97,7 +97,6 @@ namespace AGCS.Controllers
             }
             return success;
         }
-
         [HttpPost]
         public bool UpdateStock(uint id, int stock)
         {

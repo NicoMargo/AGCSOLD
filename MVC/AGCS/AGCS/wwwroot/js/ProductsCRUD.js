@@ -17,7 +17,6 @@
                     cost: parseFloat($("#crtCost").find("input").val()),
                     price: parseFloat($("#crtPrice").find("input").val()),
                     priceW: parseFloat($("#crtPriceW").find("input").val()),
-                    stock: parseInt($("#crtStock").find("input").val()),
                     idSupplier: parseInt($("#crtSupplier").val())
                 },
                 success: function () {
@@ -37,15 +36,14 @@
             type: "POST",
             url: "/Products/GetProduct",
             data: { id: modelId },
-            success: function (DataJsonClient) {
-                var Data = JSON.parse(DataJsonClient);
+            success: function (DataJson) {
+                var Data = JSON.parse(DataJson);
                 $("#updtNumber").find("input").val(Data.ArticleNumber);
                 $("#updtDescription").find("input").val(Data.Description);
                 $("#updtCode").find("input").val(Data.Code);
                 $("#updtCost").find("input").val(Data.Cost);
                 $("#updtPrice").find("input").val(Data.Price);
                 $("#updtPriceW").find("input").val(Data.PriceW);
-                $("#updtStock").find("input").val(Data.Stock);
                 $("#updtSupplier").val(Data.IdSupplier);
             },
             error: function () {
@@ -68,7 +66,6 @@
                     cost: $("#updtCost").find("input").val(),
                     price: $("#updtPrice").find("input").val(),
                     priceW: $("#updtPriceW").find("input").val(),
-                    stock: parseInt($("#updtStock").find("input").val()),
                     idSupplier: parseInt($("#updtSupplier").val())
                 },
                 success: function () {
@@ -96,9 +93,7 @@
                 }
             });
         });
-    });
-    
-
+    });   
     $("#updt").click(function () {
         modelId = $(this).attr("modelId");
         if (parseInt($('#subtractStock').val()) < 0) {

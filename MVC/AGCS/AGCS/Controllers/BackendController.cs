@@ -16,7 +16,7 @@ namespace AGCS.Controllers
         }
         public ActionResult purchase()
         {
-            //ViewBag.purchases = PruchaseProvider.GetPurchases();
+            //ViewBag.purchases = PurchasesProvider.GetPurchases();
             return View();
         }
         [HttpPost]
@@ -46,7 +46,7 @@ namespace AGCS.Controllers
             {
                 Bill bill = new Bill(DateTime.Today, products, recharge , discount, dniClient);
                 
-                success = BillsProvider.InsertBill(bill, ClientBill, Session.GetSUInt32("idBusiness"));
+                success = BillsProvider.InsertBill(bill, ClientBill);
             }
             return success;
         }

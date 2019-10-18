@@ -4,89 +4,64 @@ using MySql.Data.MySqlClient;
 
 namespace AGCS.Models.BDD
 {
-    public static class PruchaseProvider
+    public static class PurchasesProvider
     {
-        /*public static List<Purchase> GetPurchases(ushort pag = 0)
+        //Methods for store procedures of Table Purchases 
+        public static bool InsertPurchase(Purchase purchase, Supplier supplier , uint idBusiness)
         {
-            List<Purchase> purchases = new List<Purchase>();
-            Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness",Session.GetSUInt32("idBusiness")},
-                {"pPage",pag}
-            };
-            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spPurchaseGet", args);
-            while (ConnectionReader.Read())
+            bool success = false;
+            if (supplier.Name != null)
             {
-                Product product = new Product();
-                DateTime date;
-                ulong quant;
-                string employee;
-                try
-                {
-                    product.Description = Helpers.ReadString(ConnectionReader, "Desc");
-                    employee = Helpers.ReadString(ConnectionReader, "Surname");
-                    quant = Helpers.ReadULong(ConnectionReader, "DNI_CUIT");
-                    Purchase newPurchase = new Purchase(product, employee, quant);
-                    clientsList.Add(client);
-                }
-                catch { }
+                SuppliersProvider.InsertSupplier(supplier);
             }
-            Helpers.Disconect();
-            return purchases;
-        }*/
-
-
-        public static bool InsertPurchase(Purchase purchase)
-        {
-            bool success = false;            
 
             Dictionary<string, object> args = new Dictionary<string, object> {
+
                 {"pIdBusiness", Session.GetSUInt32("idBusiness")},
-                {"pIdEmployee", purchase.IdEmployee},
-                {"pIdProvider", purchase.IdSupplier},
-                {"pCondition", purchase.Condition}
+                {"pDate", purchase.Date},
+                {"pTotal", purchase.Total},
+                {"pIdSupplier", supplier.Id},
+                {"pIdEmployee", Session.GetSUInt32("idUser")}
             };
-            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spPurchaseInsert", args);
-            if (ConnectionReader.Read())
+            try
             {
-                try
+                MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spPurchaseInsert", args);
+                if (ConnectionReader.Read())
                 {
-                    uint id = Convert.ToUInt32(ConnectionReader["idPurchase"]);
-                    ConnectionReader.Close();
-                    if (id >= 0)
+                    try
                     {
-                        purchase.Id= id;
-                        for(int i = 0; i < purchase.Products.Count; i++)
-                        {
-                            InsertPurchaseXProduct(purchase.Id, purchase.Products[i]);
-                        }                       
                         success = true;
+                        uint id = Convert.ToUInt32(ConnectionReader["idPurchase"]);
+                        ConnectionReader.Close();
+                        if (id >= 0)
+                        {
+                            purchase.Id = id;
+                            foreach (Product product in purchase.Products)
+                            {
+                                success &= InsertPurchaseXProduct(purchase.Id, product);
+                            }
+                        }
                     }
+                    catch (OverflowException)
+                    { }
                 }
-                catch (OverflowException)
-                { }
             }
+            catch { }
             Helpers.Disconect();
             return success;
         }
-        //Methods for store procedures of Table Bills
-        public static bool InsertPurchaseXProduct(ulong idPurchase, Product Product)
+
+        //Methods for store procedures of Table Purchases
+        public static bool InsertPurchaseXProduct(ulong idPurchase, Product product)
         {
             bool success = false;
-            try
-            {                
-                Dictionary<string, object> args = new Dictionary<string, object> {
+            Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdPurchase", idPurchase},
-                {"pIdProduct", Product.Id},
-                {"pStock", Product.Stock},
-                {"pCost", Product.Cost},
-                {"pPrice", Product.Price},
-                {"pPriceW", Product.PriceW}
+                {"pIdProduct", product.Id},
+                {"pQuantity", product.Quant},
+                {"pIdBusiness", Session.GetSUInt32("idBusiness") },
             };
-                Helpers.CallNonQuery("spPurchaseXProductInsert", args);
-                success = true;
-            }
-            catch
-            { }
+            success = Helpers.CallNonQuery("spPurchaseXProductInsert", args)>0;
             return success;
         }
     }

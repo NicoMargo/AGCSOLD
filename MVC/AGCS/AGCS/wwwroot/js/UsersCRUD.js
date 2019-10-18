@@ -4,7 +4,7 @@ $(document).ready(function () {
     RowSearcher("CRUDTable", "searchInput");
     
     $("#add").click(function () {
-        let valid = validString(document.getElementById("crtPassConfirm"), ($("#crtPass").find("input").val() === $("#crtPassConfirm").find("input").val()));
+        let valid = validString(document.getElementById("crtPassConfirm"), ($("#crtPass").find("input").val() == $("#crtPassConfirm").find("input").val()));
         if (validateInputs("modalCrt", "crtInput") && valid) {
             $.ajax({
                 type: "POST",
@@ -13,7 +13,7 @@ $(document).ready(function () {
                     surname: $("#crtSurname").find("input").val(),
                     name: $("#crtName").find("input").val(),
                     secondName: $("#crtSecond").find("input").val(),
-                    email: $("#crtEmail").find("input").val(),
+                    mail: $("#crtMail").find("input").val(),
                     passUser: $("#crtPass").find("input").val(),
                     cPassUser: $("#crtPassConfirm").find("input").val(),
                     telephone: parseInt($("#crtTelephone").find("input").val()),
@@ -45,19 +45,19 @@ $(document).ready(function () {
             type: "POST",
             url: "/Users/GetDataUser",
             data: { id: modelId },
-            success: function (DataJsonClient) {
-                var Data = JSON.parse(DataJsonClient);
-                $("#modalUpdateSurname").val(Data.Surname);
-                $("#modalUpdateName").val(Data.Name);
-                $("#modalUpdateDni").val(checkInt(Data.Dni));
-                $("#modalUpdateEmail").val(Data.Email);
-                $("#modalUpdateTelephone").val(checkInt(Data.Telephone));
-                $("#modalUpdateCellphone").val(checkInt(Data.Cellphone));
-                $("#modalUpdateTelephoneMother").val(Data.TelephoneM);
-                $("#modalUpdateTelephoneFather").val(Data.TelephoneF);
-                $("#modalUpdateTelephoneBrother").val(Data.TelephoneB);
-                $("#modalUpdateAddress").val(Data.Address);
-                $("#modalUpdateSecondName").val(Data.SecondName);
+            success: function (DataJson) {
+                var Data = JSON.parse(DataJson);
+                $("#updtSurname").find("input").val(Data.Surname);
+                $("#updtName").find("input").val(Data.Name);
+                $("#updtSecond").find("input").val(Data.SecondName);
+                $("#updtDni").find("input").val(checkInt(Data.Dni));
+                $("#updtMail").find("input").val(Data.Mail);
+                $("#updtTelephone").find("input").val(checkInt(Data.Telephone));
+                $("#updtCellphone").find("input").val(checkInt(Data.Cellphone));
+                $("#updtAddress").find("input").val(Data.Address);
+                $("#updtTelM").find("input").val(Data.TelephoneM);
+                $("#updtTelF").find("input").val(Data.TelephoneF);
+                $("#updtTelB").find("input").val(Data.TelephoneB);
             },
             error: function () {
                 CreateModal("Error", "Hubo un error al buscar los datos del cliente");
@@ -66,37 +66,30 @@ $(document).ready(function () {
     });
 
     $("#update").click(function () {
-        valid = validate("UpdateSurname", $("#modalUpdateSurname").val() !== "");
-        valid = validate("UpdateName", $("#modalUpdateName").val() !== "") && valid;
-        valid = validate("UpdateDni", $("#modalUpdateDni").val() !== "") && valid;
-        valid = validate("UpdatePassword", $("#modalUpdatePassword").val() !== "") && valid;
-        valid = validate("UpdateConfirmPassword", $("#modalUpdateConfirmPassword").val() !== "") && valid;
-        valid = validate("UpdateEmail", $("#modalUpdateEmail").val() !== "") && valid;
-
-        if (valid) {
+        if (validateInputs("modalUpdt", "updtInput") ){
             $.ajax({
                 type: "POST",
                 url: "/Users/UpdateUser",
                 data: {
                     id: modelId,
-                    surname: $("#modalUpdateSurname").val(),
-                    name: $("#modalUpdateName").val(),
-                    secondName: $("#modalUpdateSecondName").val(),
-                    dni: $("#modalUpdateDni").val(),
-                    email: $("#modalUpdateEmail").val(),
-                    telephone: $("#modalUpdateTelephone").val(),
-                    cellphone: $("#modalUpdateCellphone").val(),
-                    address: $("#modalUpdateAddress").val(),
-                    telephoneM: $("#modalUpdateTelephoneMother").val(),
-                    telephoneF: $("#modalUpdateTelephoneFather").val(),
-                    telephoneB: $("#modalUpdateTelephoneBrother").val()
+                    surname: $("#updtSurname").find("input").val(),
+                    name: $("#updtName").find("input").val(),
+                    secondName: $("#updtSecond").find("input").val(),
+                    dni: parseInt($("#updtDni").find("input").val()),
+                    mail: $("#updtMail").find("input").val(),
+                    telephone: parseInt($("#updtTelephone").find("input").val()),
+                    cellphone: parseInt($("#updtCellphone").find("input").val()),
+                    address: $("#updtAddress").find("input").val(),
+                    telephoneM: parseInt($("#updtTelM").find("input").val()),
+                    telephoneF: parseInt($("#updtTelF").find("input").val()),
+                    telephoneB: parseInt($("#updtTelB").find("input").val()),
                 },
                 success: function (success) {
                     if (success) {
                         location.reload();
                     }
                     else {
-                        CreateModal("Datos no validos", "Ya existe un usuario con ese email o Dni");
+                        CreateModal("Datos no validos", "Ya existe un usuario con ese mail o Dni");
                     }
                 },
                 error: function () {
@@ -104,11 +97,6 @@ $(document).ready(function () {
                 }
 
             });
-        }
-        else {
-            if ($("#modalUpdateName").val() === "") {
-                $("#modalUpdateName").addClass("validation_error");
-            }
         }
     });
 
