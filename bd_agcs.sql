@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 17-10-2019 a las 17:58:27
+-- Tiempo de generación: 18-10-2019 a las 12:00:57
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -40,14 +40,15 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spBillXProductInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pIdBill` INT, IN `pIdProduct` INT, IN `pQuantity` INT, IN `pIdBusiness` INT)  BEGIN
-	if exists(select products.idProduct from products where products.idProduct = pIdProduct and products.Business_idBusiness = pIdBusiness and products.Active = 1) and exists(select bills.idBill from bills where bills.idBill = pIdBill and bills.Business_idBusiness = pIdBusiness)
+	if exists(select idProduct from products where idProduct = pIdProduct and Business_idBusiness = pIdBusiness and Active = 1) and exists(select idBill from bills where idBill = pIdBill and Business_idBusiness = pIdBusiness)
     then
+    	set @price = (select Price from products where idProduct = pIdProduct and Business_idBusiness = pIdBusiness); 
 		if(pQuantity > 0 and pQuantity is not null)
         then
-			insert into bills_x_products(bills_x_products.Products_idProduct,bills_x_products.Bills_idBill,bills_x_products.Quantity) values(pIdProduct,pIdBill,pQuantity);
-            update products set products.Stock = products.Stock - pQuantity where products.idProduct = pIdProduct and products.Business_idBusiness = pIdBusiness and products.Active = 1;
+			insert into bills_x_products(Products_idProduct, Bills_idBill, Quantity, Price) values(pIdProduct,pIdBill,pQuantity,@Price);
+            update products set Stock = Stock - pQuantity where idProduct = pIdProduct and Business_idBusiness = pIdBusiness and Active = 1;
 		else
-			insert into bills_x_products(bills_x_products.Products_idProduct,bills_x_products.Bills_idBill,bills_x_products.Quantity) values(pIdProduct,pIdBill,0);
+			insert into bills_x_products(Products_idProduct, Bills_idBill, Quantity, Price) values(pIdProduct,pIdBill,0,@Price);
         end if;
     end if;
 END$$
@@ -244,15 +245,16 @@ ELSE
 end if$$
 
 DROP PROCEDURE IF EXISTS `spPurchaseXProductInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseXProductInsert` (IN `pIdPurchase` INT(11) UNSIGNED, IN `pIdProduct` INT(11) UNSIGNED, IN `pQuantity` INT(11) UNSIGNED, IN `pCost` FLOAT(10,2), IN `pIdBusiness` INT(11) UNSIGNED)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseXProductInsert` (IN `pIdPurchase` INT(11) UNSIGNED, IN `pIdProduct` INT(11) UNSIGNED, IN `pQuantity` INT(11) UNSIGNED, IN `pIdBusiness` INT(11) UNSIGNED)  NO SQL
 if exists(select idProduct from products where idProduct = pIdProduct and Business_idBusiness = pIdBusiness and Active = 1) and exists(select idPurchase from purchases where idPurchase = pIdPurchase and Business_idBusiness = pIdBusiness)
 then
+	set @Cost = (select Cost from products where idProduct = pIdProduct and Business_idBusiness = pIdBusiness);
 	if(pQuantity > 0 and pQuantity is not null)
     then
-		insert into purchases_x_products(idPurchase,idProduct,Quantity,Cost) values(pIdPurchase,pIdProduct,pQuantity,pCost);
+		insert into purchases_x_products(idPurchase,idProduct,Quantity,Cost) values(pIdPurchase,pIdProduct,pQuantity,@Cost);
         update products set Stock = products.Stock - pQuantity where idProduct = pIdProduct and Business_idBusiness = pIdBusiness and Active = 1;
 	else
-		insert into purchases_x_products(idPurchase,idProduct,Quantity,Cost) values(pIdPurchase,pIdProduct,0,pCost);
+		insert into purchases_x_products(idPurchase,idProduct,Quantity,Cost) values(pIdPurchase,pIdProduct,0,@Cost);
     end if;
 end if$$
 
