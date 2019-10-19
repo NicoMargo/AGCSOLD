@@ -21,7 +21,7 @@
         return words;
     }
 }
-    <script src="~/js/ClientsCRUD.js"></script>
+    <script src="~/js/ClientCRUD.js"></script>
     <div class="content mt-3">
         <div class="animated fadeIn">
             <div class="card">
@@ -29,22 +29,19 @@
                     <strong class="card-title">Clientes</strong>
                 </div>
                 <div class="card-body">
-                    <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Cliente (por nombre, apellido o DNI)">
+                    <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Compra (por nombre, Fecha o empleado)">
                     <button type="button" id="btnModalCrt" class="btn btn-primary w-100" data-toggle="modal" data-target="#modalCrt">
-                        Agregar Cliente
+                        Nueva Compra
                     </button>
 
                     <table class="CRUDTable" id="CRUDTable">
                         <tr class="header">
-                            <th class="p-2" style="width:20%;">Apellido</th>
-                            <th class="p-2" style="width:15%;">Nombre</th>
-                            <th class="p-2" style="width:15%;">DNI/CUIT/CUIL</th>
-                            <th class="p-2" style="width:10%;">Celular</th>
-                            <th class="p-2" style="width:25%;">Mail</th>
-                            <th class="p-2" style="width:10%;">Modificar</th>
-                            <th class="p-2" style="width:10%;">Eliminar</th>
+                            <th class="p-2" style="width:25%;">Producto</th>
+                            <th class="p-2" style="width:20%;">Cantidad del producto</th>
+                            <th class="p-2" style="width:15%;">Fecha</th>                            
+                            <th class="p-2" style="width:25%;">Empleado</th>
                         </tr>
-                        @{
+                        @{/*
                             for (int i = 0; i < ViewBag.Clients.Count; i++)
                             {
                                 <tr class="tableRow">
@@ -52,35 +49,17 @@
                                     <td class="colToSearch">@validString(ViewBag.Clients[i].Name)</td>
                                     <td class="colToSearch">@validInt((long)ViewBag.Clients[i].Dni)</td>
                                     <td>@validInt(Convert.ToInt64(ViewBag.Clients[i].Cellphone))</td>
-                                    <td>@validString(ViewBag.Clients[i].Mail)</td>
-                                    <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Clients[i].Id" ><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
-                                    <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Clients[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
+                                    <td>@validString(ViewBag.Clients[i].Email)</td>
                                 </tr>
                             }
-                        }
+                        */}
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal delete confirmation-->
-    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <h5 class="modal-title" id="confirmationModal">Esta seguro que quiere eliminar al cliente?</h5>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="confirm" class="btn btn-primary">Confirmar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
+    
     <!-- Extra large modal Create-->
     <div class="modal fade bd-example-modal-xl" id="modalCrt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -93,8 +72,8 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row justify-content-center">
-                        <div class="col-md-3">
+                    <div class="row">
+                        <div class="offset-md-1 col-md-2">
                             <div class="text-center">
                                 <strong><span>Apellido</span></strong>
                             </div>
@@ -103,7 +82,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
-                        <div class="ml-5 col-md-3">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nombre</span></strong>
                             </div>
@@ -112,7 +91,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
-                        <div class="ml-5 col-md-3">
+                        <div class="offset-md-1 col-md-2">
                             <div class="text-center">
                                 <strong><span>DNI/CUIT/CUIL</span></strong>
                             </div>
@@ -122,8 +101,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-4 justify-content-center">
-                        <div class="col-md-3">
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono</span></strong>
                             </div>
@@ -132,7 +111,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
-                        <div class="ml-5 col-md-3">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Celular</span></strong>
                             </div>
@@ -141,13 +120,13 @@
                                 <div class="validation_msg hidden text-center" >Ingrese un valor válido</div>
                             </div>
                         </div>
-                        <div class="ml-5 col-md-3">
+                        <div class="offset-md-1 col-md-2">
                             <div class="text-center">
-                                <strong><span>Mail</span></strong>
+                                <strong><span>Email</span></strong>
                             </div>
-                            <div class="crtInput" id="crtMail">
+                            <div class="crtInput" id="crtEmail">
                                 <input class="form-control text-center" type="email">
-                                <div class="validation_msg hidden text-center">Ingrese un mail válido</div>
+                                <div class="validation_msg hidden text-center">Ingrese un email válido</div>
                             </div>
                         </div>
                     </div>
@@ -173,8 +152,8 @@
 
                 <div class="modal-body">
 
-                    <div class="row justify-content-center">
-                        <div class="col-md-3">
+                    <div class="row">
+                        <div class="offset-md-1 col-md-2">
                             <div class="text-center">
                                 <strong><span>Apellido</span></strong>
                             </div>
@@ -183,7 +162,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese valor un apellido válido</div>
                             </div>
                         </div>
-                        <div class="ml-5 col-md-3">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nombre</span></strong>
                             </div>
@@ -192,7 +171,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
-                        <div class="ml-5 col-md-3">
+                        <div class="offset-md-1 col-md-2">
                             <div class="text-center">
                                 <strong><span>DNI/CUIT/CUIL</span></strong>
                             </div>
@@ -202,8 +181,8 @@
                             </div>
                         </div>
                      </div>
-                    <div class="row mt-4 justify-content-center">
-                        <div class="col-md-3">
+                    <div class="row mt-4">
+                        <div class="offset-md-1 col-md-2">
                             <div class="text-center">
                                 <strong><span>Nro. Telefono</span></strong>
                             </div>
@@ -212,7 +191,7 @@
                                 <div class="validation_msg hidden text-center">Ingrese un teléfono válido</div>
                             </div>
                         </div>
-                        <div class="ml-5 col-md-3">
+                        <div class="offset-md-1 col-md-3">
                             <div class="text-center">
                                 <strong><span>Nro. Celular</span></strong>
                             </div>
@@ -221,17 +200,16 @@
                                 <div class="validation_msg hidden text-center">Ingrese un nro. celular válido</div>
                             </div>
                         </div>
-                        <div class="ml-5 col-md-3">
+                        <div class="offset-md-1 col-md-2">
                             <div class="text-center">
-                                <strong><span>Mail</span></strong>
+                                <strong><span>Email</span></strong>
                             </div>
-                            <div class="updtInput" id="updtMail">
+                            <div class="updtInput" id="updtEmail">
                                 <input class="form-control text-center" type="email">
-                                <div class="validation_msg hidden text-center">Ingrese un mail válido</div>
+                                <div class="validation_msg hidden text-center">Ingrese un email válido</div>
                             </div>
                         </div>
                     </div>
-                    <!--
                     <div class="text-center mt-5">
                         <h4 class="badge-pill badge-danger">Dirección</h4>
                     </div>
@@ -285,7 +263,6 @@
                             <div class="validation_msg hidden text-center" id="msgUpdateAppartment">Ingrese un  válido</div>
                         </div>
                     </div>
-                    -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundary" id="updateCancel" data-dismiss="modal">Cerrar</button>

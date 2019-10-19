@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewData["Title"] = "Facturar";
+}
+<script crossorigin="anonymous" src="~/js/CreatePurchase.js"></script>
+<div class="col-md-12">
+    <div class="content mt-3">
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Venta <span class="ml-5">Total: </span><span id="total">0</span></strong>
+
+                        </div>
+                        <div class="card-body">
+                            <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="w-10">Codigo</th>
+                                        <th class="w-31">Productos</th>
+                                        <th class="w-12">Cantidad</th>
+                                        <th style="width: 15%;">Costo</th>
+                                        <th class="w-20">Cantidad en Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td> <input type="text" id="codProdToEnter" placeholder="Codigo del Producto" class="form-control text-black"></td>
+                                        <td id="descProdToEnter"></td>
+                                        <td><input type="number" required min="1" id="quantProdToEnter" placeholder="Cantidad" class="form-control text-black"></td>
+                                        <td><span id="priceProdToEnter"></span></td>
+                                        <td><span id="stockProdToEnter"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-body">
+                            <table id="bootstrap-data-table-export" style="height: 10px;" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Productos</th>
+                                        <th class="w-12">Cantidad</th>
+                                        <th class="w-16">Precio</th>
+                                        <th class="w-16">Cantidad en Stock</th>
+                                        <th class="w-8">Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableProducts"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top:4rem;" class="col-md-12">
+    <div class="content mt-3">
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Cliente</strong>
+                        </div>
+                        <div class="card-body">
+                            <table id="bootstrap-data-table-export" class="table table-striped">
+                                <thead>
+                                    <tr class="row">
+                                        <th class="col-md-3">DNI/CUIT</th>
+                                        <th class="col-md-3">Nombre</th>
+                                        <th class="col-md-3">Apellido</th>
+                                        <th class="col-md-3">Celular</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="row">
+                                        <td class="col-md-3"> <input type="number" id="dni" min="1" placeholder="DNI/CUIT" class="form-control text-black "></td>
+                                        <td class="col-md-3"> <input disabled type="text" id="thisName" placeholder="Nombre" class="form-control text-black"></td>
+                                        <td class="col-md-3"> <input disabled type="text" id="surname" placeholder="Apellido" class="form-control text-black"></td>
+                                        <td class="col-md-3"> <input disabled type="tel" id="cellphone" placeholder="Celular" class="form-control text-black"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button id="b" class="btn btn-success col-md-12">Facturar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Create Beg-->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h5 class="modal-title" id="confirmationModal">Esta seguro que quiere eliminar el producto?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="confirm" data-dismiss="modal" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -15,13 +15,14 @@ namespace AGCS.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Index(string email, string passUser)
+        public ActionResult Index(string mail, string passUser)
         {
-            User Loginuser = new User(email,passUser);
+            User Loginuser = new User(mail,passUser);
             Business LoginBusiness;
-            Object[] Objects = UsersProvider.LogIn(Loginuser);
-            LoginBusiness = (Business)Objects[0];
-            Loginuser = (User)Objects[1];
+            Tuple<User, Business> objects = UsersProvider.LogIn(Loginuser);
+
+            LoginBusiness = objects.Item2;
+            Loginuser = objects.Item1;
             try
             {
                 if (Loginuser.Name != null)
@@ -38,7 +39,7 @@ namespace AGCS.Controllers
             catch (NullReferenceException)
             {
                 ViewBag.Title = "Credenciales No Validas";
-                ViewBag.Body = "El Nombre email o la Contraseña es incorrecta";
+                ViewBag.Body = "El Nombre mail o la Contraseña es incorrecta";
                 return View();
             }
                         

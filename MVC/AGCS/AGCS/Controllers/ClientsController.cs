@@ -18,6 +18,23 @@ namespace AGCS.Controllers
             ViewBag.Clients = ClientsProvider.GetClients();
             return View();
         }
+        
+        [HttpPost]
+        public bool CreateClient(string surname = "", string name = "", ulong dni = 0, string mail = "", ulong telephone = 0, ulong cellphone = 0, string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
+        {
+            bool Success;
+            Client NewClient = new Client(name, surname, dni, mail, telephone.ToString(), cellphone.ToString());
+            try
+            {
+                Success = ClientsProvider.InsertClient(NewClient);
+            }
+            catch
+            {
+                Success = false;
+            }
+
+            return Success;
+        }
 
         [HttpPost]
         public JsonResult GetDataClient(uint id)
@@ -34,11 +51,11 @@ namespace AGCS.Controllers
         }
 
         [HttpPost]
-        public bool UpdateClient(uint id, string surname, string name, ulong dni, string email, string telephone, string cellphone, string Town, string Address, string Province, string Leter, int Number, int Floor)
+        public bool UpdateClient(uint id, string surname, string name, ulong dni, string mail, ulong telephone = 0, ulong cellphone = 0/*, string Town, string Address, string Province, string Leter, int Number, int Floor*/)
             {
             bool Success = true;
-            if (email is null) { email = ""; }
-            Client client = new Client(id, name, surname, dni, email, cellphone, telephone);
+            if (mail is null) { mail = ""; }
+            Client client = new Client(id, name, surname, dni, mail, cellphone.ToString(), telephone.ToString());
             try
             {
                 ClientsProvider.UpdateClient(client);
@@ -47,23 +64,6 @@ namespace AGCS.Controllers
             {
                 Success = false;
             }
-            return Success;
-        }
-
-        [HttpPost]
-        public bool CreateClient(string surname = "", string name = "", ulong dni = 0, string email = "", string telephone = "", string cellphone = "", string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
-        {
-            bool Success;
-            Client NewClient = new Client(name, surname, dni, email, telephone, cellphone);
-            try
-            {
-                Success = ClientsProvider.InsertClient(NewClient);
-            }
-            catch
-            {
-                Success = false;
-            }
-
             return Success;
         }
 

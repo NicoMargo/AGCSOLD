@@ -18,13 +18,22 @@
     <PackageReference Include="MySql.Data" Version="8.0.17" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="Views\Backend\purchase.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Products\ProductStock.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Products\ProductsCRUD.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Backend\Pruebas.cshtml">
+    <Content Update="Views\Clients\ClientsCRUD.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Clients\ClientsCRUD.cshtml">
+    <Content Update="Views\Purchases\CreatePurchase.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Suppliers\SuppliersCRUD.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Users\ChangePassword.cshtml">

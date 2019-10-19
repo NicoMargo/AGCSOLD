@@ -17,7 +17,7 @@ namespace AGCS.Controllers
             Single.TryParse(value, out result);      
             return result;
         }
-        public IActionResult Index()
+        public ActionResult Index()
         {
             return View();
         }
@@ -26,7 +26,7 @@ namespace AGCS.Controllers
         public ActionResult ProductsCRUD()
         {
             ViewBag.Products = ProductsProvider.GetProducts();
-            ViewBag.Suppliers = SupplierProvider.GetSuppliersShort();
+            ViewBag.Suppliers = SuppliersProvider.GetSuppliersShort();
             return View();
         }
 
@@ -68,7 +68,7 @@ namespace AGCS.Controllers
             float fPrice = parseFloat(price);
             float fPriceW = parseFloat(priceW);
 
-            Product product = new Product(number, code, description, fCost, fPrice, fPriceW, stock, idSupplier);
+            Product product = new Product(number, code, description, fCost, fPrice, fPriceW, idSupplier);
 
             try
             {
@@ -97,22 +97,26 @@ namespace AGCS.Controllers
             }
             return success;
         }
-
         [HttpPost]
         public bool UpdateStock(uint id, int stock)
         {
-            bool success = true;      
-
+            bool success;
             try
             {
                 success = ProductsProvider.UpdateStock(id, stock);
             }
-            catch
+            catch(Exception e)
             {
                 success = false;
             }
-
             return success;
+        }
+
+        public ActionResult ProductStock(uint id)
+        {
+            ViewBag.Product = ProductsProvider.GetProductById(id);
+            ViewBag.Products = ProductsProvider.GetProducts();
+            return View();
         }
     }
 }

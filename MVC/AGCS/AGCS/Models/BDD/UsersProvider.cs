@@ -6,27 +6,26 @@ namespace AGCS.Models.BDD
 {
     public class UsersProvider
     {
-        public static Object[] LogIn(User user)
+        public static Tuple<User, Business> LogIn(User user)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"Email",user.Email},
+                {"Mail",user.Mail},
                 {"Password",user.PassUser}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spUserLogin", args);
-            Object[] TwoObjects = new Object[2];
+            Tuple<User, Business> objects = null;
             if (ConnectionReader.Read())
             {
                 try
                 {
                     User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Convert.ToUInt32(ConnectionReader["idUser"]), Convert.ToBoolean(ConnectionReader["Admin"]));
                     Business DataBuisness = new Business(Convert.ToUInt32(ConnectionReader["idBusiness"]), Helpers.ReadString(ConnectionReader, "NameB"));
-                    TwoObjects[0] = DataBuisness;
-                    TwoObjects[1] = DataUser;
+                    objects = new Tuple<User, Business>(DataUser, DataBuisness);
                 }
                 catch { }
             }
             Helpers.Disconect();
-            return TwoObjects;
+            return objects;
         }
         public static List<User> GetUsers()
         {
@@ -39,7 +38,7 @@ namespace AGCS.Models.BDD
             {
                 try
                 {
-                    User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadULong(ConnectionReader, "Dni"), Helpers.ReadString(ConnectionReader, "Email"), Helpers.ReadString(ConnectionReader, "Cellphone"), Convert.ToUInt32(ConnectionReader["idUser"]));
+                    User DataUser = new User(Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadULong(ConnectionReader, "Dni"), Helpers.ReadString(ConnectionReader, "Mail"), Helpers.ReadString(ConnectionReader, "Cellphone"), Convert.ToUInt32(ConnectionReader["idUser"]));
                     ListOfUsers.Add(DataUser);
                 }
                 catch { }
@@ -70,7 +69,7 @@ namespace AGCS.Models.BDD
                 {"pName", user.Name},
                 {"pSurname", user.Surname},
                 {"pDni", user.Dni},
-                {"pEmail", user.Email},
+                {"pMail", user.Mail},
                 {"pTelephone", user.Telephone},
                 {"pPass", user.PassUser},
                 {"pTelephoneM", user.TelephoneM},
@@ -101,7 +100,7 @@ namespace AGCS.Models.BDD
             {
                 try
                 {
-                    user = new User(Convert.ToUInt32(ConnectionReader["idUser"]), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadString(ConnectionReader, "Name_Second"), Helpers.ReadULong(ConnectionReader, "Dni"), Helpers.ReadString(ConnectionReader, "eMail"), Helpers.ReadString(ConnectionReader, "Cellphone"), Helpers.ReadString(ConnectionReader, "Tel_User"), Helpers.ReadString(ConnectionReader, "Tel_Mother"), Helpers.ReadString(ConnectionReader, "Tel_Father"), Helpers.ReadString(ConnectionReader, "Tel_Brother"), Helpers.ReadString(ConnectionReader, "Address"));
+                    user = new User(Convert.ToUInt32(ConnectionReader["idUser"]), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadString(ConnectionReader, "Name_Second"), Helpers.ReadULong(ConnectionReader, "Dni"), Helpers.ReadString(ConnectionReader, "Mail"), Helpers.ReadString(ConnectionReader, "Cellphone"), Helpers.ReadString(ConnectionReader, "Tel_User"), Helpers.ReadString(ConnectionReader, "Tel_Mother"), Helpers.ReadString(ConnectionReader, "Tel_Father"), Helpers.ReadString(ConnectionReader, "Tel_Brother"), Helpers.ReadString(ConnectionReader, "Address"));
                 }
                 catch { }
             }
@@ -116,7 +115,7 @@ namespace AGCS.Models.BDD
                 {"pName", user.Name},
                 {"pSurname", user.Surname},
                 {"pDNI_CUIT", user.Dni},
-                {"pEmail", user.Email},
+                {"pMail", user.Mail},
                 {"pTelephone", user.Telephone},
                 {"pCellphone", user.Cellphone},
                 {"pTelephoneM", user.TelephoneM},

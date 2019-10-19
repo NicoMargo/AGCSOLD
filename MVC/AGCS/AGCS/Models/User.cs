@@ -26,7 +26,7 @@ namespace AGCS.Models
         public bool Admin { get => _admin; set => _admin = value; }
 
         //Login constructor
-        public User(string email, string passUser) : base(email)
+        public User(string mail, string passUser) : base(mail)
         {
             _passUser = passUser;
         }
@@ -38,7 +38,7 @@ namespace AGCS.Models
         }
 
         //New User constructor
-        public User(string name, string surname,string SecondName, ulong dni, string email, string cellphone, string passUser, string telephone, string telephoneM, string telephoneF, string telephoneB, string address) : base(name, surname, email, cellphone, telephone)
+        public User(string name, string surname,string SecondName, ulong dni, string mail, string cellphone, string passUser, string telephone, string telephoneM, string telephoneF, string telephoneB, string address) : base(name, surname, mail, cellphone, telephone)
         {
             _passUser = passUser;
             _dni = dni;
@@ -51,13 +51,13 @@ namespace AGCS.Models
 
 
         //Get Users constructor
-        public User(string name, string surname, ulong dni, string email, string cellphone, uint id) : base(name, surname, email, cellphone, id)
+        public User(string name, string surname, ulong dni, string mail, string cellphone, uint id) : base(name, surname, mail, cellphone, id)
         {
             _dni = dni;    
         }
 
         //Get User By Id constructor
-        public User(uint id,string name, string surname, string SecondName, ulong dni, string email, string cellphone, string telephone, string telephoneM, string telephoneF, string telephoneB, string address) : base(id,name, surname, email, cellphone, telephone)
+        public User(uint id,string name, string surname, string SecondName, ulong dni, string mail, string cellphone, string telephone, string telephoneM, string telephoneF, string telephoneB, string address) : base(id,name, surname, mail, cellphone, telephone)
         {
             _dni = dni;
             _address = address;
@@ -68,7 +68,7 @@ namespace AGCS.Models
         }
 
         //Update User constructor
-        public User(uint id, string name, string surname, ulong dni, string email, string cellphone, string telephone) : base(id, name, surname, email, cellphone, telephone)
+        public User(uint id, string name, string surname, ulong dni, string mail, string cellphone, string telephone) : base(id, name, surname, mail, cellphone, telephone)
         {
             Dni = dni;
         }

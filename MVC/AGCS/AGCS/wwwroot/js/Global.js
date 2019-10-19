@@ -25,7 +25,7 @@ function RowSearcher(tableId, searchInputId) {
                 let found = false;
                 for (let i = 0; i < cols.length; i++) {
                     let text = cols[i].textContent || cols[i].innerText;
-                    found = found || (text.toUpperCase().indexOf(filter) > -1)
+                    found = found || (text.toUpperCase().indexOf(filter) > -1);
                 }
                 if (found) {
                     rows[i].style.display = "";

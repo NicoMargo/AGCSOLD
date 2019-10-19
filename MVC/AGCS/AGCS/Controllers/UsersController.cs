@@ -67,12 +67,12 @@ namespace AGCS.Controllers
 
         }
         [HttpPost]
-        public string CreateUser(string surname = "",string secondName = "", string name = "", string dni = "", string email = "", string telephone = "",string passUser = "",string cPassUser = "", string cellphone = "", string telephoneM = "", string address = "", string telephoneF = "", string telephoneB = "")
+        public string CreateUser(string surname = "",string secondName = "", string name = "", string dni = "", string mail = "", string telephone = "",string passUser = "",string cPassUser = "", string cellphone = "", string telephoneM = "", string address = "", string telephoneF = "", string telephoneB = "")
         {
             string Msg = "";
             if (passUser == cPassUser)
             {                
-                User NewUser = new User(name, surname,secondName, Convert.ToUInt64(dni), email, cellphone, passUser, telephone, telephoneM, telephoneF, telephoneB,address);
+                User NewUser = new User(name, surname,secondName, Convert.ToUInt64(dni), mail, cellphone, passUser, telephone, telephoneM, telephoneF, telephoneB,address);
                
                     Msg =UsersProvider.InsertUser(NewUser);
                 
@@ -82,7 +82,7 @@ namespace AGCS.Controllers
                 Msg = "las contraseñas no coinciden";
             }
             if (Msg == "False")
-                Msg = "Ya existe un usuario con ese email o Dni";
+                Msg = "Ya existe un usuario con ese mail o Dni";
             return Msg;
         }
         [HttpPost]
@@ -92,10 +92,10 @@ namespace AGCS.Controllers
             return Json(JsonDataClient);
         }
         [HttpPost]
-        public bool UpdateUser(uint id,string surname, string name, ulong dni, string email, string telephone, string cellphone, string secondName, string address, string telephoneM, string telephoneF, string telephoneB)
+        public bool UpdateUser(uint id,string surname, string name, ulong dni, string mail, string telephone, string cellphone, string secondName, string address, string telephoneM, string telephoneF, string telephoneB)
         {
             bool Success = true;
-            User cUser = new User(id, name, surname, secondName, dni, email, cellphone, telephone, telephoneM, telephoneF, telephoneB, address);
+            User cUser = new User(id, name, surname, secondName, dni, mail, cellphone, telephone, telephoneM, telephoneF, telephoneB, address);
             try
             {
                 UsersProvider.UpdateUser(cUser);

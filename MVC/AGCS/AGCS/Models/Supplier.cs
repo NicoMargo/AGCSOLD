@@ -10,8 +10,8 @@ namespace AGCS.Models
         private string _address;
         private string _factory;
 
-        public string Address { get => _address; }
-        public string Factory { get => _factory; }
+        public string Address { get => _address; set => _address = value; }
+        public string Factory { get => _factory; set => _factory = value; }
 
         public Supplier(uint id, string name, string surname) {
             _id = id;
@@ -19,7 +19,19 @@ namespace AGCS.Models
             _surname = surname;
         }
 
-        public Supplier(uint id, string name, string surname, string email, string cellphone, string telephone, string address, string factory) : base(id,name,surname,email,cellphone,telephone)
+        public Supplier(uint id, string name, string surname, string mail, string cellphone, string address, string factory) : base(id, name, surname, mail, cellphone)
+        {
+            _address = address;
+            _factory = factory;
+        }
+
+        public Supplier(uint id, string name, string surname, string mail, string cellphone, string telephone, string address, string factory) : base(id, name, surname, mail, cellphone, telephone)
+        {
+            _address = address;
+            _factory = factory;
+        }
+
+        public Supplier( string name, string surname, string mail, string cellphone, string telephone, string address, string factory) : base( name, surname, mail, cellphone, telephone)
         {
             _address = address;
             _factory = factory;
