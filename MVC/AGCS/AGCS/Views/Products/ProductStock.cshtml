@@ -54,23 +54,35 @@
                 </div>
                 <hr />
 
-                <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Movimiento de Stock (por Fecha)">
+                <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Movimiento de Stock (por Fecha, Tipo o Empleado)">
                 <table id="CRUDTable" class="CRUDTable">
                     <tr class="header">
                         <th class="p-2" style="width:15%;">Tipo de movimiento</th>
                         <th class="p-2" style="width:10%;">Cantidad</th>
                         <th class="p-2" style="width:15%;">Fecha</th>
-                        <th class="p-2" style="width:25%;">Empleado</th>
-                        <th class="p-2" style="width:35%;">Descripcion</th>
+                        <th class="p-2" style="width:15%;">Empleado</th>
+                        <th class="p-2" style="width:45%;">Descripcion</th>
                     </tr>
                     @{
-                        for (int i = 0; i < ViewBag.Products.Count; i++)
+                        for (int i = 0; i < ViewBag.StockMovement.Count; i++)
                         {
                             <tr class="tableRow">
-                                <td class="colToSearch">@validInt(ViewBag.Products[i].ArticleNumber)</td>
-                                <td class="colToSearch">@validString(ViewBag.Products[i].Description)</td>
-                                <td class="colToSearch">@validString(ViewBag.Products[i].Code)</td>
-                                <td>@validFloat(ViewBag.Products[i].PriceW)</td>
+                                @if (ViewBag.StockMovement[i].Type == 0)
+                                {
+                                    <td class="colToSearch pl-2">Venta</td>
+                                }
+                                else if (ViewBag.StockMovement[i].Type == 1)
+                                {
+                                    <td class="colToSearch  pl-2">Compra</td>
+                                }
+                                else
+                                {
+                                    <td class="colToSearch pl-2">Ajuste</td>
+                                }
+                                <td class="pl-2">@ViewBag.StockMovement[i].Quant</td>
+                                <td class="colToSearch pl-2">@ViewBag.StockMovement[i].Datetime</td>
+                                <td class="colToSearch pl-2">@ViewBag.StockMovement[i].Employee</td>
+                                <td class="pl-2">@ViewBag.StockMovement[i].Description</td>
                             </tr>
                         }
                     }

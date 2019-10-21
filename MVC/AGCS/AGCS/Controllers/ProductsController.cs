@@ -98,14 +98,14 @@ namespace AGCS.Controllers
             return success;
         }
         [HttpPost]
-        public bool UpdateStock(uint id, int stock)
+        public bool UpdateStock(uint id, int stock,string description)
         {
             bool success;
             try
             {
-                success = ProductsProvider.UpdateStock(id, stock);
+                success = ProductsProvider.UpdateStock(id, stock, description);
             }
-            catch(Exception e)
+            catch
             {
                 success = false;
             }
@@ -115,7 +115,7 @@ namespace AGCS.Controllers
         public ActionResult ProductStock(uint id)
         {
             ViewBag.Product = ProductsProvider.GetShortProductById(id);
-            ViewBag.Products = ProductsProvider.GetProducts();
+            ViewBag.StockMovement = ProductsProvider.GetStockMovementById(id);
             return View();
         }
     }

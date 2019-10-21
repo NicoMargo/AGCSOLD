@@ -96,33 +96,37 @@
     });   
     $("#updt").click(function () {
         modelId = $(this).attr("modelId");
-        if (parseInt($('#subtractStock').val()) < 0) {
-            CreateModal("Error", "No puedes restar stock negativo");
-        } else {
-            if (parseInt($("#subtractStock").val()) <= parseInt($('#quant').html())) {
-                $.ajax({
-                    type: "POST",
-                    url: "/Products/UpdateStock",
-                    data: {
-                        id: parseInt(modelId),
-                        stock: $("#subtractStock").val(),
-                        description: $(this).parent().find("#description").val()
-                    },
-                    success: function (s) {
-                        if (s) {
-                            $('#quant').html(parseInt($('#quant').html()) - parseInt($("#subtractStock").val()));
-                            CreateModal("Stock", "Se modifico el stock correctamente");
-                        } else {
+        if (!parseInt($('#subtractStock').val().isNaN) && $('#description').val() != "") {
+            if (parseInt($('#subtractStock').val()) < 0) {
+                CreateModal("Error", "No puedes restar stock negativo");
+            } else {
+                if (parseInt($("#subtractStock").val()) <= parseInt($('#quant').html())) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Products/UpdateStock",
+                        data: {
+                            id: parseInt(modelId),
+                            stock: $("#subtractStock").val(),
+                            description: $('#description').val()
+                        },
+                        success: function (s) {
+                            if (s) {
+                                $('#quant').html(parseInt($('#quant').html()) - parseInt($("#subtractStock").val()));
+                                CreateModal("Stock", "Se modifico el stock correctamente");
+                            } else {
+                                CreateModal("Error", "Hubo un error al modificar el stock");
+                            }
+                        },
+                        error: function () {
                             CreateModal("Error", "Hubo un error al modificar el stock");
                         }
-                    },
-                    error: function () {
-                        CreateModal("Error", "Hubo un error al modificar el stock");
-                    }
-                });
-            } else {
-                CreateModal("Error", "No puedes quitar mas stock del que hay");
+                    });
+                } else {
+                    CreateModal("Error", "No puedes quitar mas stock del que hay");
+                }
             }
-        }        
+        } else {
+            CreateModal("Error", "Ingresar ajuste de stock y motivo");
+        }
     });
 });

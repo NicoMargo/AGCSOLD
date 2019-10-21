@@ -115,6 +115,7 @@ namespace AGCS.Models.BDD
             Helpers.Disconect();
             return product;
         }
+
         public static Product GetShortProductById(uint idProduct)
         {
             Product product = null;
@@ -190,16 +191,38 @@ namespace AGCS.Models.BDD
             return bInserted;
         }
 
-        public static bool UpdateStock(uint idProducts, int stock)
+        public static bool UpdateStock(uint idProducts, int stock, string description)
         {
             Dictionary<string, object> args = new Dictionary<string, object>
             {
-                { "pIdProducts", idProducts },
-                { "pStock", stock } 
+                { "pId", idProducts },
+                { "pStock", stock },
+                { "pIdUser", Session.GetSUInt32("idUser")},
+                { "pDesc", description }
             };
             bool success = (Helpers.CallNonQuery("spProductStockUpdate", args) > 0);
             Helpers.Disconect();
             return success;
+        }
+
+        public static List<StockMovment> GetStockMovementById(uint idProduct)
+        {
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pId", idProduct}
+            };
+            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spMovementGet", args);
+            List<StockMovment> SmList = new List<StockMovment>();
+            while (ConnectionReader.Read())
+            {               
+                try
+                {     
+                    StockMovment sm = new StockMovment((uint)Helpers.ReadInt(ConnectionReader, "id"), (ushort)Helpers.ReadInt(ConnectionReader, "type"), Helpers.ReadString(ConnectionReader, "description"), Helpers.ReadDateTime(ConnectionReader, "dateTime"), (uint)Helpers.ReadInt(ConnectionReader, "quant"), Helpers.ReadString(ConnectionReader, "name")+ " "+Helpers.ReadString(ConnectionReader, "surname"));
+                    SmList.Add(sm);
+                }
+                catch { }
+            }
+            Helpers.Disconect();
+            return SmList;
         }
 
     }

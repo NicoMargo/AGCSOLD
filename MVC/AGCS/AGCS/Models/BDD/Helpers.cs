@@ -65,6 +65,12 @@ namespace AGCS.Models.BDD
             try { result = Convert.ToInt32(ConnectionReader[parameter]); } catch { }
             return result;
         }
+        public static DateTime ReadDateTime(MySqlDataReader ConnectionReader, string parameter)
+        {
+            DateTime result = new DateTime();
+            try { result = Convert.ToDateTime(ConnectionReader[parameter]); } catch { }
+            return result;
+        }
 
         public static ulong ReadULong(MySqlDataReader ConnectionReader, string parameter)
         {
