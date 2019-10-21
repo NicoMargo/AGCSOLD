@@ -114,7 +114,7 @@ namespace AGCS.Controllers
 
         public ActionResult ProductStock(uint id)
         {
-            ViewBag.Product = ProductsProvider.GetProductById(id);
+            ViewBag.Product = ProductsProvider.GetShortProductById(id);
             ViewBag.Products = ProductsProvider.GetProducts();
             return View();
         }

@@ -39,13 +39,20 @@ namespace AGCS.Models
 
 
         //private int _idSupplier o Supplier supplier;
-        
 
-        public Product( uint id, string code, string description,float price, int stock) {
+
+        public Product(uint id, string code, string description, float price, int stock)
+        {
             _id = id;
             _code = code;
             _description = description;
             _price = price;
+            _stock = stock;
+        }
+        public Product(uint id, string description, int stock)
+        {
+            _id = id;
+            _description = description;
             _stock = stock;
         }
 

@@ -94,7 +94,7 @@ namespace AGCS.Models.BDD
             if (ConnectionReader.Read())
             {
                 string description;
-                float price,cost,priceW;
+                float price, cost, priceW;
                 uint idSupplier, articleNumber;
 
                 string code;//arreglar
@@ -102,13 +102,38 @@ namespace AGCS.Models.BDD
                 try
                 {
                     code = Helpers.ReadString(ConnectionReader, "CodeProduct");
-                    articleNumber = (uint) Helpers.ReadInt(ConnectionReader, "Article_number");
+                    articleNumber = (uint)Helpers.ReadInt(ConnectionReader, "Article_number");
                     description = Helpers.ReadString(ConnectionReader, "Description");
                     cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
-                    idSupplier = (uint) Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier");
-                    product = new Product(idProduct, articleNumber, code, description,  cost, price, priceW, idSupplier);
+                    idSupplier = (uint)Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier");
+                    product = new Product(idProduct, articleNumber, code, description, cost, price, priceW, idSupplier);
+                }
+                catch { }
+            }
+            Helpers.Disconect();
+            return product;
+        }
+        public static Product GetShortProductById(uint idProduct)
+        {
+            Product product = null;
+
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
+                {"pId", idProduct}
+            };
+            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetById", args);
+
+            if (ConnectionReader.Read())
+            {
+                string description;
+                int stock;
+                try
+                {                  
+                    description = Helpers.ReadString(ConnectionReader, "Description");
+                    stock = Helpers.ReadInt(ConnectionReader, "stock");
+                    product = new Product(idProduct, description, stock);
                 }
                 catch { }
             }
