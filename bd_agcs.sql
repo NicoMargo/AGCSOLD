@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.9
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 18-10-2019 a las 12:00:05
--- Versión del servidor: 5.7.21
--- Versión de PHP: 5.6.35
+-- Tiempo de generación: 21-10-2019 a las 07:11:33
+-- Versión del servidor: 10.1.38-MariaDB
+-- Versión de PHP: 7.2.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -133,6 +133,16 @@ THEN
 	end if;
 end if$$
 
+DROP PROCEDURE IF EXISTS `spMovementGet`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spMovementGet` (IN `pId` INT)  BEGIN
+	Select id,description,type,dateTime,quant,name, surname from stock_movement inner join users on idEmployee = idUser where pId = stock_movement.idProduct;
+END$$
+
+DROP PROCEDURE IF EXISTS `spMovementInsert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spMovementInsert` (IN `pIdProduct` INT, IN `pQuant` INT, IN `pIdUser` INT, IN `pDescription` VARCHAR(500), IN `pType` TINYINT)  BEGIN
+	insert into stock_movement(type,description,idProduct, dateTime,quant,idEmployee)values(pType,pDescription,pIdProduct,now(), pQuant,pIdUser);
+END$$
+
 DROP PROCEDURE IF EXISTS `spProductDelete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductDelete` (IN `pId` INT, IN `pIdBusiness` INT)  BEGIN
     update products set products.Active = 0 where Products.idProduct = pId and Products.Business_idBusiness = pIdBusiness and products.active = 1;
@@ -183,9 +193,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` IN
 	select * from Products where Products.Business_idBusiness = pIdBusiness and products.Active = 1;
 END$$
 
-DROP PROCEDURE IF EXISTS `spProductStockMovment`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductStockMovment` (IN `pIdProduct` INT, IN `pStock` INT)  BEGIN
-	update products set products.stock = products.stock- pStock where products.idProduct = pIdProduct and products.Active = 1;
+DROP PROCEDURE IF EXISTS `spProductStockUpdate`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductStockUpdate` (IN `pId` INT, IN `pStock` INT, IN `pDesc` VARCHAR(500), IN `pIdUser` INT)  BEGIN
+	if exists(select Products.idProduct from Products where Products.idProduct = pId and products.Active = 1)
+    then
+		update Products set Products.stock = (Products.stock-pStock) where Products.idProduct = pId;	
+        call bd_agcs.spMovementInsert(pId, pStock, pIdUser, pDesc, 2);
+    end if;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductUpdate`$$
@@ -548,7 +562,7 @@ CREATE TABLE IF NOT EXISTS `business` (
   `Type` varchar(45) DEFAULT NULL,
   `Telephone` int(11) DEFAULT NULL,
   PRIMARY KEY (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `business`
@@ -691,13 +705,13 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProduct`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`, `Active`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 150, '1', 3, 1, b'1'),
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 53, '1', 3, 1, b'1'),
 (2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1, b'1'),
 (3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1, b'1'),
 (4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', -1, '7791337613027', 2, 1, b'1'),
 (7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, -1, '434', 1, 1, b'1'),
 (8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1, b'1'),
-(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 33, '707', 1, 1, b'1'),
+(9, 75, 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, NULL, 0, '707', 1, 1, b'1'),
 (17, 106, 'loljajasalu2', 0000081.00, 0000071.00, 0000082.00, NULL, 89, '891', 0, 1, b'0'),
 (18, 218, 'Tabla Periódica', 0000010.00, 0000040.00, 0000030.00, NULL, 50, '7798107220218', 0, 2, b'1'),
 (19, 1, 'item borrar', 0000100.00, 0000500.00, 0000300.00, NULL, 75, '12', 0, 2, b'1'),
@@ -730,19 +744,6 @@ INSERT INTO `provinces` (`idProvince`, `Province`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `stock_movement`
---
-
-DROP TABLE IF EXISTS `stock_movement`;
-CREATE TABLE IF NOT EXISTS `stock_movement` (
-  `idStockMovement` int(20) NOT NULL,
-  `type` tinyint(3) DEFAULT NULL,
-  `idProduct` int(11) NOT NULL,
-  `quant` int(11) DEFAULT NULL,
-  `description` varchar(800) DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  PRIMARY KEY (`idStockMovement`),
-  KEY `fk_stock_movement_products_idx` (`idProduct`)
 -- Estructura de tabla para la tabla `purchases`
 --
 
@@ -782,6 +783,41 @@ CREATE TABLE IF NOT EXISTS `purchases_x_products` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `stock_movement`
+--
+
+DROP TABLE IF EXISTS `stock_movement`;
+CREATE TABLE IF NOT EXISTS `stock_movement` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` tinyint(2) DEFAULT NULL,
+  `description` varchar(500) DEFAULT NULL,
+  `idProduct` int(11) DEFAULT NULL,
+  `dateTime` datetime DEFAULT NULL,
+  `quant` mediumint(8) DEFAULT NULL,
+  `idEmployee` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_Idproduct_idx` (`idProduct`),
+  KEY `FK_idEmployee_idx` (`idEmployee`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `stock_movement`
+--
+
+INSERT INTO `stock_movement` (`id`, `type`, `description`, `idProduct`, `dateTime`, `quant`, `idEmployee`) VALUES
+(2, 2, 'asffasasdfasdf', 1, '2019-10-21 04:25:53', 5, 27),
+(3, 2, 'asffasasdfasdf', 1, '2019-10-21 05:46:54', 5, 27),
+(4, 2, 'xdd', 1, '2019-10-21 02:49:01', 5, 27),
+(5, 2, 'xdd', 1, '2019-10-21 02:50:06', 5, 27),
+(6, 2, 'xdd', 1, '2019-10-21 02:51:10', 10, 27),
+(7, 2, NULL, 1, '2019-10-21 03:12:14', 15, 27),
+(8, 2, NULL, 1, '2019-10-21 03:13:50', 2, 27),
+(9, 2, NULL, 1, '2019-10-21 03:21:39', 5, 27),
+(10, 2, 'jojo', 1, '2019-10-21 03:26:12', 70, 27);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `suppliers`
 --
 
@@ -799,7 +835,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idSupplier`) USING BTREE,
   KEY `fk_Supplier_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `suppliers`
@@ -807,13 +843,13 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
 
 INSERT INTO `suppliers` (`idSupplier`, `Name`, `Surname`, `Telephone`, `Cellphone`, `Factory`, `Business_idBusiness`, `Address`, `Mail`, `Active`) VALUES
 (0, NULL, NULL, NULL, '0', NULL, 0, NULL, NULL, b'1'),
-(1, 'Aquiles', 'Traigo', '43216543', '13111111', 'Nose q va aK xd', 1, 'En la loma del ort', 'jonylocliu@hotmail.coml.ar', b'1'),
+(1, 'Aquiles', 'Traigo', '43216543', '13111111', 'Nose q va aK xd', 1, 'En lsdfasdfasdf', 'jonylocliu@hotmail.coml.ar', b'1'),
 (2, 'Aquiles', 'Doy', '45678912', '1513317546', 'yo tampoco jaja salu2', 1, 'viste china, bueno doblando a la izquierda', NULL, b'1'),
 (3, 'Ivrea', 'La', '1', '1', 'EEEE', 1, 'Avenida San juan bautista de lasalle 720', 'a', b'1'),
 (4, 'void', 'main', '1', '1', 'EEEEEEEE', 1, 'a', 'a', b'1'),
 (5, 'Unpro', 'vedor', '15115', '14115', 'F', 2, 'Acala vuelta 0', 'correo@correo', b'1'),
 (7, 'd', 'd', '1', '1', 'g', 1, 'q', 'r', b'0'),
-(8, 'y', 'y', '40', '5', 'y', 1, NULL, NULL, b'1'),
+(8, 'y', 'y', '40', '5', 'y', 1, NULL, NULL, b'0'),
 (9, 'X', 'X', '5', '2', 'X', 1, 'x', 'x', b'0');
 
 -- --------------------------------------------------------
@@ -836,7 +872,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idUser`) USING BTREE,
   KEY `fk_Users_Business1_idx` (`Business_idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `users`
@@ -870,7 +906,7 @@ CREATE TABLE IF NOT EXISTS `user_extrainfo` (
   `Cellphone` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`idUser_ExtraInfo`) USING BTREE,
   KEY `fk_User_ExtraInfo_Users1_idx` (`idUser`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `user_extrainfo`
@@ -960,7 +996,8 @@ ALTER TABLE `purchases_x_products`
 -- Filtros para la tabla `stock_movement`
 --
 ALTER TABLE `stock_movement`
-  ADD CONSTRAINT `fk_stock_movement_products` FOREIGN KEY (`idProduct`) REFERENCES `products` (`idProduct`);
+  ADD CONSTRAINT `FK_Idproduct` FOREIGN KEY (`idProduct`) REFERENCES `products` (`idProduct`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `FK_idEmployee` FOREIGN KEY (`idEmployee`) REFERENCES `users` (`idUser`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `suppliers`
