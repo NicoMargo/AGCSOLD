@@ -7,19 +7,19 @@ namespace AGCS.Models
 {
     public class Product
     {
-        private uint _id;
-        private int _articleNumber;
-        private string _description;
-        private float _cost;
-        private float _price;
-        private float _priceW;
-        private int _stock;
-        private bool _age;
-        private string _code;
-        private uint _idBusiness;
-        private int _quant;
-        private int _iva;
-        private uint _idSupplier;
+       private uint _id;
+       private int _articleNumber;
+       private string _description;
+       private float _cost;
+       private float _price;
+       private float _priceW;
+       private int _stock;
+       private bool _age;
+       private string _code;
+       private uint _idBusiness;
+       private int _quant;
+       private int _iva;
+       private uint _idSupplier;
 
         public uint Id { get => _id; set => _id = value; }
         public int ArticleNumber { get => _articleNumber; set => _articleNumber = value; }
@@ -36,7 +36,10 @@ namespace AGCS.Models
         public uint IdSupplier { get => _idSupplier; set => _idSupplier = value; }
 
 
+        public Product()
+        {
 
+        }
 
         //private int _idSupplier o Supplier supplier;
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 21-10-2019 a las 07:11:33
+-- Tiempo de generación: 22-10-2019 a las 19:55:41
 -- Versión del servidor: 10.1.38-MariaDB
 -- Versión de PHP: 7.2.18
 
@@ -32,14 +32,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT
     THEN
     	SET  @idClient = (select clients.idClient from clients where clients.DNI_CUIT = pDNI and ((clients.Business_idBusiness = pIdBusiness and clients.Active = 1) or pDNI = 1));
 		Insert into bills(bills.DateBill,bills.Total,bills.Business_idBusiness,bills.Clients_idClient) values( pDate, pTotal, pIdBusiness,@idClient);
-    	select bills.idBill from bills where bills.idBill = LAST_INSERT_ID() and bills.DateBill = pDate and bills.Total = ptotal and bills.Business_idBusiness = pIdBusiness and bills.Clients_idClient = @idClient;
+    	select bills.idBill from bills where bills.idBill = LAST_INSERT_ID() and bills.Business_idBusiness = pIdBusiness;
     ELSE
     	select -1 as idBill;
     end if;
 END$$
 
 DROP PROCEDURE IF EXISTS `spBillXProductInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pIdBill` INT, IN `pIdProduct` INT, IN `pQuantity` INT, IN `pIdBusiness` INT)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pIdBill` INT, IN `pIdProduct` INT, IN `pQuantity` INT, IN `pIdBusiness` INT, IN `pIdUser` INT)  BEGIN
 	if exists(select idProduct from products where idProduct = pIdProduct and Business_idBusiness = pIdBusiness and Active = 1) and exists(select idBill from bills where idBill = pIdBill and Business_idBusiness = pIdBusiness)
     then
     	set @price = (select Price from products where idProduct = pIdProduct and Business_idBusiness = pIdBusiness); 
@@ -47,6 +47,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pIdBill`
         then
 			insert into bills_x_products(Products_idProduct, Bills_idBill, Quantity, Price) values(pIdProduct,pIdBill,pQuantity,@Price);
             update products set Stock = Stock - pQuantity where idProduct = pIdProduct and Business_idBusiness = pIdBusiness and Active = 1;
+            call bd_agcs.spMovementInsert(pIdProduct, pQuantity, pIdUser, "Venta de producto", 0);
 		else
 			insert into bills_x_products(Products_idProduct, Bills_idBill, Quantity, Price) values(pIdProduct,pIdBill,0,@Price);
         end if;
@@ -478,7 +479,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Macs1_idx` (`Macs_idMac`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_idBusiness`) USING BTREE,
   KEY `fk_Bills_Clients1_idx` (`Clients_idClient`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
@@ -488,7 +489,15 @@ INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_idClient`, `Employee_Code`, 
 (2, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (3, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (4, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
-(60, '2019-09-06', 56, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 8);
+(60, '2019-09-06', 56, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 8),
+(61, '2019-10-22', 46, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
+(62, '2019-10-22', 46, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
+(63, '2019-10-22', 46, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
+(64, '0000-00-00', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 0),
+(65, '0000-00-00', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
+(66, '0000-00-00', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 3),
+(67, '0000-00-00', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 3),
+(68, '2019-10-22', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -506,7 +515,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_idProduct`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_idBill`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills_x_products`
@@ -514,7 +523,10 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
 
 INSERT INTO `bills_x_products` (`idBills_X_Products`, `Bills_idBill`, `Products_idProduct`, `Quantity`, `Price`) VALUES
 (7, 2, 1, 5, 0.00),
-(70, 60, 23, 1, 0.00);
+(70, 60, 23, 1, 0.00),
+(71, 63, 2, 6, 200.00),
+(72, 68, 1, 2, 300.00),
+(73, 68, 2, 2, 200.00);
 
 -- --------------------------------------------------------
 
@@ -705,8 +717,8 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProduct`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_idSupplier`, `Business_idBusiness`, `Active`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 53, '1', 3, 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -58, '2', 3, 1, b'1'),
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', -2, '1', 3, 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -66, '2', 3, 1, b'1'),
 (3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1, b'1'),
 (4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', -1, '7791337613027', 2, 1, b'1'),
 (7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, -1, '434', 1, 1, b'1'),
@@ -798,7 +810,7 @@ CREATE TABLE IF NOT EXISTS `stock_movement` (
   PRIMARY KEY (`id`),
   KEY `FK_Idproduct_idx` (`idProduct`),
   KEY `FK_idEmployee_idx` (`idEmployee`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `stock_movement`
@@ -813,7 +825,12 @@ INSERT INTO `stock_movement` (`id`, `type`, `description`, `idProduct`, `dateTim
 (7, 2, NULL, 1, '2019-10-21 03:12:14', 15, 27),
 (8, 2, NULL, 1, '2019-10-21 03:13:50', 2, 27),
 (9, 2, NULL, 1, '2019-10-21 03:21:39', 5, 27),
-(10, 2, 'jojo', 1, '2019-10-21 03:26:12', 70, 27);
+(10, 2, 'jojo', 1, '2019-10-21 03:26:12', 70, 27),
+(11, 2, 'dfgh', 1, '2019-10-22 15:26:02', 50, 27),
+(12, 2, 'sdf', 1, '2019-10-22 15:30:56', 3, 27),
+(13, 0, 'Venta de producto', 2, '2019-10-22 16:44:46', 6, 27),
+(14, 0, 'Venta de producto', 1, '2019-10-22 16:54:07', 2, 27),
+(15, 0, 'Venta de producto', 2, '2019-10-22 16:54:07', 2, 27);
 
 -- --------------------------------------------------------
 

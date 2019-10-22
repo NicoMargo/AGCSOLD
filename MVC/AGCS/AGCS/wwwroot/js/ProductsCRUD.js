@@ -98,7 +98,7 @@
         modelId = $(this).attr("modelId");
         if (!parseInt($('#subtractStock').val().isNaN) && $('#description').val() != "") {
             if (parseInt($('#subtractStock').val()) < 0) {
-                CreateModal("Error", "No puedes restar stock negativo");
+                CreateModal("Numero invalido", "No puedes restar stock negativo");
             } else {
                 if (parseInt($("#subtractStock").val()) <= parseInt($('#quant').html())) {
                     $.ajax({
@@ -118,15 +118,15 @@
                             }
                         },
                         error: function () {
-                            CreateModal("Error", "Hubo un error al modificar el stock");
+                            CreateModal("Error del sistema", "Hubo un error al modificar el stock");
                         }
                     });
                 } else {
-                    CreateModal("Error", "No puedes quitar mas stock del que hay");
+                    CreateModal("Datos Invalidos", "No puedes quitar mas stock del que hay");
                 }
             }
         } else {
-            CreateModal("Error", "Ingresar ajuste de stock y motivo");
+            CreateModal("Campos incompletos", "Ingresar ajuste de stock y motivo");
         }
     });
 });

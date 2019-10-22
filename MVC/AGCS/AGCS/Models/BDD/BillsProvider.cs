@@ -50,12 +50,13 @@ namespace AGCS.Models.BDD
         //Methods for store procedures of Table Bills
         public static bool InsertBillXProduct(uint idBill, uint idProduct, int quantity)
         {
-            bool success = false;          
+            bool success = false;
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBill", idBill},
                 {"pIdProduct", idProduct},
                 {"pQuantity", quantity},
                 {"pIdBusiness", Session.GetSUInt32("idBusiness") },
+                {"pIdUser", Session.GetSUInt32("idUser") }
             };
             Helpers.CallNonQuery("spBillXProductInsert", args);
 
