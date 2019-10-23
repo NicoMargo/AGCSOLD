@@ -1,8 +1,45 @@
 ﻿
 @{
-    ViewData["Title"] = "Facturar";
+    ViewData["Title"] = "Agregar Compra";
+    uint idSupplier = ViewBag.Supplier.Id;
 }
 <script crossorigin="anonymous" src="~/js/CreatePurchase.js"></script>
+
+<div style="margin-top:4rem;" class="col-md-12">
+    <div class="content mt-3">
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Proveedor</strong>
+                        </div>
+                        <div class="card-body">
+                            <table id="bootstrap-data-table-export" class="table table-striped">
+                                <tr class="header">
+                                    <th style="width:20%;">DNI/CUIT</th>
+                                    <th style="width:20%;">Nombre</th>
+                                    <th style="width:15%;">Apellido</th>
+                                    <th style="width:20%;">Razón Social</th>
+                                    <th style="width:20%;">Nombre de Fantasía</th>
+                                </tr>   
+                                <tr>
+                                    <td>@ViewBag.Supplier.Cuit </td>
+                                    <td >@ViewBag.Supplier.Surname</td>
+                                    <td>@ViewBag.Supplier.Name </td>
+                                    <td>@ViewBag.Supplier.Company </td>
+                                    <td>@ViewBag.Supplier.Fanciful_name </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="col-md-12">
     <div class="content mt-3">
         <div class="animated fadeIn">
@@ -48,6 +85,7 @@
                                 </thead>
                                 <tbody id="tableProducts"></tbody>
                             </table>
+                            <button id="b" class="btn btn-success col-md-12">Agregar Compra</button>
                         </div>
                     </div>
                 </div>
@@ -56,42 +94,6 @@
     </div>
 </div>
 
-<div style="margin-top:4rem;" class="col-md-12">
-    <div class="content mt-3">
-        <div class="animated fadeIn">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <strong class="card-title">Cliente</strong>
-                        </div>
-                        <div class="card-body">
-                            <table id="bootstrap-data-table-export" class="table table-striped">
-                                <thead>
-                                    <tr class="row">
-                                        <th class="col-md-3">DNI/CUIT</th>
-                                        <th class="col-md-3">Nombre</th>
-                                        <th class="col-md-3">Apellido</th>
-                                        <th class="col-md-3">Celular</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="row">
-                                        <td class="col-md-3"> <input type="number" id="dni" min="1" placeholder="DNI/CUIT" class="form-control text-black "></td>
-                                        <td class="col-md-3"> <input disabled type="text" id="thisName" placeholder="Nombre" class="form-control text-black"></td>
-                                        <td class="col-md-3"> <input disabled type="text" id="surname" placeholder="Apellido" class="form-control text-black"></td>
-                                        <td class="col-md-3"> <input disabled type="tel" id="cellphone" placeholder="Celular" class="form-control text-black"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <button id="b" class="btn btn-success col-md-12">Facturar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal Create Beg-->
 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

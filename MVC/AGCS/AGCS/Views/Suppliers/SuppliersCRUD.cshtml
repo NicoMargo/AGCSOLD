@@ -34,7 +34,7 @@
                     <strong class="card-title">Proveedores</strong>
                 </div>
                 <div class="card-body">
-                    <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Proveedor (por nombre, apellido,fábrica)">
+                    <input type="text" id="searchInput" class="searchInput"  placeholder="Buscar Proveedor (por CUIT, nombre, apellido, razón social, nombre de fantasía)">
                     <button type="button" id="btnModalCrt" class="btn btn-primary w-100" data-toggle="modal" data-target="#modalCrt">
                         Agregar Proveedor
                     </button>
@@ -43,7 +43,7 @@
                         <tr class="header">
                             <th class="p-2" style="width:13%;">Apellido</th>
                             <th class="p-2" style="width:12%;">Nombre</th>
-                            <th class="p-2" style="width:15%;">Fábrica</th>
+                            <th class="p-2" style="width:15%;">Razón Social</th>
                             <th class="p-2" style="width:15%;">Celular</th>
                             <th class="p-2" style="width:20%;">Mail</th>
                             <th class="p-2" style="width:15%;">Dirección</th>
@@ -56,7 +56,7 @@
                         <tr class="tableRow">
                             <td class="colToSearch pl-2">@validString(ViewBag.Suppliers[i].Surname)</td>
                             <td class="colToSearch">@validString(ViewBag.Suppliers[i].Name)</td>
-                            <td class="colToSearch">@validString(ViewBag.Suppliers[i].Factory)</td>
+                            <td class="colToSearch">@validString(ViewBag.Suppliers[i].Company)</td>
                             <td>@validInt((ViewBag.Suppliers[i].Cellphone))</td>
                             <td>@validString(ViewBag.Suppliers[i].Mail)</td>
                             <td>@validString(ViewBag.Suppliers[i].Address)</td>
@@ -121,9 +121,30 @@
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
-                                <strong><span>Fábrica</span></strong>
+                                <strong><span>CUIT</span></strong>
                             </div>
-                            <div class="crtInput notEmpty" id="crtFactory">
+                            <div class="crtInput notEmpty validPositive" id="crtCuit">
+                                <input class="form-control text-center" type="number" step="1">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-md-5">
+                            <div class="text-center">
+                                <strong><span>Razón Social</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty" id="crtCompany">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese valor válido</div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="text-center">
+                                <strong><span>Nombre de Fantasía</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty" id="crtFanciful">
                                 <input class="form-control text-center" type="text">
                                 <div class="validation_msg hidden text-center">Ingrese valor válido</div>
                             </div>
@@ -212,14 +233,34 @@
                         </div>
                         <div class="ml-5 col-md-3">
                             <div class="text-center">
-                                <strong><span>Fábrica</span></strong>
+                                <strong><span>Cuit</span></strong>
                             </div>
-                            <div class="updtInput notEmpty" id="updtFactory">
-                                <input class="form-control text-center" type="text">
-                                <div class="validation_msg hidden text-center" >Ingrese un Factory o CUIT válido</div>
+                            <div class="updtInput notEmpty validPositive" id="updtCuit">
+                                <input class="form-control text-center" type="number" step="1">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
-                     </div>
+                    </div>
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-md-5">
+                            <div class="text-center">
+                                <strong><span>Razón Social</span></strong>
+                            </div>
+                            <div class="updtInput notEmpty" id="updtCompany">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese valor válido</div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="text-center">
+                                <strong><span>Nombre de Fantasía</span></strong>
+                            </div>
+                            <div class="updtInput notEmpty" id="updtFanciful">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese valor válido</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row mt-4 justify-content-center">
                         <div class="col-md-3">
                             <div class="text-center">

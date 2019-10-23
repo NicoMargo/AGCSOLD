@@ -20,5 +20,10 @@ namespace AGCS.Controllers
             ViewBag.Suppliers = SuppliersProvider.GetSuppliers();
             return View();
         }
+
+        public IActionResult CreatePurchase(uint idSupplier) {
+            ViewBag.Supplier = SuppliersProvider.GetSupplierById(idSupplier);
+            return View();
+        }
     }
 }

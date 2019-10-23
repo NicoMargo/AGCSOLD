@@ -24,10 +24,10 @@ namespace AGCS.Controllers
         }
 
         [HttpPost]
-        public bool CreateSupplier(string surname = "", string name = "", string mail = "", string telephone ="", string cellphone ="", string address = "" , string factory = "")
+        public bool CreateSupplier(uint cuit, string surname = "", string name = "", string mail = "", string telephone ="", string cellphone ="", string address = "" , string company = "", string fanciful_name = "")
         {
             bool success;
-            Supplier NewSupplier = new Supplier(name, surname, mail, cellphone, telephone, address,factory);
+            Supplier NewSupplier = new Supplier(cuit, name, surname, mail, cellphone, telephone, address,company, fanciful_name);
             try
             {
                 success = SuppliersProvider.InsertSupplier(NewSupplier);
@@ -49,10 +49,10 @@ namespace AGCS.Controllers
         }
 
         [HttpPost]
-        public bool UpdateSupplier(uint id, string surname = "", string name = "", string mail = "", string telephone = "", string cellphone = "", string address = "", string factory = "")
+        public bool UpdateSupplier(uint id, uint cuit, string surname = "", string name = "", string mail = "", string telephone = "", string cellphone = "", string address = "", string company = "", string fanciful_name = "")
         {
             bool success = true;
-            Supplier client = new Supplier(id, name, surname, mail, cellphone, telephone,address,factory);
+            Supplier client = new Supplier(id, cuit, name, surname, mail, cellphone, telephone,address,company, fanciful_name);
             try
             {
                 SuppliersProvider.UpdateSupplier(client);

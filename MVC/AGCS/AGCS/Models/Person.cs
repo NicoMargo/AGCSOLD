@@ -22,6 +22,13 @@ namespace AGCS.Models
         public string Cellphone { get => _cellphone; set => _cellphone = value; }
 
 
+        //Supplier get constructor
+
+        public Person(uint id, string name, string surname) {
+            this._id = id;
+            this._name = name;
+            this.Surname = surname;
+        }
         //Complete Constructor
         protected Person(uint id, string name, string surname, string mail, string cellphone, string telephone)
         {
