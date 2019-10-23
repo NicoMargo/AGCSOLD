@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using AGCS.Models.BDD;
+using AGCS.Models;
+
 
 namespace AGCS.Controllers
 {
@@ -10,6 +13,11 @@ namespace AGCS.Controllers
     {
         public IActionResult Index()
         {
+            return View();
+        }
+
+        public IActionResult SelectSupplier() {
+            ViewBag.Suppliers = SuppliersProvider.GetSuppliers();
             return View();
         }
     }
