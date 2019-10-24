@@ -23,9 +23,9 @@ namespace AGCS.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult GetProduct(uint code)
+        public JsonResult GetProduct(uint code, uint idSupplier)
         {
-            Product product = ProductsProvider.GetProductById(code);
+            Product product = ProductsProvider.GetProductByCode(code,idSupplier);
             string JsonDataProduct = JsonConvert.SerializeObject(product);
             return Json(JsonDataProduct);
         }
