@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    var idOfProd, D, T = 0, Items = [], p;
+    var idProduct, product, total = 0, Items = [], p;
     var Product = { Id: null, Quant: null, iva: 1, Price: null, Code: null };
 
     $('#codProdToEnter').keypress(function (event) {
@@ -19,15 +19,15 @@
         $("#stockProdToEnter").empty();
         $.ajax({
             type: "POST",
-            url: "/Backend/GetProductToEnter",
+            url: "/Purchases/GetProduct",
             data: { code: $("#codProdToEnter").val() },
             success: function (DataJson) {
-                D = JSON.parse(DataJson);
-                if (D != null) {
-                    idOfProd = D.Id;
-                    $("#descProdToEnter").append(D.Description);
-                    $("#priceProdToEnter").append(D.Price);
-                    $("#stockProdToEnter").append(D.Stock);
+                product = JSON.parse(DataJson);
+                if (product != null) {
+                    idProduct = product.Id;
+                    $("#descProdToEnter").append(product.Description);
+                    $("#priceProdToEnter").append(product.Price);
+                    $("#stockProdToEnter").append(product.Stock);
                     $("#quantProdToEnter").focus();
                 } else {
                     CreateModal("Error de Producto","No existe el producto");
@@ -43,7 +43,7 @@
     $('#quantProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
-            if (D != null) {
+            if (product != null) {
                 if ($("#quantProdToEnter").val().length > 0 && $("#quantProdToEnter").val() > 0) {
                     if ($("#codProdToEnter").val().length > 0) {
                         $("#quantProdToEnter").css({ 'border-color': '#ced4da' });
@@ -59,52 +59,52 @@
         }
     });
 
-    function KeyPressEventQuant(idOfProd) {
+    function KeyPressEventQuant(idProduct) {
 
-        $("#q" + idOfProd).click(function () {
-            fT(idOfProd);
-            validateQ(idOfProd);
+        $("#q" + idProduct).click(function () {
+            fT(idProduct);
+            validateQ(idProduct);
         });
         
-        $("#q" + idOfProd).keyup(function (event) {
+        $("#q" + idProduct).keyup(function (event) {
             let keycode = (event.keyCode ? event.keyCode : event.which);
             if (((keycode > 47 && keycode < 58) || (keycode > 95 && keycode < 106)) || keycode == 8) {
-                fT(idOfProd);
+                fT(idProduct);
             }
-            validateQ(idOfProd);
+            validateQ(idProduct);
         });
         
 
     }
     
-    function fT(idOfProd) {
+    function fT(idProduct) {
         let success = false, i = 0;
         do {
-            if (Items[i].Id === idOfProd) {
-                T -= (Items[i].Price * Items[i].Quant);
-                if ((!isNaN(parseInt($("#q" + idOfProd).val(), 10))) && parseInt($("#q" + idOfProd).val(), 10) >= 0) {
-                    Items[i].Quant = parseInt($("#q" + idOfProd).val(), 10);
+            if (Items[i].Id === idProduct) {
+                total -= (Items[i].Price * Items[i].Quant);
+                if ((!isNaN(parseInt($("#q" + idProduct).val(), 10))) && parseInt($("#q" + idProduct).val(), 10) >= 0) {
+                    Items[i].Quant = parseInt($("#q" + idProduct).val(), 10);
                 } else {
                     Items[i].Quant = 0;
                 }
-                T += (Items[i].Price * Items[i].Quant);
+                total += (Items[i].Price * Items[i].Quant);
                 success = true;
             }
             i++;
         } while (!success);
         $("#total").empty();
-        $("#total").append(T);
+        $("#total").append(total);
     }
     $("#confirm").click(function () {
         let success = false, i = 0;
         do {
             if (Items[i].Id == p) {
-                T -= (Items[i].Price * Items[i].Quant);
+                total -= (Items[i].Price * Items[i].Quant);
                 Items.splice(i, 1);
                 success = true;
                 $('#' + p).remove();
                 $("#total").empty();
-                $("#total").append(T);
+                $("#total").append(total);
             }
             i++;
         } while (!success);
@@ -118,11 +118,11 @@
     function EnterProductToBill() {
 
         $("#total").empty();
-        T += D.Price * parseInt($("#quantProdToEnter").val(), 10);
-        $("#total").append(T);
-        if ($("#" + idOfProd).length > 0) {
+        total += product.Price * parseInt($("#quantProdToEnter").val(), 10);
+        $("#total").append(total);
+        if ($("#" + idProduct).length > 0) {
             let data = $("#codProdToEnter").val(), success = false, i = 0;
-            document.getElementById("q" + idOfProd).value = parseInt($("#quantProdToEnter").val(), 10) + parseInt($("#q" + idOfProd).val(), 10);
+            document.getElementById("q" + idProduct).value = parseInt($("#quantProdToEnter").val(), 10) + parseInt($("#q" + idProduct).val(), 10);
             do {
                 if (Items[i].Code == data) {
                     Items[i].Quant += parseInt($("#quantProdToEnter").val(), 10);
@@ -132,16 +132,16 @@
             } while (!success);
         } else {
             Product = new Object();
-            Product.Id = D.Id;
-            Product.Price = D.Price;
+            Product.Id = product.Id;
+            Product.Price = product.Price;
             Product.Quant = parseInt($("#quantProdToEnter").val());
-            Product.Code = D.Code;
+            Product.Code = product.Code;
             Items.push(Product);
-            var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><deleteButton id="db' + idOfProd + '"  position="' + idOfProd + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
+            var ProdToEnter = '<tr id="' + idProduct + '"><td>' + product.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idProduct + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + product.Price + '</td><td>' + product.Stock + '</td><td><deleteButton id="db' + idProduct + '"  position="' + idProduct + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
             ProdToEnter.keypress;
             $("#tableProducts").prepend(ProdToEnter);
-            KeyPressEventQuant(idOfProd);
-            ClickeventImg(idOfProd);
+            KeyPressEventQuant(idProduct);
+            ClickeventImg(idProduct);
         }
         $("#quantProdToEnter").val("");
         $("#codProdToEnter").val("");
@@ -154,7 +154,7 @@
     function validateQuant() {
         let successVQ = true;
         for (let y = 0; y < Items.length; y++) {
-            if ($("#q" + Items[y].Id).val() <= 0 || isNaN(parseInt($("#q" + idOfProd).val(), 10))) {
+            if ($("#q" + Items[y].Id).val() <= 0 || isNaN(parseInt($("#q" + idProduct).val(), 10))) {
                 successVQ = false;
             }
         }

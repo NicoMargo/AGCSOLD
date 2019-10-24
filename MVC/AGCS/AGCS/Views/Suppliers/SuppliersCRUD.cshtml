@@ -41,12 +41,12 @@
 
                     <table class="CRUDTable" id="CRUDTable">
                         <tr class="header">
-                            <th class="p-2" style="width:13%;">Apellido</th>
-                            <th class="p-2" style="width:12%;">Nombre</th>
-                            <th class="p-2" style="width:15%;">Razón Social</th>
+                            <th class="p-2" style="width:10%;">Cuit</th>
+                            <th class="p-2" style="width:10%;">Apellido</th>
+                            <th class="p-2" style="width:10%;">Nombre</th>
+                            <th class="p-2" style="width:20%;">Nombre de Fantasía</th>
                             <th class="p-2" style="width:15%;">Celular</th>
-                            <th class="p-2" style="width:20%;">Mail</th>
-                            <th class="p-2" style="width:15%;">Dirección</th>
+                            <th class="p-2" style="width:28%;">Mail</th>
                             <th class="p-2" style="width:5%;">Modificar</th>
                             <th class="p-2" style="width:5%;">Eliminar</th>
                         </tr>
@@ -54,12 +54,12 @@
                             for (int i = 0; i < ViewBag.Suppliers.Count; i++)
                             {
                         <tr class="tableRow">
-                            <td class="colToSearch pl-2">@validString(ViewBag.Suppliers[i].Surname)</td>
+                            <td class="colToSearch pl-2">@validInt((ViewBag.Suppliers[i].Cuit.ToString()))</td>
+                            <td class="colToSearch">@validString(ViewBag.Suppliers[i].Surname)</td>
                             <td class="colToSearch">@validString(ViewBag.Suppliers[i].Name)</td>
-                            <td class="colToSearch">@validString(ViewBag.Suppliers[i].Company)</td>
+                            <td class="colToSearch">@validString(ViewBag.Suppliers[i].Fanciful_name)</td>
                             <td>@validInt((ViewBag.Suppliers[i].Cellphone))</td>
                             <td>@validString(ViewBag.Suppliers[i].Mail)</td>
-                            <td>@validString(ViewBag.Suppliers[i].Address)</td>
                             <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Suppliers[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
                             <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Suppliers[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
                         </tr>
@@ -129,27 +129,7 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="row mt-4 justify-content-center">
-                        <div class="col-md-5">
-                            <div class="text-center">
-                                <strong><span>Razón Social</span></strong>
-                            </div>
-                            <div class="crtInput notEmpty" id="crtCompany">
-                                <input class="form-control text-center" type="text">
-                                <div class="validation_msg hidden text-center">Ingrese valor válido</div>
-                            </div>
-                        </div>
-                        <div class="col-md-5">
-                            <div class="text-center">
-                                <strong><span>Nombre de Fantasía</span></strong>
-                            </div>
-                            <div class="crtInput notEmpty" id="crtFanciful">
-                                <input class="form-control text-center" type="text">
-                                <div class="validation_msg hidden text-center">Ingrese valor válido</div>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="row mt-4 justify-content-center">
                         <div class="col-md-3">
                             <div class="text-center">
@@ -179,6 +159,28 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-md-5">
+                            <div class="text-center">
+                                <strong><span>Razón Social</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty" id="crtCompany">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese valor válido</div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="text-center">
+                                <strong><span>Nombre de Fantasía</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty" id="crtFanciful">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese valor válido</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row mt-4">
                         <div class="offset-md-1 col-md-10">
                             <div class="text-center">
@@ -211,7 +213,6 @@
                 </div>
 
                 <div class="modal-body">
-
                     <div class="row justify-content-center">
                         <div class="col-md-3">
                             <div class="text-center">
@@ -219,7 +220,7 @@
                             </div>
                             <div class="updtInput notEmpty" id="updtSurname">
                                 <input class="form-control text-center" type="text">
-                                <div class="validation_msg hidden text-center">Ingrese valor un apellido válido</div>
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
                         </div>
                         <div class="ml-5 col-md-3">
@@ -242,6 +243,35 @@
                         </div>
                     </div>
                     <div class="row mt-4 justify-content-center">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nro. Telefono</span></strong>
+                            </div>
+                            <div class="updtInput validPositive" id="updtTelephone">
+                                <input class="form-control text-center" type="number" min="0" step="1">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
+                        </div>
+                        <div class="ml-5 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nro. Celular</span></strong>
+                            </div>
+                            <div class="updtInput validPositive" id="updtCellphone">
+                                <input class="form-control text-center" type="number" min="0" step="1">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
+                        </div>
+                        <div class="ml-5 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Mail</span></strong>
+                            </div>
+                            <div class="updtInput" id="updtMail">
+                                <input class="form-control text-center" type="email">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4 justify-content-center">
                         <div class="col-md-5">
                             <div class="text-center">
                                 <strong><span>Razón Social</span></strong>
@@ -258,35 +288,6 @@
                             <div class="updtInput notEmpty" id="updtFanciful">
                                 <input class="form-control text-center" type="text">
                                 <div class="validation_msg hidden text-center">Ingrese valor válido</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-4 justify-content-center">
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <strong><span>Nro. Telefono</span></strong>
-                            </div>
-                            <div class="updtInput validPositive" id="updtTelephone">
-                                <input class="form-control text-center" type="number" min="0" step="1">
-                                <div class="validation_msg hidden text-center">Ingrese un teléfono válido</div>
-                            </div>
-                        </div>
-                        <div class="ml-5 col-md-3">
-                            <div class="text-center">
-                                <strong><span>Nro. Celular</span></strong>
-                            </div>
-                            <div class="updtInput validPositive" id="updtCellphone">
-                                <input class="form-control text-center" type="number" min="0" step="1">
-                                <div class="validation_msg hidden text-center">Ingrese un nro. celular válido</div>
-                            </div>
-                        </div>
-                        <div class="ml-5 col-md-3">
-                            <div class="text-center">
-                                <strong><span>Mail</span></strong>
-                            </div>
-                            <div class="updtInput" id="updtMail">
-                                <input class="form-control text-center" type="email">
-                                <div class="validation_msg hidden text-center">Ingrese un mail válido</div>
                             </div>
                         </div>
                     </div>
