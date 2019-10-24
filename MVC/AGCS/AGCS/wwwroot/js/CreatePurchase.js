@@ -19,7 +19,7 @@
         $("#stockProdToEnter").empty();
         $.ajax({
             type: "POST",
-            url: "/Purchases/GetProduct",
+            url: "../../Purchases/GetProduct",
             data: { code: $("#codProdToEnter").val() },
             success: function (DataJson) {
                 product = JSON.parse(DataJson);
@@ -163,43 +163,29 @@
 
     $("#b").click(function () {
         if (validateQuant()) {
-            var bool = validate("#thisName");
-            bool = bool & validate("#surname");
-            bool = bool & validate("#dni");
-            if (parseInt($("#dni").val(), 10) <= 0) {
-                bool = false;
-            }
-            if (bool) {
-                if (Items.length > 0) {
-                    let C = { Dni: $("#dni").val(), Name: null, Surname: null, Cellphone: null };
-                    if ($('#thisName').attr('disabled') === undefined) {
-                        C.Name = $("#thisName").val();
-                        C.Surname = $("#surname").val();
-                        C.Cellphone = $("#cellphone").val();
-                    }
-
+                if (Items.length > 0) {                    
                     $.ajax({
                         type: "POST",
-                        url: "/Backend/NewBill",
+                        url: "/Purchases/NewPurchase",
                         data: {
-                            json: JSON.stringify(Items), dniClient: $("#dni").val(), jsonClient: JSON.stringify(C)
+                            json: JSON.stringify(Items),
+                            sdi: sdi
                         },
                         success: function (success) {
                             if (success) {
-                                CreateModal("Factura", "Se facturo correctamente");
+                                CreateModal("Compra", "Se agregó la compra correctamente");
                             } else {
-                                CreateModal("Error", "Hubo un error al Facturar");
+                                CreateModal("Error", "Hubo un error al agregar la compra");
                             }
                         },
                         error: function () {
-                            CreateModal("Error", "Hubo un error al Facturar");
+                            CreateModal("Error de compra", "Hubo un error al agregar la compra");
                         }
                     });
                 } else {
-                    CreateModal("Error", "Ingrese los datos a Facturar");
+                    CreateModal("Datos Invalidos", "Ingrese al menos un producto");
                 }
-            } else
-                CreateModal("Error", "Ingrese Todos los datos del cliente");
+
         } else {
             CreateModal("Error", "Cantidades Erroneas");
         }
@@ -215,44 +201,4 @@
         }
         return State;
     }
-    function validate(id) {
-        var State = false;
-        if ($(id).val() == "") {
-            $(id).css("border-color", "#FF0000");
-        }
-        else {
-            $(id).css("border-color", "#ced4da");
-            State = true;
-        }
-        return State;
-    }
-    $("#dni").keyup(function () {
-        $.ajax({
-            type: "POST",
-            url: "/Clients/GetDataClientByDNI",
-            data: { dni: $("#dni").val() },
-            success: function (DataJson) {
-                var Data = JSON.parse(DataJson);
-                if (Data != null) {
-                    $("#surname").attr('disabled', true);
-                    $("#thisName").attr('disabled', true);
-                    $("#cellphone").attr('disabled', true);
-                    $("#surname").val(Data.Surname);
-                    $("#thisName").val(Data.Name);
-                    $("#cellphone").val(checkInt(Data.Cellphone));
-                } else {
-                    $("#surname").attr('disabled', false);
-                    $("#thisName").attr('disabled', false);
-                    $("#cellphone").attr('disabled', false);
-                    $("#surname").val("");
-                    $("#thisName").val("");
-                    $("#cellphone").val("");
-                }
-
-            },
-            error: function () {
-                CreateModal("Error", "Hubo un error al buscar el cliente");
-            }
-        });
-    });
 });

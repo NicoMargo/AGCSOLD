@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.9
+-- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 23-10-2019 a las 21:53:09
--- Versión del servidor: 5.7.21
--- Versión de PHP: 5.6.35
+-- Tiempo de generación: 24-10-2019 a las 19:31:23
+-- Versión del servidor: 5.7.23
+-- Versión de PHP: 7.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -487,7 +487,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Macs1_idx` (`Macs_id`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_id`) USING BTREE,
   KEY `fk_Bills_Clients1_idx` (`Clients_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
@@ -505,7 +505,8 @@ INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_id`, `Employee_Code`, `IVA_C
 (65, '0000-00-00', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (66, '0000-00-00', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 3),
 (67, '0000-00-00', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 3),
-(68, '2019-10-22', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1);
+(68, '2019-10-22', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
+(69, '2019-10-24', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 4300.00, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -523,7 +524,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_id`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills_x_products`
@@ -534,7 +535,10 @@ INSERT INTO `bills_x_products` (`idBills_X_Products`, `Bills_id`, `Products_id`,
 (70, 60, 23, 1, 0.00),
 (71, 63, 2, 6, 200.00),
 (72, 68, 1, 2, 300.00),
-(73, 68, 2, 2, 200.00);
+(73, 68, 2, 2, 200.00),
+(74, 69, 1, 5, 300.00),
+(75, 69, 2, 8, 200.00),
+(76, 69, 3, 4, 300.00);
 
 -- --------------------------------------------------------
 
@@ -725,9 +729,9 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProduct`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_id`, `Business_id`, `Active`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', -2, '1', 3, 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -66, '2', 3, 1, b'1'),
-(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1037, '3', 3, 1, b'1'),
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', -7, '1', 3, 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -74, '2', 3, 1, b'1'),
+(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1041, '3', 3, 1, b'1'),
 (4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', -1, '7791337613027', 2, 1, b'1'),
 (7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, -1, '434', 1, 1, b'1'),
 (8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1, b'1'),
@@ -780,7 +784,16 @@ CREATE TABLE IF NOT EXISTS `purchases` (
   KEY `fk_Purchases_Suppliers_idx` (`idSupplier`) USING BTREE,
   KEY `fk_Purchases_idEmployee_idx` (`idEmployee`) USING BTREE,
   KEY `fk_Purchases_Business_idx` (`idBusiness`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `purchases`
+--
+
+INSERT INTO `purchases` (`idPurchase`, `idSupplier`, `idEmployee`, `date`, `total`, `cond`, `idBusiness`) VALUES
+(1, 4, 27, '2019-10-24', 600.00, '', 1),
+(2, 4, 27, '2019-10-24', 600.00, '', 1),
+(3, 3, 27, '2019-10-24', 700.00, '', 1);
 
 -- --------------------------------------------------------
 
@@ -819,7 +832,7 @@ CREATE TABLE IF NOT EXISTS `stock_movement` (
   PRIMARY KEY (`id`),
   KEY `fk_StockMovement_Products_idx` (`idProduct`) USING BTREE,
   KEY `fk_StockMovement_Users_idx` (`idEmployee`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `stock_movement`
@@ -839,7 +852,10 @@ INSERT INTO `stock_movement` (`id`, `type`, `description`, `idProduct`, `dateTim
 (12, 2, 'sdf', 1, '2019-10-22 15:30:56', 3, 27, 0),
 (13, 0, 'Venta de producto', 2, '2019-10-22 16:44:46', 6, 27, 0),
 (14, 0, 'Venta de producto', 1, '2019-10-22 16:54:07', 2, 27, 0),
-(15, 0, 'Venta de producto', 2, '2019-10-22 16:54:07', 2, 27, 0);
+(15, 0, 'Venta de producto', 2, '2019-10-22 16:54:07', 2, 27, 0),
+(16, 0, 'Venta de producto', 1, '2019-10-24 13:55:32', 5, 27, 0),
+(17, 0, 'Venta de producto', 2, '2019-10-24 13:55:32', 8, 27, 0),
+(18, 0, 'Venta de producto', 3, '2019-10-24 13:55:32', 4, 27, 0);
 
 -- --------------------------------------------------------
 

@@ -18,7 +18,7 @@ namespace AGCS.Models
         private float _total;
         private string _type;//no
         private int _employeeCode;//ni
-
+        
         private float CalculateSubtotal() {
             float subtotal = 0;
             
@@ -78,19 +78,20 @@ namespace AGCS.Models
             _discount = discount;
             _ivaRecharge = ivaRecharge;
         }
-        
+
         public uint Id { get => _id; set => _id = value; }
+        public uint DniClient { get => _dniClient; set => _dniClient = value; }
         public DateTime Date { get => _date; set => _date = value; }
-        public float Total { get => _total; set => _total = value; }
         public List<Product> Products { get => _products; set => _products = value; }
+        public float Subtotal { get => _subtotal; set => _subtotal = value; }
+        public bool IsWholeSaler { get => _isWholeSaler; set => _isWholeSaler = value; }
+        public string IvaCondition { get => _ivaCondition; set => _ivaCondition = value; }
+        public float IvaRecharge { get => _ivaRecharge; set => _ivaRecharge = value; }
+        public float Discount { get => _discount; set => _discount = value; }
+        public float Total { get => _total; set => _total = value; }
         public string Type { get => _type; set => _type = value; }
         public int EmployeeCode { get => _employeeCode; set => _employeeCode = value; }
-        public string IvaCondition { get => _ivaCondition; set => _ivaCondition = value; }
-        public bool IsWholeSaler { get => _isWholeSaler; set => _isWholeSaler = value; }
-        public float Discount { get => _discount; set => _discount = value; }
-        public float IvaRecharge { get => _ivaRecharge; set => _ivaRecharge = value; }
-        public uint DniClient { get => _dniClient; set => _dniClient = value; }
-        
+
 
     }
 }

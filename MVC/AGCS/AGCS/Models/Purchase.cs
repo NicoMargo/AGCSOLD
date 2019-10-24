@@ -13,6 +13,7 @@ namespace AGCS.Models
         private List<Product> _products;
         private float _total;
         private string _condition;
+        private string _notes;
         //que categoria tiene frente al iva (responsable inscripto, monotributista o excento de iva)
         //deberia ser un emun pq lo vamos a usar muchas veces en distintas pasrtes del proyecto, no se bien como es
         
@@ -30,7 +31,7 @@ namespace AGCS.Models
             return subtotal;
         }
 
-        public Purchase(ulong idEmployee, ulong idSupplier, List<Product> products, string condition)
+        public Purchase(ulong idEmployee, ulong idSupplier, List<Product> products, string condition, string notes)
         {
             _idEmployee = idEmployee;
             _idSupplier = idSupplier;
@@ -38,6 +39,7 @@ namespace AGCS.Models
             _products = products;
             _total = CalculateSubtotal();
             _condition = condition;
+            _notes = notes;
         }
 
 
@@ -48,5 +50,6 @@ namespace AGCS.Models
         public List<Product> Products { get => _products; set => _products = value; }
         public string Condition { get => _condition; set => _condition = value; }
         public float Total { get => _total; set => _total = value; }
+        public string Notes { get => _notes; set => _notes = value; }
     }
 }
