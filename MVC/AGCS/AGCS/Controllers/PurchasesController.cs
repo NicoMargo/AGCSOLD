@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace AGCS.Controllers
 {
-    public class PurchasesController : Controller
+    public class PurchasesController : BaseController
     {
         public ActionResult SelectSupplier()
         {

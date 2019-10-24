@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var idProduct, product, total = 0, Items = [], p;
-    var Product = { Id: null, Quant: null, iva: 1, Price: null, Code: null };
+    var Product = { Id: null, Quant: null, iva: 1, Price: null, Code: null, Cost: null };
 
     $('#codProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -26,7 +26,7 @@
                 if (product != null) {
                     idProduct = product.Id;
                     $("#descProdToEnter").append(product.Description);
-                    $("#priceProdToEnter").append(product.Price);
+                    $("#priceProdToEnter").val(product.Cost);
                     $("#stockProdToEnter").append(product.Stock);
                     $("#quantProdToEnter").focus();
                 } else {
@@ -47,7 +47,7 @@
                 if ($("#quantProdToEnter").val().length > 0 && $("#quantProdToEnter").val() > 0) {
                     if ($("#codProdToEnter").val().length > 0) {
                         $("#quantProdToEnter").css({ 'border-color': '#ced4da' });
-                        EnterProductToBill();
+                        LoadProductToList();
                     } else {
                         $("#codProdToEnter").css({ "border": " 0.15rem solid red" });
                     }
@@ -115,7 +115,7 @@
 
         });
     }
-    function EnterProductToBill() {
+    function LoadProductToList() {
 
         $("#total").empty();
         total += product.Price * parseInt($("#quantProdToEnter").val(), 10);
@@ -136,8 +136,9 @@
             Product.Price = product.Price;
             Product.Quant = parseInt($("#quantProdToEnter").val());
             Product.Code = product.Code;
+            Product.Cost = parseInt($("#priceProdToEnter").val());
             Items.push(Product);
-            var ProdToEnter = '<tr id="' + idProduct + '"><td>' + product.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idProduct + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + product.Price + '</td><td>' + product.Stock + '</td><td><deleteButton id="db' + idProduct + '"  position="' + idProduct + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
+            var ProdToEnter = '<tr id="' + idProduct + '"><td>' + product.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idProduct + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + product.Cost + '</td><td>' + product.Stock + '</td><td><deleteButton id="db' + idProduct + '"  position="' + idProduct + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
             ProdToEnter.keypress;
             $("#tableProducts").prepend(ProdToEnter);
             KeyPressEventQuant(idProduct);
@@ -146,7 +147,7 @@
         $("#quantProdToEnter").val("");
         $("#codProdToEnter").val("");
         $("#descProdToEnter").empty();
-        $("#priceProdToEnter").empty();
+        $("#priceProdToEnter").val("");
         $("#stockProdToEnter").empty();
         $("#codProdToEnter").focus();
     }

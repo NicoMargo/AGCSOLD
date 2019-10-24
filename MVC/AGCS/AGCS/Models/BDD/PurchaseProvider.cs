@@ -15,18 +15,16 @@ namespace AGCS.Models.BDD
                 {"pDate", purchase.Date},
                 {"pTotal", purchase.Total},
                 {"pIdSupplier", purchase.IdSupplier},
-                {"pIdEmployee", Session.GetSUInt32("idUser")}
+                {"pIdUser", Session.GetSUInt32("idUser")}
             };
             bool success = false;
-            try
-            {
-                MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spPurchaseInsert", args);
+              MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spPurchaseInsert", args);
                 if (ConnectionReader.Read())
                 {
                     try
                     {
-                        ulong id = Convert.ToUInt64(ConnectionReader["idPurchase"]);  
-                        success = true;
+                        ulong id = Convert.ToUInt64(ConnectionReader["idPurchase"]);
+                        
                         ConnectionReader.Close();
                         if (id >= 0)
                         {
@@ -35,12 +33,14 @@ namespace AGCS.Models.BDD
                                 success &= InsertPurchaseXProduct(id, product);
                             }
                         }
+                        success = true;
                     }
                     catch (OverflowException)
                     { }
                 }
-            }
-            catch { }
+            
+           
+
             Helpers.Disconect();
             return success;
         }
@@ -48,12 +48,15 @@ namespace AGCS.Models.BDD
         //Methods for store procedures of Table Purchases
         public static bool InsertPurchaseXProduct(ulong idPurchase, Product product)
         {
+            
             bool success = false;
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdPurchase", idPurchase},
                 {"pIdProduct", product.Id},
                 {"pQuantity", product.Quant},
                 {"pIdBusiness", Session.GetSUInt32("idBusiness") },
+                {"pIdUser", Session.GetSUInt32("idUser")},
+                {"pCost", product.Cost}
             };
             success = Helpers.CallNonQuery("spPurchaseXProductInsert", args)>0;
             return success;

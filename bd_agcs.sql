@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 24-10-2019 a las 19:31:23
+-- Tiempo de generación: 24-10-2019 a las 21:52:55
 -- Versión del servidor: 5.7.23
 -- Versión de PHP: 7.2.10
 
@@ -27,11 +27,11 @@ DELIMITER $$
 -- Procedimientos
 --
 DROP PROCEDURE IF EXISTS `spBillInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT, IN `pDNI` INT)  BEGIN
-	if EXISTS(select clients.idClient from clients where (clients.DNI_CUIT = pDNI and pIdBusiness = clients.Business_id and clients.Active = 1) or (pDNI = 1))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT, IN `pDNI` INT, IN `pIdUser` INT)  BEGIN
+	if EXISTS(select clients.idClient from clients where (clients.DNI_CUIT = pDNI and pIdBusiness = clients.Business_id and clients.Active = 1) or (pDNI = 1)) and exists(select idUser from Users where idUser = pIdUser and Business_id = pIdBusiness and Active = 1)
     THEN
-    	SET  @idClient = (select clients.idClient from clients where clients.DNI_CUIT = pDNI and ((clients.Business_id = pIdBusiness and clients.Active = 1) or pDNI = 1));
-		Insert into bills(bills.DateBill,bills.Total,bills.Business_id,bills.Clients_id) values( pDate, pTotal, pIdBusiness,@idClient);
+    SET  @idClient = (select clients.idClient from clients where clients.DNI_CUIT = pIdUser and ((clients.Business_id = pIdBusiness and clients.Active = 1) or pDNI = 1));
+		Insert into bills(bills.DateBill,bills.Total,bills.Business_id,bills.Clients_id, Users_id) values( pDate, pTotal, pIdBusiness,@idClient,@idUser);
     	select bills.idBill from bills where bills.idBill = LAST_INSERT_ID() and bills.Business_id = pIdBusiness;
     ELSE
     	select -1 as idBill;
@@ -40,16 +40,16 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spBillXProductInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillXProductInsert` (IN `pIdBill` INT, IN `pIdProduct` INT, IN `pQuantity` INT, IN `pIdBusiness` INT, IN `pIdUser` INT)  BEGIN
-	if exists(select idProduct from products where idProduct = pIdProduct and Business_id = pIdBusiness and Active = 1) and exists(select idBill from bills where idBill = pIdBill and Business_id = pIdBusiness)
+	if exists(select idProduct from products where idProduct = pIdProduct and Business_id = pIdBusiness and Active = 1) and exists(select idBill from bills where idBill = pIdBill and Business_id = pIdBusiness) and exists(select idUser from Users where idUser = pIdUser and Business_id = pIdBusiness and Active = 1)
     then
     	set @price = (select Price from products where idProduct = pIdProduct and Business_id = pIdBusiness); 
 		if(pQuantity > 0 and pQuantity is not null)
         then
-			insert into bills_x_products(Products_id, Bills_id, Quantity, Price) values(pIdProduct,pIdBill,pQuantity,@Price);
+			insert into bills_x_products(Products_id, Bills_id, Quantity, Price) values(pIdProduct,pIdBill,pQuantity,@price);
             update products set Stock = Stock - pQuantity where idProduct = pIdProduct and Business_id = pIdBusiness and Active = 1;
-            call bd_agcs.spMovementInsert(pIdProduct, pQuantity, pIdUser, "Venta de producto", 0);
+            call bd_agcs.spMovementInsert(pIdProduct, pQuantity, pIdUser, "Venta de producto", 0,@price);
 		else
-			insert into bills_x_products(Products_id, Bills_id, Quantity, Price) values(pIdProduct,pIdBill,0,@Price);
+			insert into bills_x_products(Products_id, Bills_id, Quantity, Price) values(pIdProduct,pIdBill,0,@price);
         end if;
     end if;
 END$$
@@ -135,13 +135,16 @@ THEN
 end if$$
 
 DROP PROCEDURE IF EXISTS `spMovementGet`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spMovementGet` (IN `pId` INT)  BEGIN
-	Select id,description,type,dateTime,quant,name, surname from stock_movement inner join users on idEmployee = idUser where pId = stock_movement.idProduct;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spMovementGet` (IN `pIdProduct` INT)  BEGIN
+	Select * from stock_movement inner join users on Users_id = idUser where pIdProdct = stock_movement.Products_id;
 END$$
 
 DROP PROCEDURE IF EXISTS `spMovementInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spMovementInsert` (IN `pIdProduct` INT, IN `pQuant` INT, IN `pIdUser` INT, IN `pDescription` VARCHAR(500), IN `pType` TINYINT)  BEGIN
-	insert into stock_movement(type,description,idProduct, dateTime,quant,idEmployee)values(pType,pDescription,pIdProduct,now(), pQuant,pIdUser);
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spMovementInsert` (IN `pIdProduct` INT, IN `pQuant` INT, IN `pIdUser` INT, IN `pDescription` VARCHAR(500), IN `pType` TINYINT, IN `pAmount` FLOAT(10,2), IN `pIdBusiness` INT(11))  BEGIN
+	if exists(select idProduct from products where idProduct = pIdProduct and Business_id = pIdBusiness and Active = 1) and exists(select idUser from Users where idUser = pIdUser and Business_id = pIdBusiness and Active = 1)
+  THEN
+    insert into stock_movement(type,description,Products_id, dateTime,quant,Amount,Users_id)values(pType,pDescription,pIdProduct,now(), pQuant,pAmount,pIdUser);
+  end if;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductDelete`$$
@@ -196,10 +199,10 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spProductStockUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductStockUpdate` (IN `pId` INT, IN `pStock` INT, IN `pDesc` VARCHAR(500), IN `pIdUser` INT, IN `pIdBusiness` INT)  BEGIN
-	if exists(select Products.idProduct from Products where Products.idProduct = pId and products.Active = 1 and products.Business_id = pIdBusiness)
+	if exists(select Products.idProduct from Products where Products.idProduct = pId and products.Active = 1 and products.Business_id = pIdBusiness) and exists(select idUser from Users where idUser = pIdUser and Business_id = pIdBusiness and Active = 1)
     then
 		update Products set Products.stock = (Products.stock-pStock) where Products.idProduct = pId and products.Active = 1 and products.Business_id = pIdBusiness;	
-        call bd_agcs.spMovementInsert(pId, pStock, pIdUser, pDesc, 2);
+        call bd_agcs.spMovementInsert(pId, pStock, pIdUser, pDesc, 2,0);
     end if;
 END$$
 
@@ -252,29 +255,29 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN 
 END$$
 
 DROP PROCEDURE IF EXISTS `spPurchaseInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseInsert` (IN `pIdBusiness` INT(11) UNSIGNED, IN `pDate` DATE, IN `pTotal` FLOAT(10,2), IN `pIdSupplier` INT(11) UNSIGNED, IN `pIdEmployee` INT(11) UNSIGNED)  NO SQL
-if EXISTS(select idSupplier from suppliers where idSupplier = pIdSupplier and Business_id = pIdBusiness and Active = 1)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseInsert` (IN `pIdBusiness` INT(11) UNSIGNED, IN `pDate` DATE, IN `pTotal` FLOAT(10,2), IN `pIdSupplier` INT(11) UNSIGNED, IN `pIdUser` INT(11) UNSIGNED)  NO SQL
+if EXISTS(select idSupplier from suppliers where idSupplier = pIdSupplier and Business_id = pIdBusiness and Active = 1) 
 THEN
-	if exists(select idSupplier from suppliers where idSupplier = pIdSupplier and Business_id = pIdBusiness) and exists(select idUser from users where idUser = pIdEmployee and Business_id = pIdBusiness)
+	if exists(select idSupplier from suppliers where idSupplier = pIdSupplier and Business_id = pIdBusiness) and exists(select idUser from users where idUser = pIdUser and Business_id = pIdBusiness)
     THEN
-    	Insert into purchases(date,total,idBusiness,idSupplier,idEmployee) values( pDate, pTotal, pIdBusiness,pIdSupplier, pIdEmployee);
-    	select idPurchase from purchases where idPurchase = LAST_INSERT_ID() and date = pDate and total = pTotal and purchases.idBusiness = pIdBusiness and purchases.idSupplier = @idSupplier;
+    	Insert into purchases(date,total,Business_id,Suppliers_id,Users_id) values( pDate, pTotal, pIdBusiness,pIdSupplier, pIdUser);
+    	select idPurchase from purchases where idPurchase = LAST_INSERT_ID() and total = pTotal and purchases.Business_id = pIdBusiness ;
 	end if;
 ELSE
 	select -1 as idPurchase;
 end if$$
 
 DROP PROCEDURE IF EXISTS `spPurchaseXProductInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseXProductInsert` (IN `pIdPurchase` INT(11) UNSIGNED, IN `pIdProduct` INT(11) UNSIGNED, IN `pQuantity` INT(11) UNSIGNED, IN `pIdBusiness` INT(11) UNSIGNED)  NO SQL
-if exists(select idProduct from products where idProduct = pIdProduct and Business_id = pIdBusiness and Active = 1) and exists(select idPurchase from purchases where idPurchase = pIdPurchase and Business_id = pIdBusiness)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseXProductInsert` (IN `pIdPurchase` INT(11) UNSIGNED, IN `pCost` FLOAT UNSIGNED, IN `pIdUser` INT(11) UNSIGNED, IN `pIdProduct` INT(11) UNSIGNED, IN `pQuantity` INT(11), IN `pIdBusiness` INT(11))  NO SQL
+if exists(select idProduct from products where products.idProduct = pIdProduct and Business_id = pIdBusiness and Active = 1) and exists(select purchases.idPurchase from purchases where purchases.idPurchase = pIdPurchase and Business_id = pIdBusiness) and exists(select idUser from Users where idUser = pIdUser and Business_id = pIdBusiness and Active = 1)
 then
-	set @Cost = (select Cost from products where idProduct = pIdProduct and Business_id = pIdBusiness);
 	if(pQuantity > 0 and pQuantity is not null)
     then
-		insert into purchases_x_products(idPurchase,idProduct,Quantity,Cost) values(pIdPurchase,pIdProduct,pQuantity,@Cost);
-        update products set Stock = products.Stock - pQuantity where idProduct = pIdProduct and Business_id = pIdBusiness and Active = 1;
+	insert into purchases_x_products(Purchases_id,Products_id,Quantity,Cost) values(pIdPurchase,pIdProduct,pQuantity,pCost);
+    update products set products.Stock = products.Stock + pQuantity where products.idProduct = pIdProduct and Business_id = pIdBusiness  and Active = 1;
+    call bd_agcs.spMovementInsert(pIdProduct, pQuantity, pIdUser, "Compra de producto", 1,pCost, pIdBusiness);
 	else
-		insert into purchases_x_products(idPurchase,idProduct,Quantity,Cost) values(pIdPurchase,pIdProduct,0,@Cost);
+		insert into purchases_x_products(idPurchase,idProduct,Quantity,Cost) values(pIdPurchase,pIdProduct,0,pCost);
     end if;
 end if$$
 
@@ -345,7 +348,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserDelete` (IN `pId` INT, IN `pI
 
 DROP PROCEDURE IF EXISTS `spUserGetById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserGetById` (IN `pId` INT, IN `pIdBusiness` INT)  NO SQL
-SELECT users.idUser, users.Mail ,users.Name ,users.Surname ,users.Name_Second ,users.Dni, user_extrainfo.Address, user_extrainfo.Tel_Father, user_extrainfo.Tel_Mother,user_extrainfo.Tel_Brother, user_extrainfo.Tel_User,user_extrainfo.Cellphone FROM users inner join user_extrainfo on user_extrainfo.idUser = users.idUser WHERE users.idUser = pId and users.Business_id= pIdBusiness$$
+SELECT users.idUser, users.Mail ,users.Name ,users.Surname ,users.Name_Second ,users.Dni, user_extrainfo.Address, user_extrainfo.Tel_Father, user_extrainfo.Tel_Mother,user_extrainfo.Tel_Brother, user_extrainfo.Tel_User,user_extrainfo.Cellphone FROM users inner join user_extrainfo on user_extrainfo.Users_id = users.idUser WHERE users.idUser = pId and users.Business_id= pIdBusiness$$
 
 DROP PROCEDURE IF EXISTS `spUserInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserInsert` (IN `pIdBusiness` INT, IN `pName` VARCHAR(60), IN `pSurname` VARCHAR(60), IN `pDni` BIGINT, IN `pMail` VARCHAR(60), IN `pTelephone` VARCHAR(60), IN `pPass` VARCHAR(60), IN `pCellphone` VARCHAR(60), IN `pAddress` VARCHAR(55), IN `pTelephoneM` VARCHAR(55), IN `pTelephoneF` VARCHAR(55), IN `pTelephoneB` VARCHAR(55), IN `pSecondN` VARCHAR(55))  NO SQL
@@ -355,7 +358,7 @@ then
     set @lastId = (select users.idUser from users where users.idUser = LAST_INSERT_ID() and users.Name = pName and users.Surname = pSurname and users.Business_id = pIdBusiness);
     if(@lastId is not null)
     then    
-    	insert into user_extrainfo (user_extrainfo.idUser) values (@lastId);
+    	insert into user_extrainfo (user_extrainfo.Users_id) values (@lastId);
 		if( pDni is not null) 
 		THEN
 			UPDATE users set users.Dni = pDni WHERE users.idUser = @lastId and users.Business_id = pIdBusiness; 
@@ -366,27 +369,27 @@ then
 		end if;	
          if( pTelephone is not null) 
 		THEN
-			UPDATE user_extrainfo set user_extrainfo.Tel_User = pTelephone WHERE user_extrainfo.idUser = @lastId; 
+			UPDATE user_extrainfo set user_extrainfo.Tel_User = pTelephone WHERE user_extrainfo.Users_id = @lastId; 
 		end if;	
         if( pTelephoneM is not null) 
 		THEN
-			UPDATE user_extrainfo set user_extrainfo.Tel_Mother = pTelephoneM WHERE user_extrainfo.idUser = @lastId; 
+			UPDATE user_extrainfo set user_extrainfo.Tel_Mother = pTelephoneM WHERE user_extrainfo.Users_id = @lastId; 
 		end if;	
         if( pTelephoneF is not null) 
 		THEN
-			UPDATE user_extrainfo set user_extrainfo.Tel_Father = pTelephoneF WHERE user_extrainfo.idUser = @lastId; 
+			UPDATE user_extrainfo set user_extrainfo.Tel_Father = pTelephoneF WHERE user_extrainfo.Users_id = @lastId; 
 		end if;	
         if( pTelephoneB is not null) 
 		THEN
-			UPDATE user_extrainfo set user_extrainfo.Tel_Brother = pTelephoneB WHERE user_extrainfo.idUser = @lastId; 
+			UPDATE user_extrainfo set user_extrainfo.Tel_Brother = pTelephoneB WHERE user_extrainfo.Users_id = @lastId; 
 		end if;
         if( pAddress is not null) 
 		THEN
-			UPDATE user_extrainfo set user_extrainfo.Address = pAddress WHERE user_extrainfo.idUser = @lastId; 
+			UPDATE user_extrainfo set user_extrainfo.Address = pAddress WHERE user_extrainfo.Users_id = @lastId; 
 		end if;
         if( pCellphone is not null) 
 		THEN
-			UPDATE user_extrainfo set user_extrainfo.Cellphone = pCellphone WHERE user_extrainfo.idUser = @lastId; 
+			UPDATE user_extrainfo set user_extrainfo.Cellphone = pCellphone WHERE user_extrainfo.Users_id = @lastId; 
 		end if;	
 		
 		select 1 as success; #Insert Success
@@ -400,7 +403,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserLogin` (IN `Mail` VARCHAR(320
 
 DROP PROCEDURE IF EXISTS `spUsersGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUsersGet` (IN `pIdBusiness` INT)  NO SQL
-SELECT user_extrainfo.Cellphone, users.idUser, users.Name, users.Surname, users.Dni, users.Mail FROM users left join user_extrainfo on users.idUser = user_extrainfo.idUser where users.Business_id = pIdBusiness and users.Admin != 1$$
+SELECT user_extrainfo.Cellphone, users.idUser, users.Name, users.Surname, users.Dni, users.Mail FROM users left join user_extrainfo on users.idUser = user_extrainfo.Users_id where users.Business_id = pIdBusiness and users.Admin != 1$$
 
 DROP PROCEDURE IF EXISTS `spUserUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(60), IN `pSurname` VARCHAR(60), IN `pDNI_CUIT` INT, IN `pMail` VARCHAR(60), IN `pTelephone` VARCHAR(60), IN `pCellphone` VARCHAR(60), IN `pTelephoneM` VARCHAR(60), IN `pTelephoneF` VARCHAR(60), IN `pTelephoneB` VARCHAR(60), IN `pAddress` VARCHAR(60), IN `pSecondN` VARCHAR(60))  NO SQL
@@ -468,7 +471,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   `idBill` int(11) NOT NULL AUTO_INCREMENT,
   `DateBill` date DEFAULT NULL,
   `Clients_id` int(11) DEFAULT NULL,
-  `Employee_Code` int(11) DEFAULT NULL,
+  `Users_id` int(11) DEFAULT NULL,
   `IVA_Condition` varchar(45) DEFAULT NULL,
   `TypeBill` varchar(1) DEFAULT NULL,
   `Subtotal` float(10,2) DEFAULT '0.00',
@@ -493,7 +496,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
 -- Volcado de datos para la tabla `bills`
 --
 
-INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_id`, `Employee_Code`, `IVA_Condition`, `TypeBill`, `Subtotal`, `Discount`, `IVA_Recharge`, `WholeSaler`, `Total`, `Branches_id`, `Payment_Methods_id`, `Macs_id`, `Business_id`) VALUES
+INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_id`, `Users_id`, `IVA_Condition`, `TypeBill`, `Subtotal`, `Discount`, `IVA_Recharge`, `WholeSaler`, `Total`, `Branches_id`, `Payment_Methods_id`, `Macs_id`, `Business_id`) VALUES
 (2, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (3, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
 (4, '2019-06-27', 0, NULL, NULL, NULL, 0.00, NULL, NULL, NULL, 0.99, 0, 0, 0, 1),
@@ -506,7 +509,7 @@ INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_id`, `Employee_Code`, `IVA_C
 (66, '0000-00-00', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 3),
 (67, '0000-00-00', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 3),
 (68, '2019-10-22', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(69, '2019-10-24', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 4300.00, NULL, NULL, NULL, 1);
+(69, '2019-10-24', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -729,9 +732,9 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProduct`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_id`, `Business_id`, `Active`) VALUES
-(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', -7, '1', 3, 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -74, '2', 3, 1, b'1'),
-(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -1041, '3', 3, 1, b'1'),
+(1, 1, 'Manga Yakusoku no Neverland Vol 1', 0002005.00, 0000300.00, 0000280.00, b'1', 2406, '1', 3, 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000320.00, 0000200.00, 0000180.00, b'1', -68, '2', 3, 1, b'1'),
+(3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000320.00, 0000300.00, 0000096.00, b'1', -990, '3', 3, 1, b'1'),
 (4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', -1, '7791337613027', 2, 1, b'1'),
 (7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, -1, '434', 1, 1, b'1'),
 (8, 85, 'awful hat', 0000005.00, 0000331.00, 0000328.00, NULL, -32, '32222', 0, 1, b'1'),
@@ -753,7 +756,7 @@ INSERT INTO `products` (`idProduct`, `Article_number`, `Description`, `Cost`, `P
 DROP TABLE IF EXISTS `provinces`;
 CREATE TABLE IF NOT EXISTS `provinces` (
   `idProvince` int(11) NOT NULL AUTO_INCREMENT,
-  `Province` varchar(100) DEFAULT NULL,
+  `Name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`idProvince`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
@@ -761,7 +764,7 @@ CREATE TABLE IF NOT EXISTS `provinces` (
 -- Volcado de datos para la tabla `provinces`
 --
 
-INSERT INTO `provinces` (`idProvince`, `Province`) VALUES
+INSERT INTO `provinces` (`idProvince`, `Name`) VALUES
 (1, 'CABA'),
 (2, 'Buenos Aires');
 
@@ -774,26 +777,46 @@ INSERT INTO `provinces` (`idProvince`, `Province`) VALUES
 DROP TABLE IF EXISTS `purchases`;
 CREATE TABLE IF NOT EXISTS `purchases` (
   `idPurchase` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `idSupplier` int(11) NOT NULL,
-  `idEmployee` int(11) DEFAULT NULL,
+  `Suppliers_id` int(11) NOT NULL,
+  `Users_id` int(11) DEFAULT NULL,
   `date` date NOT NULL,
   `total` float(10,2) UNSIGNED NOT NULL,
   `cond` varchar(100) NOT NULL,
-  `idBusiness` int(11) NOT NULL,
+  `Business_id` int(11) NOT NULL,
   PRIMARY KEY (`idPurchase`),
-  KEY `fk_Purchases_Suppliers_idx` (`idSupplier`) USING BTREE,
-  KEY `fk_Purchases_idEmployee_idx` (`idEmployee`) USING BTREE,
-  KEY `fk_Purchases_Business_idx` (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  KEY `fk_Purchases_Suppliers_idx` (`Suppliers_id`) USING BTREE,
+  KEY `fk_Purchases_Users_id_idx` (`Users_id`) USING BTREE,
+  KEY `fk_Purchases_Business_idx` (`Business_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases`
 --
 
-INSERT INTO `purchases` (`idPurchase`, `idSupplier`, `idEmployee`, `date`, `total`, `cond`, `idBusiness`) VALUES
-(1, 4, 27, '2019-10-24', 600.00, '', 1),
-(2, 4, 27, '2019-10-24', 600.00, '', 1),
-(3, 3, 27, '2019-10-24', 700.00, '', 1);
+INSERT INTO `purchases` (`idPurchase`, `Suppliers_id`, `Users_id`, `date`, `total`, `cond`, `Business_id`) VALUES
+(1, 3, 27, '0000-00-00', 600.00, '', 1),
+(2, 3, 27, '0000-00-00', 600.00, '', 1),
+(3, 3, 27, '2019-10-24', 1000.00, '', 1),
+(4, 3, 27, '2019-10-24', 1000.00, '', 1),
+(5, 3, 27, '2019-10-24', 1000.00, '', 1),
+(6, 3, 27, '2019-10-24', 1000.00, '', 1),
+(7, 3, 27, '2019-10-24', 3300.00, '', 1),
+(8, 3, 27, '2019-10-24', 2300.00, '', 1),
+(9, 3, 27, '2019-10-24', 2300.00, '', 1),
+(10, 3, 27, '2019-10-24', 1400.00, '', 1),
+(11, 3, 27, '2019-10-24', 1400.00, '', 1),
+(12, 3, 27, '2019-10-24', 2400.00, '', 1),
+(13, 3, 27, '2019-10-24', 1400.00, '', 1),
+(14, 3, 27, '2019-10-24', 800.00, '', 1),
+(15, 4, 27, '2019-10-24', 1000.00, '', 1),
+(16, 3, 27, '2019-10-24', 1000.00, '', 1),
+(17, 3, 27, '2019-10-24', 1900.00, '', 1),
+(18, 3, 27, '2019-10-24', 3000.00, '', 1),
+(19, 3, 27, '2019-10-24', 6300.00, '', 1),
+(20, 3, 27, '2019-10-24', 6300.00, '', 1),
+(21, 3, 27, '2019-10-24', 7200.00, '', 1),
+(22, 3, 27, '2019-10-24', 3200.00, '', 1),
+(23, 3, 27, '2019-10-24', 1900.00, '', 1);
 
 -- --------------------------------------------------------
 
@@ -804,14 +827,47 @@ INSERT INTO `purchases` (`idPurchase`, `idSupplier`, `idEmployee`, `date`, `tota
 DROP TABLE IF EXISTS `purchases_x_products`;
 CREATE TABLE IF NOT EXISTS `purchases_x_products` (
   `idPurchases_x_Products` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `idPurchase` int(11) UNSIGNED NOT NULL,
-  `idProduct` int(11) NOT NULL,
+  `Purchases_id` int(11) UNSIGNED NOT NULL,
+  `Products_id` int(11) NOT NULL,
   `Quantity` int(11) NOT NULL,
   `Cost` float(10,2) DEFAULT '0.00',
   PRIMARY KEY (`idPurchases_x_Products`),
-  KEY `fk_PurchasesXProducts_Purchases_idx` (`idPurchase`),
-  KEY `fk_PurchasesXProducts_Products_idx` (`idProduct`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `fk_PurchasesXProducts_Purchases_idx` (`Purchases_id`),
+  KEY `fk_PurchasesXProducts_Products_idx` (`Products_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `purchases_x_products`
+--
+
+INSERT INTO `purchases_x_products` (`idPurchases_x_Products`, `Purchases_id`, `Products_id`, `Quantity`, `Cost`) VALUES
+(1, 7, 1, 7, 27.00),
+(2, 8, 1, 2, 27.00),
+(3, 9, 1, 2, 27.00),
+(4, 10, 1, 2, 27.00),
+(5, 7, 1, 300, 300.00),
+(6, 11, 1, 2, 300.00),
+(7, 7, 1, 300, 300.00),
+(8, 7, 1, 300, 300.00),
+(9, 7, 1, 300, 300.00),
+(10, 12, 1, 4, 300.00),
+(11, 7, 1, 300, 300.00),
+(13, 7, 1, 300, 300.00),
+(14, 7, 1, 300, 300.00),
+(15, 7, 1, 300, 300.00),
+(16, 14, 2, 4, 200.00),
+(17, 7, 1, 300, 300.00),
+(18, 18, 1, 2, 300.00),
+(19, 19, 3, 21, 300.00),
+(20, 20, 3, 21, 300.00),
+(21, 21, 3, 21, 300.00),
+(22, 21, 1, 3, 300.00),
+(23, 22, 1, 2, 300.00),
+(24, 22, 2, 4, 200.00),
+(25, 22, 3, 6, 300.00),
+(26, 23, 1, 2, 2005.00),
+(27, 23, 2, 2, 320.00),
+(28, 23, 3, 3, 320.00);
 
 -- --------------------------------------------------------
 
@@ -824,38 +880,46 @@ CREATE TABLE IF NOT EXISTS `stock_movement` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` tinyint(2) DEFAULT NULL,
   `description` varchar(500) DEFAULT NULL,
-  `idProduct` int(11) DEFAULT NULL,
+  `Products_id` int(11) DEFAULT NULL,
   `dateTime` datetime DEFAULT NULL,
   `quant` mediumint(8) DEFAULT NULL,
-  `idEmployee` int(11) DEFAULT NULL,
-  `Business_id` int(11) NOT NULL DEFAULT '0',
+  `Amount` float(10,2) NOT NULL DEFAULT '0.00',
+  `Users_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_StockMovement_Products_idx` (`idProduct`) USING BTREE,
-  KEY `fk_StockMovement_Users_idx` (`idEmployee`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+  KEY `fk_StockMovement_Products_idx` (`Products_id`) USING BTREE,
+  KEY `fk_StockMovement_Users_idx` (`Users_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `stock_movement`
 --
 
-INSERT INTO `stock_movement` (`id`, `type`, `description`, `idProduct`, `dateTime`, `quant`, `idEmployee`, `Business_id`) VALUES
-(2, 2, 'asffasasdfasdf', 1, '2019-10-21 04:25:53', 5, 27, 0),
-(3, 2, 'asffasasdfasdf', 1, '2019-10-21 05:46:54', 5, 27, 0),
-(4, 2, 'xdd', 1, '2019-10-21 02:49:01', 5, 27, 0),
-(5, 2, 'xdd', 1, '2019-10-21 02:50:06', 5, 27, 0),
-(6, 2, 'xdd', 1, '2019-10-21 02:51:10', 10, 27, 0),
-(7, 2, NULL, 1, '2019-10-21 03:12:14', 15, 27, 0),
-(8, 2, NULL, 1, '2019-10-21 03:13:50', 2, 27, 0),
-(9, 2, NULL, 1, '2019-10-21 03:21:39', 5, 27, 0),
-(10, 2, 'jojo', 1, '2019-10-21 03:26:12', 70, 27, 0),
-(11, 2, 'dfgh', 1, '2019-10-22 15:26:02', 50, 27, 0),
-(12, 2, 'sdf', 1, '2019-10-22 15:30:56', 3, 27, 0),
-(13, 0, 'Venta de producto', 2, '2019-10-22 16:44:46', 6, 27, 0),
-(14, 0, 'Venta de producto', 1, '2019-10-22 16:54:07', 2, 27, 0),
-(15, 0, 'Venta de producto', 2, '2019-10-22 16:54:07', 2, 27, 0),
-(16, 0, 'Venta de producto', 1, '2019-10-24 13:55:32', 5, 27, 0),
-(17, 0, 'Venta de producto', 2, '2019-10-24 13:55:32', 8, 27, 0),
-(18, 0, 'Venta de producto', 3, '2019-10-24 13:55:32', 4, 27, 0);
+INSERT INTO `stock_movement` (`id`, `type`, `description`, `Products_id`, `dateTime`, `quant`, `Amount`, `Users_id`) VALUES
+(2, 2, 'asffasasdfasdf', 1, '2019-10-21 04:25:53', 5, 0.00, 27),
+(3, 2, 'asffasasdfasdf', 1, '2019-10-21 05:46:54', 5, 0.00, 27),
+(4, 2, 'xdd', 1, '2019-10-21 02:49:01', 5, 0.00, 27),
+(5, 2, 'xdd', 1, '2019-10-21 02:50:06', 5, 0.00, 27),
+(6, 2, 'xdd', 1, '2019-10-21 02:51:10', 10, 0.00, 27),
+(7, 2, NULL, 1, '2019-10-21 03:12:14', 15, 0.00, 27),
+(8, 2, NULL, 1, '2019-10-21 03:13:50', 2, 0.00, 27),
+(9, 2, NULL, 1, '2019-10-21 03:21:39', 5, 0.00, 27),
+(10, 2, 'jojo', 1, '2019-10-21 03:26:12', 70, 0.00, 27),
+(11, 2, 'dfgh', 1, '2019-10-22 15:26:02', 50, 0.00, 27),
+(12, 2, 'sdf', 1, '2019-10-22 15:30:56', 3, 0.00, 27),
+(13, 0, 'Venta de producto', 2, '2019-10-22 16:44:46', 6, 0.00, 27),
+(14, 0, 'Venta de producto', 1, '2019-10-22 16:54:07', 2, 0.00, 27),
+(15, 0, 'Venta de producto', 2, '2019-10-22 16:54:07', 2, 0.00, 27),
+(16, 1, 'Compra de producto', 1, '2019-10-24 21:11:52', 300, 300.00, 27),
+(17, 1, 'Compra de producto', 1, '2019-10-24 21:21:43', 300, 300.00, 27),
+(18, 1, 'Compra de producto', 1, '2019-10-24 21:31:55', 2, 300.00, 27),
+(19, 1, 'Compra de producto', 3, '2019-10-24 18:36:49', 21, 300.00, 27),
+(20, 1, 'Compra de producto', 1, '2019-10-24 18:36:56', 3, 300.00, 27),
+(21, 1, 'Compra de producto', 1, '2019-10-24 18:37:43', 2, 300.00, 27),
+(22, 1, 'Compra de producto', 2, '2019-10-24 18:37:45', 4, 200.00, 27),
+(23, 1, 'Compra de producto', 3, '2019-10-24 18:37:45', 6, 300.00, 27),
+(24, 1, 'Compra de producto', 1, '2019-10-24 18:52:09', 2, 2005.00, 27),
+(25, 1, 'Compra de producto', 2, '2019-10-24 18:52:09', 2, 320.00, 27),
+(26, 1, 'Compra de producto', 3, '2019-10-24 18:52:09', 3, 320.00, 27);
 
 -- --------------------------------------------------------
 
@@ -945,17 +1009,17 @@ CREATE TABLE IF NOT EXISTS `user_extrainfo` (
   `Tel_User` varchar(50) CHARACTER SET latin2 DEFAULT NULL,
   `Healthcare_Company` varchar(45) DEFAULT NULL,
   `Sallary` int(11) DEFAULT NULL,
-  `idUser` int(11) NOT NULL,
+  `Users_id` int(11) NOT NULL,
   `Cellphone` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`idUser_ExtraInfo`) USING BTREE,
-  KEY `fk_User_ExtraInfo_Users1_idx` (`idUser`)
+  KEY `fk_User_ExtraInfo_Users_idx` (`Users_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `user_extrainfo`
 --
 
-INSERT INTO `user_extrainfo` (`idUser_ExtraInfo`, `Address`, `Tel_Father`, `Tel_Mother`, `Tel_Brother`, `Tel_User`, `Healthcare_Company`, `Sallary`, `idUser`, `Cellphone`) VALUES
+INSERT INTO `user_extrainfo` (`idUser_ExtraInfo`, `Address`, `Tel_Father`, `Tel_Mother`, `Tel_Brother`, `Tel_User`, `Healthcare_Company`, `Sallary`, `Users_id`, `Cellphone`) VALUES
 (1, 'Admin', '4444444', '333333', '5555555', '011', NULL, NULL, 27, '12'),
 (2, 'Av Rivadavia 6015 13C', '01144404555', '01149607853', '01164538472', '44322210', NULL, NULL, 28, '11617306599'),
 (6, 'para borrar usuario a', '889', '1000', '778', '110', NULL, NULL, 32, '200'),
@@ -973,7 +1037,7 @@ ALTER TABLE `address`
   ADD CONSTRAINT `fk_Address_Business1` FOREIGN KEY (`Business_id`) REFERENCES `business` (`idBusiness`),
   ADD CONSTRAINT `fk_Address_Client1` FOREIGN KEY (`Clients_id`) REFERENCES `clients` (`idClient`),
   ADD CONSTRAINT `fk_Address_Delivery1` FOREIGN KEY (`Delivery_id`) REFERENCES `delivery` (`idDelivery`),
-  ADD CONSTRAINT `fk_Address_Province1` FOREIGN KEY (`Province_id`) REFERENCES `provinces` (`idProvince`);
+  ADD CONSTRAINT `fk_Address_Provinces` FOREIGN KEY (`Province_id`) REFERENCES `provinces` (`idProvince`);
 
 --
 -- Filtros para la tabla `bills`
@@ -1024,41 +1088,41 @@ ALTER TABLE `products`
 -- Filtros para la tabla `purchases`
 --
 ALTER TABLE `purchases`
-  ADD CONSTRAINT `fk_Purchases_Business` FOREIGN KEY (`idBusiness`) REFERENCES `business` (`idBusiness`),
-  ADD CONSTRAINT `fk_Purchases_Employee` FOREIGN KEY (`idEmployee`) REFERENCES `users` (`idUser`),
-  ADD CONSTRAINT `fk_Purchases_Suppliers` FOREIGN KEY (`idSupplier`) REFERENCES `suppliers` (`idSupplier`);
+  ADD CONSTRAINT `fk_Purchases_Business` FOREIGN KEY (`Business_id`) REFERENCES `business` (`idBusiness`),
+  ADD CONSTRAINT `fk_Purchases_Suppliers` FOREIGN KEY (`Suppliers_id`) REFERENCES `suppliers` (`idSupplier`),
+  ADD CONSTRAINT `fk_Purchases_Users` FOREIGN KEY (`Users_id`) REFERENCES `users` (`idUser`);
 
 --
 -- Filtros para la tabla `purchases_x_products`
 --
 ALTER TABLE `purchases_x_products`
-  ADD CONSTRAINT `fk_PurchasesXProducts_Products` FOREIGN KEY (`idProduct`) REFERENCES `products` (`idProduct`),
-  ADD CONSTRAINT `fk_PurchasesXProducts_Purchases` FOREIGN KEY (`idPurchase`) REFERENCES `purchases` (`idPurchase`);
+  ADD CONSTRAINT `fk_PurchasesXProducts_Products` FOREIGN KEY (`Products_id`) REFERENCES `products` (`idProduct`),
+  ADD CONSTRAINT `fk_PurchasesXProducts_Purchases` FOREIGN KEY (`Purchases_id`) REFERENCES `purchases` (`idPurchase`);
 
 --
 -- Filtros para la tabla `stock_movement`
 --
 ALTER TABLE `stock_movement`
-  ADD CONSTRAINT `fk_Stock_movement_Products` FOREIGN KEY (`idProduct`) REFERENCES `products` (`idProduct`),
-  ADD CONSTRAINT `fk_Stock_movement_Users` FOREIGN KEY (`idEmployee`) REFERENCES `users` (`idUser`);
+  ADD CONSTRAINT `fk_Stock_movement_Products` FOREIGN KEY (`Products_id`) REFERENCES `products` (`idProduct`),
+  ADD CONSTRAINT `fk_Stock_movement_Users` FOREIGN KEY (`Users_id`) REFERENCES `users` (`idUser`);
 
 --
 -- Filtros para la tabla `suppliers`
 --
 ALTER TABLE `suppliers`
-  ADD CONSTRAINT `fk_Supplier_Business1` FOREIGN KEY (`Business_id`) REFERENCES `business` (`idBusiness`);
+  ADD CONSTRAINT `fk_Supplier_Business` FOREIGN KEY (`Business_id`) REFERENCES `business` (`idBusiness`);
 
 --
 -- Filtros para la tabla `users`
 --
 ALTER TABLE `users`
-  ADD CONSTRAINT `fk_Users_Business1` FOREIGN KEY (`Business_id`) REFERENCES `business` (`idBusiness`);
+  ADD CONSTRAINT `fk_Users_Business` FOREIGN KEY (`Business_id`) REFERENCES `business` (`idBusiness`);
 
 --
 -- Filtros para la tabla `user_extrainfo`
 --
 ALTER TABLE `user_extrainfo`
-  ADD CONSTRAINT `fk_User_ExtraInfo_Users1` FOREIGN KEY (`idUser`) REFERENCES `users` (`idUser`);
+  ADD CONSTRAINT `fk_User_ExtraInfo_Users` FOREIGN KEY (`Users_id`) REFERENCES `users` (`idUser`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
