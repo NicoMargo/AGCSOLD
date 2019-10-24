@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 24-10-2019 a las 20:37:39
+-- Tiempo de generación: 24-10-2019 a las 23:00:40
 -- Versión del servidor: 5.7.23
 -- Versión de PHP: 7.2.10
 
@@ -273,7 +273,7 @@ ELSE
 end if$$
 
 DROP PROCEDURE IF EXISTS `spPurchaseXProductInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseXProductInsert` (IN `pIdPurchase` INT(11) UNSIGNED, IN `pIdProduct` INT(11) UNSIGNED, IN `pQuantity` INT(11) UNSIGNED, IN `pIdBusiness` INT(11) UNSIGNED)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseXProductInsert` (IN `pIdPurchase` INT(11) UNSIGNED, IN `pIdProduct` INT(11) UNSIGNED, IN `pQuantity` INT(11) UNSIGNED, IN `pIdBusiness` INT(11) UNSIGNED, IN `pCost` FLOAT(10,2), IN `pIdUser` INT)  NO SQL
 if exists(select idProduct from products where idProduct = pIdProduct and Business_id = pIdBusiness and Active = 1) and exists(select idPurchase from purchases where idPurchase = pIdPurchase and Business_id = pIdBusiness) and exists(select idUser from Users where idUser = pIdUser and Business_id = pIdBusiness and Active = 1)
 then
 	if(pQuantity > 0 and pQuantity is not null)
@@ -788,7 +788,14 @@ CREATE TABLE IF NOT EXISTS `purchases` (
   KEY `fk_Purchases_Suppliers_idx` (`Suppliers_id`) USING BTREE,
   KEY `fk_Purchases_Users_id_idx` (`Users_id`) USING BTREE,
   KEY `fk_Purchases_Business_idx` (`Business_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `purchases`
+--
+
+INSERT INTO `purchases` (`idPurchase`, `Suppliers_id`, `Users_id`, `date`, `total`, `cond`, `Business_id`) VALUES
+(1, 1, 27, '2019-10-24', 1.00, '12', 2);
 
 -- --------------------------------------------------------
 
@@ -871,7 +878,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idSupplier`) USING BTREE,
   KEY `fk_Supplier_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `suppliers`
@@ -879,13 +886,15 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
 
 INSERT INTO `suppliers` (`idSupplier`, `Cuit`, `Name`, `Surname`, `Company`, `Fanciful_name`, `Telephone`, `Cellphone`, `Business_id`, `Address`, `Mail`, `Active`) VALUES
 (0, 1111111111, NULL, NULL, NULL, '', NULL, '0', 0, NULL, NULL, b'1'),
-(1, 54127534, 'Aquiles', 'Traigo', 'Nose q va aK xd', 'Nose q va aK xd', '43216543', '13111111', 1, 'En lsdfasdfasdf', 'jonylocliu@hotmail.coml.ar', b'1'),
+(1, 54127534, 'Aquiles', 'Traigo', NULL, 'Awwfdsa', '500', '600', 1, NULL, 'zzd', b'1'),
 (2, 44887784, 'Aquiles', 'Doy', 'yo tampoco jaja salu2', 'yo tampoco jaja salu2', '45678912', '1513317546', 1, 'viste china, bueno doblando a la izquierda', NULL, b'1'),
 (3, 18484910, 'Ivrea', 'La', 'EEEE', 'EEEE', '1', '1', 1, 'Avenida San juan bautista de lasalle 720', 'a', b'1'),
 (4, 105968465, 'void', 'main', 'EEEEEEEE', 'EEEEEEEE', '1', '1', 1, 'a', 'a', b'1'),
 (5, 45646548, 'Unpro', 'vedor', 'F', 'F', '15115', '14115', 2, 'Acala vuelta 0', 'correo@correo', b'1'),
 (7, 79881684, 'd', 'd', 'g', 'g', '1', '1', 1, 'q', 'r', b'0'),
-(11, 44444444, 'h', 'h', 'hsan', 'nk', '44445444', '44446444', 1, 'hhhhhh', 'h@h', b'1');
+(11, 44444444, 'h', 'h', 'hsan', 'nk', '44445444', '44446444', 1, 'hhhhhh', 'h@h', b'1'),
+(12, 43572144, 'Liu', 'Jonathan', 'HOla', 'ola k aze', '1531174589', '18975641', 1, 'aca xdddd', 'mail@.com', b'1'),
+(13, 198713214, 'wwww', 'w', 'zzzz', 'zzzzz', '1', '1', 1, 'a', 'a', b'0');
 
 -- --------------------------------------------------------
 

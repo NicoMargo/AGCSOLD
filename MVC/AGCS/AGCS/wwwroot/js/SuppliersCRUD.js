@@ -65,7 +65,7 @@
                 url: "/Suppliers/UpdateSupplier",
                 data: {
                     id: modelId,
-                    cuit: parseInt($("#crtCuit").find("input").val()),
+                    cuit: parseInt($("#updtCuit").find("input").val()),
                     surname: $("#updtSurname").find("input").val(),
                     name: $("#updtName").find("input").val(),
                     mail: $("#updtMail").find("input").val(),
@@ -73,7 +73,7 @@
                     cellphone: parseInt($("#updtCellphone").find("input").val()),
                     address: $("#updtAddress").find("input").val(),
                     company: $("#updtCompany").find("input").val(),
-                    fanciful_name: $("#crtFanciful").find("input").val()
+                    fanciful_name: $("#updtFanciful").find("input").val()
                 },
                 success: function () {
                     location.reload();
