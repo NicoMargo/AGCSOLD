@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 24-10-2019 a las 19:00:18
+-- Tiempo de generación: 24-10-2019 a las 20:37:39
 -- Versión del servidor: 5.7.23
 -- Versión de PHP: 7.2.10
 
@@ -28,11 +28,11 @@ DELIMITER $$
 --
 DROP PROCEDURE IF EXISTS `spBillInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spBillInsert` (IN `pIdBusiness` INT, IN `pDate` DATETIME, IN `pTotal` FLOAT, IN `pDNI` INT, IN `pIdUser` INT)  BEGIN
-	if EXISTS(select clients.idClient from clients where (clients.DNI_CUIT = pDNI and pIdBusiness = clients.Business_id and clients.Active = 1) or (pDNI = 1)) and exists(select idUser from Users where idUser = pIdUser and Business_id = pIdBusiness and Active = 1)
+	if EXISTS(select idClient from clients where (DNI_CUIT = pDNI and pIdBusiness = Business_id and Active = 1) or (pDNI = 1)) and exists(select idUser from Users where idUser = pIdUser and Business_id = pIdBusiness and Active = 1)
     THEN
-    SET  @idClient = (select clients.idClient from clients where clients.DNI_CUIT = pIdUser and ((clients.Business_id = pIdBusiness and clients.Active = 1) or pDNI = 1));
-		Insert into bills(bills.DateBill,bills.Total,bills.Business_id,bills.Clients_id, Users_id) values( pDate, pTotal, pIdBusiness,@idClient,@idUser);
-    	select bills.idBill from bills where bills.idBill = LAST_INSERT_ID() and bills.Business_id = pIdBusiness;
+    SET  @idClient = (select idClient from clients where DNI_CUIT = pDNI and ((Business_id = pIdBusiness and Active = 1) or pDNI = 1));
+		Insert into bills(DateBill,Total,Business_id,Clients_id, Users_id) values( pDate, pTotal, pIdBusiness,@idClient,@idUser);
+    	select idBill from bills where idBill = LAST_INSERT_ID() and Business_id = pIdBusiness;
     ELSE
     	select -1 as idBill;
     end if;
@@ -153,8 +153,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductDelete` (IN `pId` INT, IN 
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductGetByCode`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetByCode` (IN `pCode` LONG, IN `pIdBusiness` INT)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetByCode` (IN `pCode` INT, IN `pIdBusiness` INT, IN `pIdSupplier` INT)  BEGIN
+if(pIdSupplier != -1)
+THEN
+	SELECT * FROM products WHERE (/*products.Article_Number = pCode or */CodeProduct = pCode) and Business_id = pIdBusiness and products.Active = 1 and Suppliers_id = pIdSupplier;
+else 
 	SELECT * FROM products WHERE (/*products.Article_Number = pCode or */products.CodeProduct = pCode) and products.Business_id = pIdBusiness and products.Active = 1;
+end IF;
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductGetById`$$
