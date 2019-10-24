@@ -20,7 +20,8 @@ namespace AGCS.Models.BDD
                 {"pIdBusiness", Session.GetSUInt32("idBusiness")},
                 {"pDate", bill.Date},
                 {"pTotal", bill.Total},
-                {"pDNI", ClientBill.Dni}
+                {"pDNI", ClientBill.Dni},
+                {"pIdUser", Session.GetSUInt32("idUser") }
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spBillInsert", args);
 
