@@ -213,7 +213,7 @@
                         },
                         success: function (success) {
                             if (success) {
-                                CreateModal("Compra", "Se agregó la compra correctamente");
+                                CreateModal("Compra", "Se agregó la compra correctamente", true);
                             } else {
                                 CreateModal("Error", "Hubo un error al agregar la compra");
                             }
