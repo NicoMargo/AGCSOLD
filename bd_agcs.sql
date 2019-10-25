@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 24-10-2019 a las 22:49:55
+-- Tiempo de generación: 25-10-2019 a las 01:18:44
 -- Versión del servidor: 5.7.23
 -- Versión de PHP: 7.2.10
 
@@ -273,13 +273,13 @@ ELSE
 end if$$
 
 DROP PROCEDURE IF EXISTS `spPurchaseXProductInsert`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseXProductInsert` (IN `pIdPurchase` INT(11) UNSIGNED, IN `pCost` FLOAT UNSIGNED, IN `pIdUser` INT(11) UNSIGNED, IN `pIdProduct` INT(11) UNSIGNED, IN `pQuantity` INT(11), IN `pIdBusiness` INT(11))  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseXProductInsert` (IN `pIdPurchase` INT(11) UNSIGNED, IN `pCost` FLOAT UNSIGNED, IN `pPrice` FLOAT UNSIGNED, IN `pPriceW` FLOAT UNSIGNED, IN `pIdUser` INT(11) UNSIGNED, IN `pIdProduct` INT(11) UNSIGNED, IN `pQuantity` INT(11), IN `pIdBusiness` INT(11))  NO SQL
 if exists(select idProduct from products where products.idProduct = pIdProduct and Business_id = pIdBusiness and Active = 1) and exists(select purchases.idPurchase from purchases where purchases.idPurchase = pIdPurchase and Business_id = pIdBusiness) and exists(select idUser from Users where idUser = pIdUser and Business_id = pIdBusiness and Active = 1)
 then
 	if(pQuantity > 0 and pQuantity is not null)
     then
 	insert into purchases_x_products(Purchases_id,Products_id,Quantity,Cost) values(pIdPurchase,pIdProduct,pQuantity,pCost);
-    update products set products.Stock = products.Stock + pQuantity, products.cost = pCost where products.idProduct = pIdProduct and Business_id = pIdBusiness  and Active = 1;
+    update products set products.Stock = products.Stock + pQuantity, products.cost = pCost, products.price = pPrice,  products.priceW = pPriceW where products.idProduct = pIdProduct and Business_id = pIdBusiness  and Active = 1;
     call bd_agcs.spMovementInsert(pIdProduct, pQuantity, pIdUser, "Compra de producto", 1,pCost, pIdBusiness);
 	else
 		insert into purchases_x_products(idPurchase,idProduct,Quantity,Cost) values(pIdPurchase,pIdProduct,0,pCost);
@@ -737,8 +737,8 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProduct`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_id`, `Business_id`, `Active`) VALUES
-(1, 666, 'Manga Yakusoku no Neverland Vol 1', 0000500.00, 0000300.00, 0000280.00, b'1', 2408, '777', 3, 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000200.00, 0000200.00, 0000180.00, b'1', -35, '2', 3, 1, b'1'),
+(1, 666, 'Manga Yakusoku no Neverland Vol 1', 0000600.00, 0000700.00, 0000800.00, b'1', 2413, '777', 3, 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000300.00, 0000400.00, 0000500.00, b'1', 6, '2', 3, 1, b'1'),
 (3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000800.00, 0000300.00, 0000096.00, b'1', -986, '3', 3, 1, b'1'),
 (4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', -1, '7791337613027', 2, 1, b'1'),
 (7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, -1, '434', 1, 1, b'1'),
@@ -792,7 +792,7 @@ CREATE TABLE IF NOT EXISTS `purchases` (
   KEY `fk_Purchases_Suppliers_idx` (`Suppliers_id`) USING BTREE,
   KEY `fk_Purchases_Users_id_idx` (`Users_id`) USING BTREE,
   KEY `fk_Purchases_Business_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases`
@@ -830,7 +830,14 @@ INSERT INTO `purchases` (`idPurchase`, `Suppliers_id`, `Users_id`, `date`, `tota
 (29, 3, 27, '2019-10-24', 600.00, '', 1),
 (30, 3, 27, '2019-10-24', 600.00, '', 1),
 (31, 3, 27, '2019-10-24', 800.00, '', 1),
-(32, 3, 27, '2019-10-24', 800.00, '', 1);
+(32, 3, 27, '2019-10-24', 800.00, '', 1),
+(33, 3, 27, '2019-10-24', 400.00, '', 1),
+(34, 3, 27, '2019-10-24', 1200.00, '', 1),
+(35, 3, 27, '2019-10-24', 1200.00, '', 1),
+(36, 3, 27, '2019-10-24', 800.00, '', 1),
+(37, 3, 27, '2019-10-24', 5000.00, '', 1),
+(38, 3, 27, '2019-10-24', 1600.00, '', 1),
+(39, 3, 27, '2019-10-24', 5100.00, '', 1);
 
 -- --------------------------------------------------------
 
@@ -848,7 +855,7 @@ CREATE TABLE IF NOT EXISTS `purchases_x_products` (
   PRIMARY KEY (`idPurchases_x_Products`),
   KEY `fk_PurchasesXProducts_Purchases_idx` (`Purchases_id`),
   KEY `fk_PurchasesXProducts_Products_idx` (`Products_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases_x_products`
@@ -892,7 +899,14 @@ INSERT INTO `purchases_x_products` (`idPurchases_x_Products`, `Purchases_id`, `P
 (36, 29, 2, 3, 1000.00),
 (37, 30, 1, 2, 500.00),
 (38, 31, 2, 4, 1000.00),
-(39, 32, 2, 4, 200.00);
+(39, 32, 2, 4, 200.00),
+(40, 33, 2, 2, 500.00),
+(41, 35, 2, 2, 500.00),
+(42, 36, 2, 4, 500.00),
+(43, 37, 2, 25, 700.00),
+(44, 38, 2, 4, 300.00),
+(45, 39, 2, 4, 300.00),
+(46, 39, 1, 5, 600.00);
 
 -- --------------------------------------------------------
 
@@ -913,7 +927,7 @@ CREATE TABLE IF NOT EXISTS `stock_movement` (
   PRIMARY KEY (`id`),
   KEY `fk_StockMovement_Products_idx` (`Products_id`) USING BTREE,
   KEY `fk_StockMovement_Users_idx` (`Users_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `stock_movement`
@@ -955,7 +969,14 @@ INSERT INTO `stock_movement` (`id`, `type`, `description`, `Products_id`, `dateT
 (34, 1, 'Compra de producto', 2, '2019-10-24 19:41:28', 3, 1000.00, 27),
 (35, 1, 'Compra de producto', 1, '2019-10-24 19:41:59', 2, 500.00, 27),
 (36, 1, 'Compra de producto', 2, '2019-10-24 19:42:39', 4, 1000.00, 27),
-(37, 1, 'Compra de producto', 2, '2019-10-24 19:44:18', 4, 200.00, 27);
+(37, 1, 'Compra de producto', 2, '2019-10-24 19:44:18', 4, 200.00, 27),
+(38, 1, 'Compra de producto', 2, '2019-10-24 19:54:05', 2, 500.00, 27),
+(39, 1, 'Compra de producto', 2, '2019-10-24 20:36:14', 2, 500.00, 27),
+(40, 1, 'Compra de producto', 2, '2019-10-24 20:38:20', 4, 500.00, 27),
+(41, 1, 'Compra de producto', 2, '2019-10-24 20:39:14', 25, 700.00, 27),
+(42, 1, 'Compra de producto', 2, '2019-10-24 21:05:08', 4, 300.00, 27),
+(43, 1, 'Compra de producto', 2, '2019-10-24 21:05:47', 4, 300.00, 27),
+(44, 1, 'Compra de producto', 1, '2019-10-24 21:05:47', 5, 600.00, 27);
 
 -- --------------------------------------------------------
 
