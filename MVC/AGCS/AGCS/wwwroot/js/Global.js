@@ -42,7 +42,7 @@ function RowSearcher(tableId, searchInputId) {
 function validInt(element, expectedCondition = true) {
     let valid = false;
     let value = element.getElementsByTagName("input")[0].value;
-    if (!(expectedCondition && value > 0 && value != "")) {
+    if (expectedCondition && value < 0 || value == "") {
         element.getElementsByTagName("input")[0].classList.add("validation_error");
         element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
     }
@@ -57,7 +57,7 @@ function validInt(element, expectedCondition = true) {
 function validPositive(element, expectedCondition = true) {
     let valid = false;
     let value = element.getElementsByTagName("input")[0].value;
-    if (!(expectedCondition && value > 0 || value == "")) {
+    if (expectedCondition && value < 0 || value == "") {
         element.getElementsByTagName("input")[0].classList.add("validation_error");
         element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
     }
@@ -88,6 +88,11 @@ function validateInputs(parentId, inputClassname) {
     let valid = true;
     element = document.getElementById(parentId);
 
+    notEmptyList = element.getElementsByClassName(inputClassname + " notEmpty");
+    for (i = 0; i < notEmptyList.length; i++) {
+        valid = validString(notEmptyList[i]) && valid;
+    }
+
     PositivesList = element.getElementsByClassName(inputClassname + " validPositive");
     for (i = 0; i < PositivesList.length; i++) {
         valid = validPositive(PositivesList[i]) && valid;
@@ -98,10 +103,6 @@ function validateInputs(parentId, inputClassname) {
         valid = validInt(IntergersList[i]) && valid;
     }
 
-    notEmptyList = element.getElementsByClassName(inputClassname + " notEmpty");
-    for (i = 0; i < notEmptyList.length; i++) {
-        valid = validString(notEmptyList[i]) && valid;
-    }
     return valid;
 
 }

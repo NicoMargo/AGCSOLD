@@ -56,7 +56,9 @@ namespace AGCS.Models.BDD
                 {"pQuantity", product.Quant},
                 {"pIdBusiness", Session.GetSUInt32("idBusiness") },
                 {"pIdUser", Session.GetSUInt32("idUser")},
-                {"pCost", product.Cost}
+                {"pCost", product.Cost},
+                {"pPrice", product.Price},
+                {"pPriceW", product.PriceW}
             };
             success = Helpers.CallNonQuery("spPurchaseXProductInsert", args)>0;
             return success;

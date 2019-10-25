@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var idProduct, product, total = 0, Items = [], p;
-    var Product = { Id: null, Quant: null, iva: 1, Price: null, Code: null, Cost: null };
+    var Product = { Id: null, Quant: null, iva: 1, Price: null, Code: null, Cost: null, PriceW: null };
 
     $('#codProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -17,6 +17,8 @@
         $("#descProdToEnter").empty();
         $("#costProdToEnter").empty();
         $("#stockProdToEnter").empty();
+        $("#priceProdToEnter").empty();
+        $("#priceWProdToEnter").empty();
         $.ajax({
             type: "POST",
             url: "../../Purchases/GetProduct",
@@ -30,7 +32,8 @@
                     idProduct = product.Id;
                     $("#descProdToEnter").append(product.Description);
                     $("#costProdToEnter").val(product.Cost);
-                    $("#stockProdToEnter").append(product.Stock);
+                    $("#priceProdToEnter").val(product.Price);
+                    $("#priceWProdToEnter").val(product.PriceW);
                     $("#quantProdToEnter").focus();
                 } else {
                     CreateModal("Error de Producto","No existe el producto o no corresponde con el proveedor");
@@ -47,17 +50,14 @@
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
             if (product != null) {
-                if ($("#quantProdToEnter").val().length > 0 && $("#quantProdToEnter").val() > 0) {
+                if (validateInputs("divInput", "validInput")) {
                     if ($("#codProdToEnter").val().length > 0) {
                         $("#quantProdToEnter").css({ 'border-color': '#ced4da' });
                         LoadProductToList();
                     } else {
                         $("#codProdToEnter").css({ "border": " 0.15rem solid red" });
                     }
-                } else {
-                    $("#quantProdToEnter").css({ "border": " 0.15rem solid red" });
-                }
-
+                } 
             }
         }
     });
@@ -120,40 +120,69 @@
     }
     function LoadProductToList() {
         $("#total").empty();
-        total += product.Price * parseInt($("#quantProdToEnter").val(), 10);
-        $("#total").append(total);
-        if ($("#" + idProduct).length > 0) {
-            let data = $("#codProdToEnter").val(), success = false, i = 0;
-            document.getElementById("q" + idProduct).value = parseInt($("#quantProdToEnter").val(), 10) + parseInt($("#q" + idProduct).val(), 10);
+        if (Items.length > 0) {
+            let successt = false;
             do {
-                if (Items[i].Code == data) {
-                    Items[i].Quant += parseInt($("#quantProdToEnter").val(), 10);
-                    Items[i].Cost = parseInt($("#costProdToEnter").val(), 10);
-                    success = true;
+
+                if (Items[i].Id === idProduct) {
+                    total -= (Items[i].Cost * Items[i].Quant);
+                    i++;
+                    if (i == Items.length) {
+                        successt = true;
+                    }
                 }
-                i++;
-            } while (!success);
-        } else {
-            Product = new Object();
-            Product.Id = product.Id;
-            Product.Price = product.Price;
-            Product.Quant = parseInt($("#quantProdToEnter").val());
-            Product.Code = product.Code;
-            Product.Cost = parseInt($("#costProdToEnter").val());
-            Items.push(Product);
-            var ProdToEnter = '<tr id="' + idProduct + '"><td>' + product.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idProduct + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + $("#costProdToEnter").val() + '</td><td>' + product.Stock + '</td><td><deleteButton id="db' + idProduct + '"  position="' + idProduct + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
-            ProdToEnter.keypress;
-            $("#tableProducts").prepend(ProdToEnter);
-            KeyPressEventQuant(idProduct);
-            ClickeventImg(idProduct);
+
+            } while (!successt);
         }
-        $("#quantProdToEnter").val("");
-        $("#codProdToEnter").val("");
-        $("#descProdToEnter").empty();
-        $("#costProdToEnter").val("");
-        $("#stockProdToEnter").empty();
-        $("#codProdToEnter").focus();
-    }
+
+
+            if ($("#" + idProduct).length > 0) {
+                let data = $("#codProdToEnter").val(), success = false, i = 0;
+                document.getElementById("q" + idProduct).value = parseInt($("#quantProdToEnter").val(), 10) + parseInt($("#q" + idProduct).val(), 10);
+                document.getElementById("c" + idProduct).innerHTML = parseInt($("#costProdToEnter").val(), 10);
+                document.getElementById("p" + idProduct).innerHTML = parseInt($("#priceProdToEnter").val(), 10);
+                document.getElementById("pw" + idProduct).innerHTML = parseInt($("#priceWProdToEnter").val(), 10);
+                do {
+                    if (Items[i].Code == data) {
+                        Items[i].Quant += parseInt($("#quantProdToEnter").val(), 10);
+                        Items[i].Cost = parseInt($("#costProdToEnter").val(), 10);
+                        Items[i].Price = parseInt($("#priceProdToEnter").val(), 10);
+                        Items[i].PriceW = parseInt($("#priceWProdToEnter").val(), 10);
+                        success = true;
+                    }
+                    i++;
+                } while (!success);
+                total += (Items[i].Cost * Items[i].Quant);
+            } else {
+                Product = new Object();
+                Product.Id = product.Id;
+                Product.Price = product.Price;
+                Product.Quant = parseInt($("#quantProdToEnter").val());
+                Product.Code = product.Code;
+                Product.Cost = parseInt($("#costProdToEnter").val());
+                Product.Price = parseInt($("#priceProdToEnter").val(), 10);
+                Product.PriceW = parseInt($("#priceWProdToEnter").val(), 10);
+                Items.push(Product);
+                var ProdToEnter = '<tr id="' + idProduct + '"><td>' + product.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idProduct + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td  id="c' + idProduct + '">' + $("#costProdToEnter").val() + '</td><td  id="p' + idProduct + '">' + $("#priceProdToEnter").val() + '</td><td  id="pw' + idProduct + '">' + $("#priceWProdToEnter").val() + '</td><td><deleteButton id="db' + idProduct + '"  position="' + idProduct + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
+                ProdToEnter.keypress;
+                $("#tableProducts").prepend(ProdToEnter);
+                KeyPressEventQuant(idProduct);
+                ClickeventImg(idProduct);
+            }
+            for (var z = 0; z < Items.length; z++) {
+                total += Items[z].Cost * Items[z].Quant;
+                $("#total").append(total);
+            }
+
+            $("#quantProdToEnter").val("");
+            $("#codProdToEnter").val("");
+            $("#priceProdToEnter").val("");
+            $("#priceWProdToEnter").val("");
+            $("#descProdToEnter").empty();
+            $("#costProdToEnter").val("");
+            $("#codProdToEnter").focus();
+        }
+        
 
     function validateQuant() {
         let successVQ = true;
@@ -162,8 +191,8 @@
                 successVQ = false;
             }
         }
-        return successVQ;
-    }
+        return successVQ;}
+    
 
     $("#b").click(function () {
         if (validateQuant()) {
