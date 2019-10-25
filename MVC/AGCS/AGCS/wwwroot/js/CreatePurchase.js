@@ -6,17 +6,21 @@
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
             if ($("#codProdToEnter").val().length > 0) {
-                $("#codProdToEnter").css({ 'border-color': '#ced4da' });
+                normalize("codProdToEnter");                
+                normalize("costProdToEnter");
+                normalize("quantProdToEnter");
+                normalize("priceProdToEnter");
+                normalize("priceWProdToEnter");
+                $("#quantProdToEnter").val("");
                 EnterProduct();
             } else {
-                $("#codProdToEnter").css({ "border": " 0.15rem solid red" });
+                $("#codProdToEnter").addClass("validation_error");
             }
         }
     });
     function EnterProduct() {
         $("#descProdToEnter").empty();
         $("#costProdToEnter").empty();
-        $("#stockProdToEnter").empty();
         $("#priceProdToEnter").empty();
         $("#priceWProdToEnter").empty();
         $.ajax({
@@ -52,10 +56,10 @@
             if (product != null) {
                 if (validateInputs("divInput", "validInput")) {
                     if ($("#codProdToEnter").val().length > 0) {
-                        $("#quantProdToEnter").css({ 'border-color': '#ced4da' });
+                        normalize("quantProdToEnter");
                         LoadProductToList();
                     } else {
-                        $("#codProdToEnter").css({ "border": " 0.15rem solid red" });
+                        $("#codProdToEnter").addClass("validation_error");
                     }
                 } 
             }
@@ -79,6 +83,24 @@
         
 
     }
+    $(".loadToList").keyup(function () {        
+        validateInput(this);
+    });
+    function validateInput(element) {
+        if (isNaN(parseInt($("#" + element.id).val(), 10)) || parseInt($("#"+element.id).val(), 10) <= 0 ) {            
+            $(element).addClass("validation_error");
+        }
+        else {
+            normalize(element.id);
+        }
+    }
+
+    function normalize(id) {
+        $("#" + id).removeClass("validation_error");
+    }
+
+
+
     
     function fT(idProduct) {
         let success = false, i = 0;
@@ -159,6 +181,7 @@
             }   
             $("#total").append(total);
             $("#quantProdToEnter").val("");
+            normalize("quantProdToEnter");
             $("#codProdToEnter").val("");
             $("#priceProdToEnter").val("");
             $("#priceWProdToEnter").val("");
@@ -210,10 +233,10 @@
     function validateQ(id) {
         var State = false;
         if (parseInt($("#q" + id).val(), 10) <= 0 || isNaN(parseInt($("#q" + id).val(), 10)) ) {
-            $("#q" + id).css("border-color", "#FF0000");
+            $("#q" + id).addClass("validation_error");
         }
         else {
-            $("#q" + id).css("border-color", "#ced4da");
+            normalize("q" + id);
             State = true;
         }
         return State;
