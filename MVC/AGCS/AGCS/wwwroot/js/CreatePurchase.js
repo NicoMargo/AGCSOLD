@@ -119,24 +119,8 @@
         });
     }
     function LoadProductToList() {
-        $("#total").empty();
-        if (Items.length > 0) {
-            let successt = false;
-            do {
-
-                if (Items[i].Id === idProduct) {
-                    total -= (Items[i].Cost * Items[i].Quant);
-                    i++;
-                    if (i == Items.length) {
-                        successt = true;
-                    }
-                }
-
-            } while (!successt);
-        }
-
-
-            if ($("#" + idProduct).length > 0) {
+        $("#total").empty();  
+            if ($("#q" + idProduct).length > 0) {
                 let data = $("#codProdToEnter").val(), success = false, i = 0;
                 document.getElementById("q" + idProduct).value = parseInt($("#quantProdToEnter").val(), 10) + parseInt($("#q" + idProduct).val(), 10);
                 document.getElementById("c" + idProduct).innerHTML = parseInt($("#costProdToEnter").val(), 10);
@@ -152,7 +136,10 @@
                     }
                     i++;
                 } while (!success);
-                total += (Items[i].Cost * Items[i].Quant);
+                total = 0;
+                for (var z = 0; z < Items.length; z++) {
+                    total += Items[z].Cost * Items[z].Quant;
+                }
             } else {
                 Product = new Object();
                 Product.Id = product.Id;
@@ -163,17 +150,14 @@
                 Product.Price = parseInt($("#priceProdToEnter").val(), 10);
                 Product.PriceW = parseInt($("#priceWProdToEnter").val(), 10);
                 Items.push(Product);
+                total += Product.Cost * Product.Quant;                
                 var ProdToEnter = '<tr id="' + idProduct + '"><td>' + product.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idProduct + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td  id="c' + idProduct + '">' + $("#costProdToEnter").val() + '</td><td  id="p' + idProduct + '">' + $("#priceProdToEnter").val() + '</td><td  id="pw' + idProduct + '">' + $("#priceWProdToEnter").val() + '</td><td><deleteButton id="db' + idProduct + '"  position="' + idProduct + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
                 ProdToEnter.keypress;
                 $("#tableProducts").prepend(ProdToEnter);
                 KeyPressEventQuant(idProduct);
                 ClickeventImg(idProduct);
-            }
-            for (var z = 0; z < Items.length; z++) {
-                total += Items[z].Cost * Items[z].Quant;
-                $("#total").append(total);
-            }
-
+            }   
+            $("#total").append(total);
             $("#quantProdToEnter").val("");
             $("#codProdToEnter").val("");
             $("#priceProdToEnter").val("");
