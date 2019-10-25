@@ -42,7 +42,7 @@ function RowSearcher(tableId, searchInputId) {
 function validInt(element, expectedCondition = true) {
     let valid = false;
     let value = element.getElementsByTagName("input")[0].value;
-    if (expectedCondition && value < 0 || value == "") {
+    if (expectedCondition && value < 0) {
         element.getElementsByTagName("input")[0].classList.add("validation_error");
         element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
     }
@@ -57,7 +57,7 @@ function validInt(element, expectedCondition = true) {
 function validPositive(element, expectedCondition = true) {
     let valid = false;
     let value = element.getElementsByTagName("input")[0].value;
-    if (expectedCondition && value < 0 || value == "") {
+    if (expectedCondition && value < 0) {
         element.getElementsByTagName("input")[0].classList.add("validation_error");
         element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
     }
@@ -83,40 +83,41 @@ function validString(element, expectedCondition = true) {
     return valid;
 }
 
+function validateInput(inputDiv) {
+    let valid = true;
+    if (inputDiv.classList.contains("notEmpty") && valid) {
+        valid = validString(inputDiv) && valid;
+    }
+    if (inputDiv.classList.contains("validPositive") && valid) {
+        valid = validPositive(inputDiv) && valid;
+    }
+    if (inputDiv.classList.contains("validInt") && valid) {
+        valid = validInt(inputDiv) && valid;
+    }
+    return valid;
+}
 
 function validateInputs(parentId, inputClassname) {
     let valid = true;
-    element = document.getElementById(parentId);
-
-    notEmptyList = element.getElementsByClassName(inputClassname + " notEmpty");
-    for (i = 0; i < notEmptyList.length; i++) {
-        valid = validString(notEmptyList[i]) && valid;
+    parent = document.getElementById(parentId);
+    inputList = parent.getElementsByClassName(inputClassname);
+    for (i = 0; i < inputList.length; i++) {
+        valid = validateInput(inputList[i]) && valid;
     }
-
-    PositivesList = element.getElementsByClassName(inputClassname + " validPositive");
-    for (i = 0; i < PositivesList.length; i++) {
-        valid = validPositive(PositivesList[i]) && valid;
-    }
-
-    IntergersList = element.getElementsByClassName(inputClassname + " validInt");
-    for (i = 0; i < IntergersList.length; i++) {
-        valid = validInt(IntergersList[i]) && valid;
-    }
-
     return valid;
-
 }
 
-function inputNormal(parentId) {
-    var element = document.getElementById(parentId);
+function inputNormal(inputDivId) {
+    var element = document.getElementById(inputDivId);
     element.getElementsByTagName("input")[0].classList.remove("validation_error");
     element.getElementsByClassName('validation_msg')[0].classList.add("hidden");
 }
 
-function normalizeInputs(parentId, inputClassname) { //Modal type: create , update
+function normalizeInputs(parentId, inputDivClass) { //Modal type: create , update
     var element = document.getElementById(parentId);
-    li = element.getElementsByClassName(inputClassname);
+    li = element.getElementsByClassName(inputDivClass);
     for (i = 0; i < li.length; i++) {
         inputNormal(li[i].id);
     }
 }
+
