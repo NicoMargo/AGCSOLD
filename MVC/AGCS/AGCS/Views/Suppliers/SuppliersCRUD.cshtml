@@ -5,7 +5,7 @@
         string value = "-"; ;
         try
         {
-            int parsedNumber = Convert.ToInt32(number);
+            long parsedNumber = Convert.ToInt64(number);
             if (parsedNumber > 0)
             {
                 value = parsedNumber.ToString();
@@ -135,7 +135,7 @@
                             <div class="text-center">
                                 <strong><span>Nro. Teléfono</span></strong>
                             </div>
-                            <div class="crtInput" id="crtTelephone">
+                            <div class="crtInput validPositive" id="crtTelephone">
                                 <input class="form-control text-center" type="number" min="0">
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
@@ -144,7 +144,7 @@
                             <div class="text-center">
                                 <strong><span>Nro. Celular</span></strong>
                             </div>
-                            <div class="crtInput" id="crtCellphone">
+                            <div class="crtInput validPositive" id="crtCellphone">
                                 <input class="form-control text-center" type="number" min="0">
                                 <div class="validation_msg hidden text-center">Ingrese un valor válido</div>
                             </div>
