@@ -30,7 +30,7 @@
                     $("#stockProdToEnter").append(D.Stock);
                     $("#quantProdToEnter").focus();
                 } else {
-                    CreateModal("Error de Producto","No existe el producto");
+                    CreateModal("Error de Producto", "No existe el producto");
                 }
             },
             error: function () {
@@ -38,8 +38,8 @@
             }
         });
     }
-    $("#codProdToEnter").focus();   
-    
+    $("#codProdToEnter").focus();
+
     $('#quantProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
@@ -65,7 +65,7 @@
             fT(idOfProd);
             validateQ(idOfProd);
         });
-        
+
         $("#q" + idOfProd).keyup(function (event) {
             let keycode = (event.keyCode ? event.keyCode : event.which);
             if (((keycode > 47 && keycode < 58) || (keycode > 95 && keycode < 106)) || keycode == 8) {
@@ -73,10 +73,10 @@
             }
             validateQ(idOfProd);
         });
-        
+
 
     }
-    
+
     function fT(idOfProd) {
         let success = false, i = 0;
         do {
@@ -186,7 +186,7 @@
                         },
                         success: function (success) {
                             if (success) {
-                                CreateModal("Factura", "Se facturo correctamente",true);
+                                CreateModal("Factura", "Se facturo correctamente", true);
                             } else {
                                 CreateModal("Error", "Hubo un error al Facturar");
                             }
@@ -206,7 +206,7 @@
     });
     function validateQ(id) {
         var State = false;
-        if (parseInt($("#q" + id).val(), 10) <= 0 || isNaN(parseInt($("#q" + id).val(), 10)) ) {
+        if (parseInt($("#q" + id).val(), 10) <= 0 || isNaN(parseInt($("#q" + id).val(), 10))) {
             $("#q" + id).css("border-color", "#FF0000");
         }
         else {
@@ -227,32 +227,43 @@
         return State;
     }
     $("#dni").keyup(function () {
-        $.ajax({
-            type: "POST",
-            url: "/Clients/GetDataClientByDNI",
-            data: { dni: $("#dni").val() },
-            success: function (DataJson) {
-                var Data = JSON.parse(DataJson);
-                if (Data != null) {
-                    $("#surname").attr('disabled', true);
-                    $("#thisName").attr('disabled', true);
-                    $("#cellphone").attr('disabled', true);
-                    $("#surname").val(Data.Surname);
-                    $("#thisName").val(Data.Name);
-                    $("#cellphone").val(checkInt(Data.Cellphone));
-                } else {
-                    $("#surname").attr('disabled', false);
-                    $("#thisName").attr('disabled', false);
-                    $("#cellphone").attr('disabled', false);
-                    $("#surname").val("");
-                    $("#thisName").val("");
-                    $("#cellphone").val("");
-                }
+        if ($("#dni").val().length > 0) {
+            if ($("#dni").val() == 1 || $("#dni").val().length > 5) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Clients/GetDataClientByDNI",
+                    data: { dni: $("#dni").val() },
+                    success: function (DataJson) {
+                        var Data = JSON.parse(DataJson);
+                        if (Data != null) {
+                            $("#surname").attr('disabled', true);
+                            $("#thisName").attr('disabled', true);
+                            $("#cellphone").attr('disabled', true);
+                            $("#surname").val(Data.Surname);
+                            $("#thisName").val(Data.Name);
+                            $("#cellphone").val(checkInt(Data.Cellphone));
+                        } else {
+                            $("#surname").attr('disabled', false);
+                            $("#thisName").attr('disabled', false);
+                            $("#cellphone").attr('disabled', false);
+                            $("#surname").val("");
+                            $("#thisName").val("");
+                            $("#cellphone").val("");
+                        }
 
-            },
-            error: function () {
-                CreateModal("Error", "Hubo un error al buscar el cliente");
+                    },
+                    error: function () {
+                        CreateModal("Error", "Hubo un error al buscar el cliente");
+                    }
+                });
             }
-        });
+        } else {
+            $("#surname").attr('disabled', false);
+            $("#thisName").attr('disabled', false);
+            $("#cellphone").attr('disabled', false);
+            $("#surname").val("");
+            $("#thisName").val("");
+            $("#cellphone").val("");
+        }
     });
 });
