@@ -1,13 +1,13 @@
-﻿function CreateModal(title, body, unique = false) {
-    if (!unique) {
-        $("body").append('<div class="modal fade" id="' + title.replace(/ /g, "") + '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> <div class="modal-dialog" role="document"> <div class="modal-content"> <div class="modal-header"> <h5 class="modal-title" id="exampleModalLabel">' + title + '</h5> <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div><div class="modal-body">' + body + '</div><div class="modal-footer"><button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button> </div></div></div></div>');
-    } else {
-        $("body").append('<div class="modal fade" id="' + title.replace(/ /g, "") + '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> <div class="modal-dialog" role="document"> <div class="modal-content"> <div class="modal-header"> <h5 class="modal-title" id="exampleModalLabel">' + title + '</h5> <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div><div class="modal-body">' + body + '</div><div class="modal-footer"><button type="button" id="btn' + title.replace(/ /g, "") + '" class="btn btn-primary" data-dismiss="modal">Aceptar</button> </div></div></div></div>');
-        $("#btn" + title.replace(/ /g, "")).click(function () {
-            window.location= "/Backend/Index";
-        });
+﻿function CreateModal(title, body, func = () => { }) {
+    $("body").append('<div class="modal fade" id="' + title.replace(/ /g, "") + '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> <div class="modal-dialog" role="document"> <div class="modal-content"> <div class="modal-header"> <h5 class="modal-title" id="exampleModalLabel">' + title + '</h5> <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div><div class="modal-body">' + body + '</div><div class="modal-footer"><button type="button" id="btn' + title.replace(/ /g, "") + '" class="btn btn-primary" data-dismiss="modal">Aceptar</button> </div></div></div></div>');
+    $("#btn" + title.replace(/ /g, "")).click(() => {
+        let modal = document.getElementById(title.replace(/ /g, ""));
+        modal.parentNode.removeChild(modal);
+        func();
     }
-        $('#' + title.replace(/ /g, "")).modal('show');
+    );
+    
+    $('#' + title.replace(/ /g, "")).modal('show');
 }
 
 function checkInt(number) {

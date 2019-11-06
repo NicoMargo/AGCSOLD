@@ -55,21 +55,23 @@
                                 <thead>
                                     <tr>
                                         <th class="w-10">Codigo</th>
-                                        <th class="w-31">Productos</th>
-                                        <th class="w-12">Cantidad</th>
-                                        <th style="width: 15%;">Costo</th>
-                                        <th class="w-10">Precio x Menor</th>
-                                        <th class="w-10">Precio x Mayor</th>
+                                        <th class="w-16">Producto</th>
+                                        <th class="w-8">Cantidad</th>
+                                        <th class="w-8">Costo</th>
+                                        <th class="w-12">Precio x Menor</th>
+                                        <th class="w-12">Precio x Mayor</th>
+                                        <th class="w-31">Condicion de pago</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td> <input type="text" id="codProdToEnter" placeholder="Codigo del Producto" class="form-control text-black"></td>
+                                        <td> <input type="text" id="codProdToEnter" placeholder="Codigo" class="form-control text-black"></td>
                                         <td id="descProdToEnter"></td>
-                                        <td class="validInput notEmpty validPositive" id="inputQuant"><input type="number" required min="1" id="quantProdToEnter" placeholder="Cantidad" class="loadToList form-control text-black"> <div class="validation_msg hidden text-center"></div></td>
-                                        <td class="validInput notEmpty validPositive" id="inputCost"><input type="number" required min="0" id="costProdToEnter" placeholder="Costo" class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
-                                        <td class="validInput notEmpty validPositive" id="inputPrice"><input type="number" required min="1" id="priceProdToEnter" placeholder="Precio Menor" class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
-                                        <td class="validInput notEmpty validPositive" id="inputPriceW"><input type="number" required min="1" id="priceWProdToEnter" placeholder="Precio Mayor" class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
+                                        <td class="validInput notEmpty validPositive" id="inputQuant"><input type="number" required min="1" id="quantProdToEnter"  class="loadToList form-control text-black"> <div class="validation_msg hidden text-center"></div></td>
+                                        <td class="validInput notEmpty validPositive" id="inputCost"><input type="number" required min="0" id="costProdToEnter"  class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
+                                        <td class="validInput notEmpty validPositive" id="inputPrice"><input type="number" required min="1" id="priceProdToEnter" placeholder="X Menor" class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
+                                        <td class="validInput notEmpty validPositive" id="inputPriceW"><input type="number" required min="1" id="priceWProdToEnter" placeholder="X Mayor" class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
+                                        <td> <input type="text" id="inputCond" placeholder="Condicion de pago" class="form-control text-black"></td>
                                     </tr>
                                 </tbody>
                             </table>

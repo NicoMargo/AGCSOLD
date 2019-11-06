@@ -112,7 +112,7 @@
                         success: function (s) {
                             if (s) {
                                 $('#quant').html(parseInt($('#quant').html()) - parseInt($("#subtractStock").val()));
-                                CreateModal("Stock", "Se modifico el stock correctamente");
+                                CreateModal("Stock", "Se modifico el stock correctamente", function () { location.reload();});
                             } else {
                                 CreateModal("Error", "Hubo un error al modificar el stock");
                             }
