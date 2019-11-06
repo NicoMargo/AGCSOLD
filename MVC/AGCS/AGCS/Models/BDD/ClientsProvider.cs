@@ -15,25 +15,12 @@ namespace AGCS.Models.BDD
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientsGet", args);
             while (ConnectionReader.Read())
-            {
-                uint id;
-                string name;
-                string surname;
-                ulong dni;
-                string mail;
-                string telephone;
-                string cellphone;
+            {               
                 try
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idClient"]);
-                    name = Helpers.ReadString(ConnectionReader, "Name");
-                    surname = Helpers.ReadString(ConnectionReader, "Surname");
-                    dni = Helpers.ReadULong(ConnectionReader, "DNI_CUIT");
-                    mail = Helpers.ReadString(ConnectionReader, "Mail");
-                    telephone = Helpers.ReadString(ConnectionReader, "Telephone");
-                    cellphone = Helpers.ReadString(ConnectionReader, "Cellphone");
-                    Client client = new Client(id, name, surname, dni, mail, cellphone);
-                    clientsList.Add(client);
+                  
+                    Client client = new Client(Convert.ToUInt32(ConnectionReader["idClient"]), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadULong(ConnectionReader, "DNI_CUIT"), Helpers.ReadString(ConnectionReader, "Mail"), Helpers.ReadString(ConnectionReader, "Cellphone"));
+                     clientsList.Add(client);
                 }
                 catch { }
             }
@@ -82,24 +69,20 @@ namespace AGCS.Models.BDD
                 {"pDNI", DNI},
                 {"pIdBusiness",Session.GetSUInt32("idBusiness")}
             };
-            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientGetByDNI", args);
-
-            if (ConnectionReader.Read())
+            try
             {
-                string name, surname, mail;
-                string cellphone;
-                uint id;
-                try
+                MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spClientGetByDNI", args);
+
+                if (ConnectionReader.Read())
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idClient"]);
-                    name = Helpers.ReadString(ConnectionReader, "Name");
-                    surname = Helpers.ReadString(ConnectionReader, "Surname");
-                    mail = Helpers.ReadString(ConnectionReader, "Mail");
-                    cellphone = Helpers.ReadString(ConnectionReader, "Cellphone");
-                    client = new Client(id, name, surname, mail, cellphone);
+                    try
+                    {
+                        client = new Client(Convert.ToUInt32(ConnectionReader["idClient"]), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Surname"), Helpers.ReadString(ConnectionReader, "Mail"), Helpers.ReadString(ConnectionReader, "Cellphone"));
+                    }
+                    catch { }
                 }
-                catch { }
             }
+            catch { }
             Helpers.Disconect();
             return client;
         }

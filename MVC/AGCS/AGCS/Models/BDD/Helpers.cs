@@ -21,7 +21,21 @@ namespace AGCS.Models.BDD
 
         public static void Disconect()
         {
-            Connection.Close();
+            try
+            {
+                try
+                {
+                    Connection.Close();
+                }
+                catch
+                {
+                    Connection.Close();
+                }
+            }
+            catch
+            {
+
+            }
         }
 
         public static MySqlDataReader CallProcedureReader(string procedureName, Dictionary<string, object> args)

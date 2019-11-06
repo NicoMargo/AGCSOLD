@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 25-10-2019 a las 13:39:24
+-- Tiempo de generación: 25-10-2019 a las 15:15:50
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -734,15 +734,15 @@ CREATE TABLE IF NOT EXISTS `products` (
   PRIMARY KEY (`idProduct`) USING BTREE,
   KEY `fk_Products_Suppliers1_idx` (`Suppliers_id`),
   KEY `fk_Products_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Volcado de datos para la tabla `products`
 --
 
 INSERT INTO `products` (`idProduct`, `Article_number`, `Description`, `Cost`, `Price`, `PriceW`, `Age`, `Stock`, `CodeProduct`, `Suppliers_id`, `Business_id`, `Active`) VALUES
-(1, 666, 'Manga Yakusoku no Neverland Vol 1', 0000500.00, 0000300.00, 0000280.00, b'1', 2300, '777', 3, 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000010.00, 0000060.00, 0000010.00, b'1', -15, '2', 3, 1, b'1'),
+(1, 666, 'Manga Yakusoku no Neverland Vol 1', 0000500.00, 0000300.00, 0000280.00, b'1', 2295, '777', 3, 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 0000010.00, 0000060.00, 0000010.00, b'1', 5, '2', 3, 1, b'1'),
 (3, 3, 'Manga Yakusoku no Neverland Vol 4', 0000800.00, 0000300.00, 0000096.00, b'1', -933, '3', 3, 1, b'1'),
 (4, 5, 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, b'1', -1, '7791337613027', 2, 1, b'1'),
 (7, 32, 'amazing hat', 0050056.00, 0000600.00, 0054958.00, NULL, -1, '434', 1, 1, b'1'),
@@ -754,7 +754,8 @@ INSERT INTO `products` (`idProduct`, `Article_number`, `Description`, `Cost`, `P
 (20, 3, 'Castaña De Caju', 0000050.00, 0000150.00, 0000100.00, NULL, 101, '2670550000003', 0, 2, b'1'),
 (21, 524, 'Liquid Paper', 0000020.00, 0000100.00, 0000080.00, NULL, 200, '8854556000524', 0, 2, b'1'),
 (22, 524, 'liquid', 0000030.00, 0000030.00, 0000030.00, NULL, 100, '8854556000524', 0, 1, b'0'),
-(23, 358, 'Elite', 0000123.00, 0000160.00, 0000145.00, NULL, 100, '7790250000358', 0, 2, b'1');
+(23, 358, 'Elite', 0000123.00, 0000160.00, 0000145.00, NULL, 100, '7790250000358', 0, 2, b'1'),
+(24, 2345, '2345', 0002345.00, 0002345.00, 0002345.00, NULL, 0, '34523452', 0, 1, b'0');
 
 -- --------------------------------------------------------
 
@@ -796,7 +797,7 @@ CREATE TABLE IF NOT EXISTS `purchases` (
   KEY `fk_Purchases_Suppliers_idx` (`Suppliers_id`) USING BTREE,
   KEY `fk_Purchases_Users_id_idx` (`Users_id`) USING BTREE,
   KEY `fk_Purchases_Business_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases`
@@ -806,7 +807,14 @@ INSERT INTO `purchases` (`idPurchase`, `Suppliers_id`, `Users_id`, `date`, `tota
 (2, 3, 27, '2019-10-25', 390.00, '', 1),
 (3, 3, 27, '2019-10-25', 3520.00, '', 1),
 (4, 3, 27, '2019-10-25', 15925.00, '', 1),
-(5, 3, 27, '2019-10-25', 420.00, '', 1);
+(5, 3, 27, '2019-10-25', 420.00, '', 1),
+(6, 3, 27, '2019-10-25', 240.00, '', 1),
+(7, 3, 27, '2019-10-25', 240.00, '', 1),
+(8, 3, 27, '2019-10-25', 240.00, '', 1),
+(9, 3, 27, '2019-10-25', 120.00, '', 1),
+(10, 3, 27, '2019-10-25', 120.00, '', 1),
+(11, 3, 27, '2019-10-25', 120.00, '', 1),
+(12, 3, 27, '2019-10-25', 120.00, '', 1);
 
 -- --------------------------------------------------------
 
@@ -824,7 +832,7 @@ CREATE TABLE IF NOT EXISTS `purchases_x_products` (
   PRIMARY KEY (`idPurchases_x_Products`),
   KEY `fk_PurchasesXProducts_Purchases_idx` (`Purchases_id`),
   KEY `fk_PurchasesXProducts_Products_idx` (`Products_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases_x_products`
@@ -838,7 +846,14 @@ INSERT INTO `purchases_x_products` (`idPurchases_x_Products`, `Purchases_id`, `P
 (44, 4, 2, 5, 50.00),
 (45, 4, 3, 50, 800.00),
 (46, 4, 1, 2, 500.00),
-(47, 5, 2, 7, 10.00);
+(47, 5, 2, 7, 10.00),
+(48, 6, 2, 4, 10.00),
+(49, 7, 2, 4, 10.00),
+(50, 8, 2, 4, 10.00),
+(51, 9, 2, 2, 10.00),
+(52, 10, 2, 2, 10.00),
+(53, 11, 2, 2, 10.00),
+(54, 12, 2, 2, 10.00);
 
 -- --------------------------------------------------------
 
@@ -859,7 +874,7 @@ CREATE TABLE IF NOT EXISTS `stock_movement` (
   PRIMARY KEY (`id`),
   KEY `fk_StockMovement_Products_idx` (`Products_id`) USING BTREE,
   KEY `fk_StockMovement_Users_idx` (`Users_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `stock_movement`
@@ -911,7 +926,15 @@ INSERT INTO `stock_movement` (`id`, `type`, `description`, `Products_id`, `dateT
 (44, 1, 'Compra de producto', 1, '2019-10-25 09:59:51', 2, 500.00, 27),
 (45, 2, 'SUPER XD', 1, '2019-10-25 10:13:12', 100, 0.00, 27),
 (46, 1, 'Compra de producto', 2, '2019-10-25 10:15:03', 7, 10.00, 27),
-(47, 0, 'Venta de producto', 2, '2019-10-25 10:16:48', 4, 60.00, 27);
+(47, 0, 'Venta de producto', 2, '2019-10-25 10:16:48', 4, 60.00, 27),
+(48, 1, 'Compra de producto', 2, '2019-10-25 10:47:38', 4, 10.00, 27),
+(49, 1, 'Compra de producto', 2, '2019-10-25 10:47:52', 4, 10.00, 27),
+(50, 1, 'Compra de producto', 2, '2019-10-25 10:48:04', 4, 10.00, 27),
+(51, 1, 'Compra de producto', 2, '2019-10-25 10:52:22', 2, 10.00, 27),
+(52, 1, 'Compra de producto', 2, '2019-10-25 10:53:49', 2, 10.00, 27),
+(53, 1, 'Compra de producto', 2, '2019-10-25 10:55:09', 2, 10.00, 27),
+(54, 1, 'Compra de producto', 2, '2019-10-25 10:55:32', 2, 10.00, 27),
+(55, 2, 'robo', 1, '2019-10-25 11:48:40', 5, 0.00, 27);
 
 -- --------------------------------------------------------
 
@@ -935,7 +958,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idSupplier`) USING BTREE,
   KEY `fk_Supplier_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `suppliers`
@@ -943,15 +966,17 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
 
 INSERT INTO `suppliers` (`idSupplier`, `Cuit`, `Name`, `Surname`, `Company`, `Fanciful_name`, `Telephone`, `Cellphone`, `Business_id`, `Address`, `Mail`, `Active`) VALUES
 (0, 1111111111, NULL, NULL, NULL, '', NULL, '0', 0, NULL, NULL, b'1'),
-(1, 54127534, 'Aquiles', 'Traigo', NULL, 'Awwfdsa', '500', '600', 1, NULL, 'zzd', b'1'),
-(2, 44887784, 'Aquiles', 'Doy', 'yo tampoco jaja salu2', 'yo tampoco jaja salu2', '45678912', '1513317546', 1, 'viste china, bueno doblando a la izquierda', NULL, b'1'),
+(1, 54127534, 'el mejor sprint', 'este es', 'asdfasfdas', 'xdd', '2345234', '23452345', 1, 'asdfasdf', 'zzdffgdfdd', b'1'),
+(2, 44887784, 'Aquiles', 'Doy', 'yo tampoco jaja salu2', 'yo tampoco jaja salu2', '45678912', '1513317546', 1, 'viste china, bueno doblando a la izquierda', NULL, b'0'),
 (3, 18484910, 'Ivrea', 'La', 'EEEE', 'EEEE', '1', '1', 1, 'Avenida San juan bautista de lasalle 720', 'a', b'1'),
 (4, 105968465, 'void', 'main', 'EEEEEEEE', 'EEEEEEEE', '1', '1', 1, 'a', 'a', b'1'),
 (5, 45646548, 'Unpro', 'vedor', 'F', 'F', '15115', '14115', 2, 'Acala vuelta 0', 'correo@correo', b'1'),
 (7, 79881684, 'd', 'd', 'g', 'g', '1', '1', 1, 'q', 'r', b'0'),
-(11, 44444444, 'h', 'h', 'hsan', 'nk', '44445444', '44446444', 1, 'hhhhhh', 'h@h', b'1'),
+(11, 44444444, 'h', 'h', 'hsan', 'nk', '44445444', '44446444', 1, 'hhhhhh', 'h@h', b'0'),
 (12, 43572144, 'Liu', 'Jonathan', 'HOla', 'ola k aze', '1531174589', '18975641', 1, 'aca xdddd', 'mail@.com', b'1'),
-(13, 198713214, 'wwww', 'w', 'zzzz', 'zzzzz', '1', '1', 1, 'a', 'a', b'0');
+(13, 198713214, 'wwww', 'w', 'zzzz', 'zzzzz', '1', '1', 1, 'a', 'a', b'0'),
+(14, 43994080, 'nicolas', 'Margossian', NULL, 'Margo-tech', '44322210', '1561730659', 1, NULL, NULL, b'1'),
+(15, 80000009, 'Don pepe', 'Y sus globos', 'Distribución de globos  y bombas, de Jose Globo', 'DIstribuidora de globos Don Jose', '155468794', '141234567', 1, 'Av Estado de palestina 911', 'donpepe@yahoo.com.ar', b'1');
 
 -- --------------------------------------------------------
 
