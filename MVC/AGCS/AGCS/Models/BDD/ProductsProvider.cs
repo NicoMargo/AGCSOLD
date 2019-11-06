@@ -235,6 +235,7 @@ namespace AGCS.Models.BDD
                 { "pId", idProducts },
                 { "pStock", stock },
                 { "pIdUser", Session.GetSUInt32("idUser")},
+                { "pIdBusiness", Session.GetSUInt32("idBusiness")},
                 { "pDesc", description }
             };
             bool success = (Helpers.CallNonQuery("spProductStockUpdate", args) > 0);
@@ -245,7 +246,7 @@ namespace AGCS.Models.BDD
         public static List<StockMovment> GetStockMovementById(uint idProduct)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pId", idProduct}
+                {"pIdProduct", idProduct}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spMovementGet", args);
             List<StockMovment> SmList = new List<StockMovment>();

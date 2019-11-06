@@ -186,7 +186,7 @@
                         },
                         success: function (success) {
                             if (success) {
-                                CreateModal("Factura", "Se facturo correctamente");
+                                CreateModal("Factura", "Se facturo correctamente",true);
                             } else {
                                 CreateModal("Error", "Hubo un error al Facturar");
                             }
