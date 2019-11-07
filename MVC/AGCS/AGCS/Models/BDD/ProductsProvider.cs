@@ -10,12 +10,12 @@ namespace AGCS.Models.BDD
     {
        
         //Methods for store procedures of Table Products 
-        public static List<Product> GetProducts()
+        public static List<Product> GetProducts(uint idBusiness = 0)
         {
             List<Product> productsList = new List<Product>();
 
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Session.GetSUInt32("idBusiness")}
+                {"pIdBusiness", idBusiness == 0?Session.GetSUInt32("idBusiness"):idBusiness}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductsGet", args);
 
