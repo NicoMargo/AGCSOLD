@@ -39,13 +39,13 @@ namespace AGCS.Controllers
         }
                     
         [HttpPost]
-        public bool UpdateProduct(uint id, uint number, string description, string code, string cost, string price, string priceW, int stock, uint idSupplier)
+        public bool UpdateProduct(uint id, uint number, string description, string code, string cost, string price, string priceW, int stock, uint idSupplier,string image = "")
         {
             bool Success = true;
             float fCost = parseFloat(cost);
             float fPrice = parseFloat(price);
             float fPriceW = parseFloat(priceW);
-            Product product = new Product(id, number, code, description, fCost, fPrice, fPriceW, stock,idSupplier);
+            Product product = new Product(id, number, code, description, fCost, fPrice, fPriceW, stock,idSupplier,image);
 
             try
             {
@@ -61,14 +61,14 @@ namespace AGCS.Controllers
         
         
         [HttpPost]
-        public bool CreateProduct(uint number, string description, string code, string cost, string price, string priceW, int stock, uint idSupplier)
+        public bool CreateProduct(uint number, string description, string code, string cost, string price, string priceW, int stock, uint idSupplier, string image)
         {
             bool success = true;
             float fCost = parseFloat(cost);
             float fPrice = parseFloat(price);
             float fPriceW = parseFloat(priceW);
 
-            Product product = new Product(number, code, description, fCost, fPrice, fPriceW, idSupplier);
+            Product product = new Product(number, code, description, fCost, fPrice, fPriceW, idSupplier, image);
 
             try
             {

@@ -17,7 +17,8 @@
                     cost: parseFloat($("#crtCost").find("input").val()),
                     price: parseFloat($("#crtPrice").find("input").val()),
                     priceW: parseFloat($("#crtPriceW").find("input").val()),
-                    idSupplier: parseInt($("#crtSupplier").val())
+                    idSupplier: parseInt($("#crtSupplier").val()),
+                    image: $("#crtImage").find("input").val(),
                 },
                 success: function () {
                     location.reload();
@@ -45,6 +46,7 @@
                 $("#updtPrice").find("input").val(Data.Price);
                 $("#updtPriceW").find("input").val(Data.PriceW);
                 $("#updtSupplier").val(Data.IdSupplier);
+                $("#updtImage").find("input").val(Data.Image);
             },
             error: function () {
                 CreateModal("Error", "Hubo un error al modificar el producto");
@@ -66,7 +68,8 @@
                     cost: $("#updtCost").find("input").val(),
                     price: $("#updtPrice").find("input").val(),
                     priceW: $("#updtPriceW").find("input").val(),
-                    idSupplier: parseInt($("#updtSupplier").val())
+                    idSupplier: parseInt($("#updtSupplier").val()),
+                    image: $("#updtImage").find("input").val()
                 },
                 success: function () {
                     location.reload();

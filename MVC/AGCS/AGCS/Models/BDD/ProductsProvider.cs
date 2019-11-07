@@ -25,6 +25,7 @@ namespace AGCS.Models.BDD
                 ulong articleNumber;
                 string code;
                 string description;
+                string image;
                 float cost;
                 float price;
                 float priceW;
@@ -39,7 +40,8 @@ namespace AGCS.Models.BDD
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    Product product = new Product(id, articleNumber,code, description, price, priceW, stock);
+                    image = Helpers.ReadString(ConnectionReader, "Image");
+                    Product product = new Product(id, articleNumber,code, description, price, priceW, stock,image);
                     productsList.Add(product);
                 }
                 catch { }
@@ -134,7 +136,7 @@ namespace AGCS.Models.BDD
                 float price, cost, priceW;
                 uint idSupplier, articleNumber;
 
-                string code;//arreglar
+                string code, image;//arreglar
                 /*Addres info ...*/
                 try
                 {
@@ -145,7 +147,9 @@ namespace AGCS.Models.BDD
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
                     idSupplier = (uint)Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier");
-                    product = new Product(idProduct, articleNumber, code, description, cost, price, priceW, idSupplier);
+                    image = Helpers.ReadString(ConnectionReader, "Image");
+                    product = new Product(idProduct, articleNumber, code, description, cost, price, priceW, idSupplier, image);
+                    
                 }
                 catch { }
             }
@@ -190,7 +194,8 @@ namespace AGCS.Models.BDD
                 { "pCost",product.Cost } ,
                 { "pPrice",product.Price } ,
                 { "pPriceW",product.PriceW } ,
-                { "pIdSupplier", product.IdSupplier} 
+                { "pIdSupplier", product.IdSupplier},
+                { "pImage", product.Image}
             };
             bInserted = (Helpers.CallNonQuery("spProductInsert", args) > 0);
             Helpers.Disconect();
@@ -209,7 +214,8 @@ namespace AGCS.Models.BDD
                 { "pCost",product.Cost } ,
                 { "pPrice",product.Price } ,
                 { "pPriceW",product.PriceW } ,
-                { "pIdSupplier", product.IdSupplier}
+                { "pIdSupplier", product.IdSupplier},
+                { "pImage", product.Image}
             };
             Helpers.CallNonQuery("spProductUpdate", args);
             Helpers.Disconect();

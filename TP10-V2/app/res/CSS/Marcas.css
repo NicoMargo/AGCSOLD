@@ -1,0 +1,36 @@
+.Marcas{
+    width: 58%; 
+    margin:auto;
+}
+.DivMarcasTitle{
+    background-color: rgb(73, 137, 255);
+    border: rgb(26, 96, 224) solid 1px;
+    width: 50%;
+    margin: auto;
+    margin-top: 10px;
+    height: 50px;
+}
+.TituloMarcas{
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 40px;
+    text-align: center;
+    line-height: 45px;
+}
+.FotosMarcasAgradecimiento{  
+    width:17%
+}
+.FotosMarcas{
+    margin-right: 0.5rem !important;
+    margin-top: 5%;
+    width:16%;
+}
+.Agradecimiento{
+    border: rgb(26, 96, 224) solid 3px;
+    text-align: center;
+    padding: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 40px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}

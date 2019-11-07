@@ -183,6 +183,17 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-md-10">
+                            <div class="text-center">
+                                <strong><span>Imagen</span></strong>
+                            </div>
+                            <div class="crtInput" id="crtImage">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor valido</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secundary" id="createCancel" data-dismiss="modal">Cerrar</button>
@@ -209,7 +220,7 @@
                                 <strong><span>Nro. de Artículo</span></strong>
                             </div>
                             <div class="updtInput notEmpty validInt" id="updtNumber">
-                                <input  class="form-control text-center" type="number" min="1" step="1">
+                                <input class="form-control text-center" type="number" min="1" step="1">
                                 <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
                             </div>
                         </div>
@@ -256,7 +267,7 @@
                                 <strong><span>Precio por Mayor</span></strong>
                             </div>
                             <div class="updtInput notEmpty validPositive" id="updtPriceW">
-                                <input class="form-control text-center"  type="number" min="0" step="0.01" />
+                                <input class="form-control text-center" type="number" min="0" step="0.01" />
                                 <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
                         </div>
@@ -268,12 +279,24 @@
                             </div>
                             <select class="updtSelect form-control" id="updtSupplier" value="0">
                                 <option value="0">Seleccione una opcion</option>
-                                @{ 
-                                    foreach (Supplier supplier in ViewBag.Suppliers) {
+                                @{
+                                    foreach (Supplier supplier in ViewBag.Suppliers)
+                                    {
                                         <option value="@supplier.Id"> @supplier.Name @supplier.Surname</option>
                                     }
                                 }
                             </select>
+                        </div>
+                    </div>
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-md-10">
+                            <div class="text-center">
+                                <strong><span>Imagen</span></strong>
+                            </div>
+                            <div class="updtInput" id="updtImage">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor valido</div>
+                            </div>
                         </div>
                     </div>
                 </div>
