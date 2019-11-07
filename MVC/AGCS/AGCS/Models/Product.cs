@@ -37,7 +37,7 @@ namespace AGCS.Models
         public int Iva { get => _iva; set => _iva = value; }
         public uint IdSupplier { get => _idSupplier; set => _idSupplier = value; }
 
-
+        
         public Product()
         {
 
@@ -63,18 +63,6 @@ namespace AGCS.Models
             _stock = stock;
         }
         
-        //Constructor for  purchases(obsolete)
-        public Product(uint id, string code, string description, float price, float priceW, float cost, int stock)
-        {
-            _id = id;
-            _code = code;
-            _description = description;
-            _price = price;
-            _priceW = priceW;
-            _cost = cost;
-            _stock = stock;
-        }
-        
         //Constructor for GetAll
         public Product(uint id, ulong articleNumber, string code, string description, float price, float priceW, int stock, string image)
         {
@@ -87,35 +75,8 @@ namespace AGCS.Models
             _stock = stock;
             _image = image;
         }
-        
-        //Constructor for update
-        public Product(uint id, ulong articleNumber, string code, string description, float cost, float price, float priceW, int stock, uint idSupplier, string image)
-        {
-            _id = id;
-            _articleNumber =(int) articleNumber;
-            _code = code;
-            _description = description;
-            _cost = cost;
-            _price = price;
-            _priceW = priceW;
-            _stock = stock;
-            _idSupplier = idSupplier;
-            _image = image;
-        }
-        
-        public Product(uint id, ulong articleNumber, string code, string description, float cost, float price, float priceW, uint idSupplier, string image)
-        {
-            _id = id;
-            _articleNumber = (int)articleNumber;
-            _code = code;
-            _description = description;
-            _cost = cost;
-            _price = price;
-            _priceW = priceW;
-            _idSupplier = idSupplier;
-            _image = image;
-        }
-        
+      
+        //Insert - Update - get all
         public Product(ulong articleNumber, string code, string description, float cost, float price, float priceW, uint idSupplier, string image)
         {
             _articleNumber = (int)articleNumber;
@@ -127,6 +88,5 @@ namespace AGCS.Models
             _idSupplier = idSupplier;
             _image = image;
         }
-        
     }
 }

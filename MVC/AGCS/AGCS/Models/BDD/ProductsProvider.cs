@@ -63,20 +63,10 @@ namespace AGCS.Models.BDD
 
             if (ConnectionReader.Read())
             {
-                string description;
-                float price;
-                int stock;
-                uint id;
-                string codeProduct;//arreglar
                 /*Addres info ...*/
                 try
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idProduct"]);
-                    description = Helpers.ReadString(ConnectionReader, "Description");
-                    price = Helpers.ReadFloat(ConnectionReader, "Price");
-                    stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    codeProduct = Helpers.ReadString(ConnectionReader, "CodeProduct");
-                    product = new Product(id, codeProduct, description, price, stock);
+                    product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadInt(ConnectionReader, "Stock"));
                 }
                 catch { }
             }
@@ -97,22 +87,12 @@ namespace AGCS.Models.BDD
 
             if (ConnectionReader.Read())
             {
-                string description;
-                float price, priceW, cost;
-                int stock;
-                uint id;
-                string codeProduct;//arreglar
                 /*Addres info ...*/
                 try
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idProduct"]);
-                    description = Helpers.ReadString(ConnectionReader, "Description");
-                    price = Helpers.ReadFloat(ConnectionReader, "Price");
-                    priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
-                    cost = Helpers.ReadFloat(ConnectionReader, "Cost");
-                    stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    codeProduct = Helpers.ReadString(ConnectionReader, "CodeProduct");
-                    product = new Product(id, codeProduct, description, price, priceW ,cost, stock);
+                    product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadInt(ConnectionReader, "Stock"));
+                    product.PriceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
+                    product.Cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                 }
                 catch { }
             }
@@ -132,24 +112,10 @@ namespace AGCS.Models.BDD
 
             if (ConnectionReader.Read())
             {
-                string description;
-                float price, cost, priceW;
-                uint idSupplier, articleNumber;
-
-                string code, image;//arreglar
-                /*Addres info ...*/
                 try
                 {
-                    code = Helpers.ReadString(ConnectionReader, "CodeProduct");
-                    articleNumber = (uint)Helpers.ReadInt(ConnectionReader, "Article_number");
-                    description = Helpers.ReadString(ConnectionReader, "Description");
-                    cost = Helpers.ReadFloat(ConnectionReader, "Cost");
-                    price = Helpers.ReadFloat(ConnectionReader, "Price");
-                    priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
-                    idSupplier = (uint)Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier");
-                    image = Helpers.ReadString(ConnectionReader, "Image");
-                    product = new Product(idProduct, articleNumber, code, description, cost, price, priceW, idSupplier, image);
-                    
+                    product = new Product((uint)Helpers.ReadInt(ConnectionReader, "Article_number"), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Cost"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadFloat(ConnectionReader, "PriceW"), (uint)Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier"), Helpers.ReadString(ConnectionReader, "Image"));
+                    product.Id = idProduct;
                 }
                 catch { }
             }
