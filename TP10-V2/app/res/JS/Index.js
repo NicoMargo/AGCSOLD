@@ -81,12 +81,12 @@ var modelId, productos;
 $(document).ready(function () {
 	$.ajax({
 		type: "GET",
-		url: "http://localhost:53581/api/Ecomerce/getproducts/1",
+		url: "http://localhost:51031/api/Ecomerce/getproducts/1",
 		success: function (productos) {
 			for (var i = 0; i < productos.length; i++) {
 				$("#cardGroup").append(
 					'<div class="card mb-3 mr-3 col-md-3"><div style="height: 250px;">' +
-					'<img class="card-img-top" src="'+productos[i].image +'" alt="Card image cap">' +
+					'<img class="card-img-top ml-4 w-auto pt-3 h-100"  src="'+productos[i].image +'" alt="Card image cap">' +
 					'</div>' +
 					'<div class="card-body">' +
 					'<div class="d-flex">' +

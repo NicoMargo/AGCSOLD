@@ -40,8 +40,8 @@ namespace AGCS.Models.BDD
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    image = Helpers.ReadString(ConnectionReader, "Image");
-                    Product product = new Product(id, articleNumber,code, description, price, priceW, stock,image);
+                    image = Helpers.ReadString(ConnectionReader, "image");
+                     Product product = new Product(id, articleNumber,code, description, price, priceW, stock,image);
                     productsList.Add(product);
                 }
                 catch { }
@@ -56,8 +56,7 @@ namespace AGCS.Models.BDD
 
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", Session.GetSUInt32("idBusiness")},
-                {"pCode", code},
-                {"pIdSupplier", -1}
+                {"pCode", code}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetByCode", args);
 
@@ -80,8 +79,7 @@ namespace AGCS.Models.BDD
 
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", Session.GetSUInt32("idBusiness")},
-                {"pCode", code},
-                {"pIdSupplier",idSupplier}
+                {"pCode", code}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetByCode", args);
 
