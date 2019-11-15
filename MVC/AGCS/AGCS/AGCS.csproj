@@ -12,10 +12,11 @@
     <None Include="wwwroot\js\ClientsCRUD.js" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="IronPdf" Version="2019.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
-    <PackageReference Include="MySql.Data" Version="8.0.17" />
+    <PackageReference Include="MySql.Data" Version="8.0.18" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="Views\Products\ProductStock.cshtml">
