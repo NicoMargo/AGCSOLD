@@ -10,12 +10,12 @@ namespace AGCS.Models.BDD
     {
        
         //Methods for store procedures of Table Products 
-        public static List<Product> GetProducts()
+        public static List<Product> GetProducts(uint idBusiness = 0)
         {
             List<Product> productsList = new List<Product>();
 
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Session.GetSUInt32("idBusiness")}
+                {"pIdBusiness", idBusiness == 0?Session.GetSUInt32("idBusiness"):idBusiness}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductsGet", args);
 
@@ -25,6 +25,7 @@ namespace AGCS.Models.BDD
                 ulong articleNumber;
                 string code;
                 string description;
+                string image;
                 float cost;
                 float price;
                 float priceW;
@@ -39,7 +40,8 @@ namespace AGCS.Models.BDD
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    Product product = new Product(id, articleNumber,code, description, price, priceW, stock);
+                    image = Helpers.ReadString(ConnectionReader, "image");
+                     Product product = new Product(id, articleNumber,code, description, price, priceW, stock,image);
                     productsList.Add(product);
                 }
                 catch { }
@@ -54,16 +56,41 @@ namespace AGCS.Models.BDD
 
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pIdBusiness", Session.GetSUInt32("idBusiness")},
-                {"pCode", code},
-                {"pIdSupplier", -1}
+                {"pCode", code}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetByCode", args);
 
             if (ConnectionReader.Read())
-            {              
+            {
+                /*Addres info ...*/
                 try
-                {                    
+                {
                     product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadInt(ConnectionReader, "Stock"));
+                }
+                catch { }
+            }
+            Helpers.Disconect();
+            return product;
+        }
+
+        public static Product GetProductByCode(ulong code, ulong idSupplier)
+        {
+            Product product = null;
+
+            Dictionary<string, object> args = new Dictionary<string, object> {
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
+                {"pCode", code}
+            };
+            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetByCode", args);
+
+            if (ConnectionReader.Read())
+            {
+                /*Addres info ...*/
+                try
+                {
+                    product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadInt(ConnectionReader, "Stock"));
+                    product.PriceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
+                    product.Cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                 }
                 catch { }
             }
@@ -83,22 +110,10 @@ namespace AGCS.Models.BDD
 
             if (ConnectionReader.Read())
             {
-                string description;
-                float price, cost, priceW;
-                uint idSupplier, articleNumber;
-
-                string code;//arreglar
-                /*Addres info ...*/
                 try
                 {
-                    code = Helpers.ReadString(ConnectionReader, "CodeProduct");
-                    articleNumber = (uint)Helpers.ReadInt(ConnectionReader, "Article_number");
-                    description = Helpers.ReadString(ConnectionReader, "Description");
-                    cost = Helpers.ReadFloat(ConnectionReader, "Cost");
-                    price = Helpers.ReadFloat(ConnectionReader, "Price");
-                    priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
-                    idSupplier = (uint)Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier");
-                    product = new Product(idProduct, articleNumber, code, description, cost, price, priceW, idSupplier);
+                    product = new Product((uint)Helpers.ReadInt(ConnectionReader, "Article_number"), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Cost"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadFloat(ConnectionReader, "PriceW"), (uint)Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier"), Helpers.ReadString(ConnectionReader, "Image"));
+                    product.Id = idProduct;
                 }
                 catch { }
             }
@@ -143,7 +158,8 @@ namespace AGCS.Models.BDD
                 { "pCost",product.Cost } ,
                 { "pPrice",product.Price } ,
                 { "pPriceW",product.PriceW } ,
-                { "pIdSupplier", product.IdSupplier} 
+                { "pIdSupplier", product.IdSupplier},
+                { "pImage", product.Image}
             };
             bInserted = (Helpers.CallNonQuery("spProductInsert", args) > 0);
             Helpers.Disconect();
@@ -162,7 +178,8 @@ namespace AGCS.Models.BDD
                 { "pCost",product.Cost } ,
                 { "pPrice",product.Price } ,
                 { "pPriceW",product.PriceW } ,
-                { "pIdSupplier", product.IdSupplier}
+                { "pIdSupplier", product.IdSupplier},
+                { "pImage", product.Image}
             };
             Helpers.CallNonQuery("spProductUpdate", args);
             Helpers.Disconect();

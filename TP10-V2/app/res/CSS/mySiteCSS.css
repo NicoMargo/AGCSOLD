@@ -1,0 +1,15 @@
+
+.validation_msg {
+    color : red;
+}
+
+.validation_error {
+    border-color: red !important;
+}
+
+.hidden {
+    display : none;
+}
+.display-inline {
+    display:inline;
+}

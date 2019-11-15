@@ -16,6 +16,8 @@ namespace AGCS
             Configuration = configuration;
         }
 
+        readonly string MyAllowSpecificOrigins = "EnableCors";
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -34,8 +36,14 @@ namespace AGCS
                 options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials().Build();
+                });
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -51,11 +59,11 @@ namespace AGCS
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
-            app.UseMiddlewareSession();
+            //app.UseMiddlewareSession();
             /*
             app.MapWhen(context => context.Request.Path.Value != "/", appBuilder =>
             {              
@@ -70,5 +78,6 @@ namespace AGCS
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
     }
 }
