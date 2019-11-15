@@ -10,12 +10,13 @@ namespace AGCS.Models.BDD
     {
        
         //Methods for store procedures of Table Products 
-        public static List<Product> GetProducts(uint idBusiness = 0)
+        public static List<Product> GetProducts(uint idBusiness = 0, string search = "")
         {
             List<Product> productsList = new List<Product>();
 
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", idBusiness == 0?Session.GetSUInt32("idBusiness"):idBusiness}
+                {"pIdBusiness", idBusiness == 0?Session.GetSUInt32("idBusiness"):idBusiness},
+                {"pSearch", search }
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductsGet", args);
 
@@ -24,6 +25,7 @@ namespace AGCS.Models.BDD
                 uint id;
                 ulong articleNumber;
                 string code;
+                string name;
                 string description;
                 string image;
                 float cost;
@@ -35,13 +37,15 @@ namespace AGCS.Models.BDD
                     id = Convert.ToUInt32(ConnectionReader["idProduct"]);
                     articleNumber = Helpers.ReadULong(ConnectionReader, "Article_Number");
                     code = Helpers.ReadString(ConnectionReader, "CodeProduct");
+
+                    name = Helpers.ReadString(ConnectionReader, "Description");
                     description = Helpers.ReadString(ConnectionReader, "Description");
                     cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                     price = Helpers.ReadFloat(ConnectionReader, "Price");
                     priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
                     stock = Helpers.ReadInt(ConnectionReader, "Stock");
                     image = Helpers.ReadString(ConnectionReader, "image");
-                     Product product = new Product(id, articleNumber,code, description, price, priceW, stock,image);
+                    Product product = new Product(id, articleNumber,code,name, description, price, priceW, stock,image);
                     productsList.Add(product);
                 }
                 catch { }
@@ -65,7 +69,7 @@ namespace AGCS.Models.BDD
                 /*Addres info ...*/
                 try
                 {
-                    product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadInt(ConnectionReader, "Stock"));
+                    product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadInt(ConnectionReader, "Stock"));
                 }
                 catch { }
             }
@@ -88,7 +92,7 @@ namespace AGCS.Models.BDD
                 /*Addres info ...*/
                 try
                 {
-                    product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadInt(ConnectionReader, "Stock"));
+                    product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadInt(ConnectionReader, "Stock"));
                     product.PriceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
                     product.Cost = Helpers.ReadFloat(ConnectionReader, "Cost");
                 }
@@ -112,7 +116,7 @@ namespace AGCS.Models.BDD
             {
                 try
                 {
-                    product = new Product((uint)Helpers.ReadInt(ConnectionReader, "Article_number"), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Cost"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadFloat(ConnectionReader, "PriceW"), (uint)Helpers.ReadInt(ConnectionReader, "Suppliers_idSupplier"), Helpers.ReadString(ConnectionReader, "Image"));
+                    product = new Product((uint)Helpers.ReadInt(ConnectionReader, "Article_number"), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Cost"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadFloat(ConnectionReader, "PriceW"), Helpers.ReadString(ConnectionReader, "Image"));
                     product.Id = idProduct;
                 }
                 catch { }
@@ -133,13 +137,13 @@ namespace AGCS.Models.BDD
 
             if (ConnectionReader.Read())
             {
-                string description;
+                string name;
                 int stock;
                 try
                 {                  
-                    description = Helpers.ReadString(ConnectionReader, "Description");
+                    name = Helpers.ReadString(ConnectionReader, "Name");
                     stock = Helpers.ReadInt(ConnectionReader, "stock");
-                    product = new Product(idProduct, description, stock);
+                    product = new Product(idProduct, name, stock);
                 }
                 catch { }
             }
@@ -154,11 +158,11 @@ namespace AGCS.Models.BDD
                 { "pIdBusiness", Session.GetSUInt32("idBusiness")} ,
                 { "pCode", product.Code} ,
                 { "pProduct_Number",product.ArticleNumber } ,
+                { "pName",product.Name } ,
                 { "pDescription",product.Description } ,
                 { "pCost",product.Cost } ,
                 { "pPrice",product.Price } ,
                 { "pPriceW",product.PriceW } ,
-                { "pIdSupplier", product.IdSupplier},
                 { "pImage", product.Image}
             };
             bInserted = (Helpers.CallNonQuery("spProductInsert", args) > 0);
@@ -174,11 +178,11 @@ namespace AGCS.Models.BDD
                 { "pIdBusiness",Session.GetSUInt32("idBusiness")} ,
                 { "pCode", product.Code} ,
                 { "pProduct_Number",product.ArticleNumber } ,
+                { "pName",product.Name } ,
                 { "pDescription",product.Description } ,
                 { "pCost",product.Cost } ,
                 { "pPrice",product.Price } ,
                 { "pPriceW",product.PriceW } ,
-                { "pIdSupplier", product.IdSupplier},
                 { "pImage", product.Image}
             };
             Helpers.CallNonQuery("spProductUpdate", args);

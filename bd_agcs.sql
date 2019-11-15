@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 08-11-2019 a las 15:02:26
+-- Tiempo de generación: 15-11-2019 a las 15:08:09
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -94,11 +94,17 @@ then
 end if$$
 
 DROP PROCEDURE IF EXISTS `spClientsGet`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientsGet` (IN `pIdBusiness` INT, IN `pPage` INT)  NO SQL
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spClientsGet` (IN `pIdBusiness` INT, IN `pPage` INT, IN `pSearch` VARCHAR(500))  NO SQL
 BEGIN
-DECLARE pag INT DEFAULT 0;
-SET pag = 20*pPage;
-SELECT clients.idClient, clients.Name, clients.Surname, clients.DNI_CUIT, clients.Mail,clients.Cellphone FROM clients where clients.Business_id = pIdBusiness and clients.Active = 1 LIMIT 25 OFFSET pag;
+	DECLARE pag INT DEFAULT 0;
+	SET pag = 20*pPage;
+	if(pSearch is null)
+    THEN
+    	set @search = "%%";
+    ELSE
+		set @search = concat("%",pSearch,"%");
+    end if;
+	SELECT clients.idClient, clients.Name, clients.Surname, clients.DNI_CUIT, clients.Mail,clients.Cellphone FROM clients where clients.Business_id = pIdBusiness and clients.Active = 1  and (Name like @search or Surname like @search or DNI_CUIT like @search) LIMIT 25 OFFSET pag;
 END$$
 
 DROP PROCEDURE IF EXISTS `spClientUpdate`$$
@@ -197,8 +203,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductInsert` (IN `pIdBusiness` 
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductsGet`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` INT)  BEGIN
-	select * from Products where Products.Business_id = pIdBusiness and products.Active = 1;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductsGet` (IN `pIdBusiness` INT, IN `pSearch` VARCHAR(500))  BEGIN
+	if(pSearch is null)
+    THEN
+    	set @search = "%%";
+    ELSE
+		set @search = concat("%",pSearch,"%");
+    end if;
+	select * from Products where Products.Business_id = pIdBusiness and products.Active = 1 and (Name like @search or CodeProduct like @search or Article_number like @search);
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductStockUpdate`$$
@@ -305,8 +317,14 @@ then
 end if$$
 
 DROP PROCEDURE IF EXISTS `spSuppliersGet`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spSuppliersGet` (IN `pIdBusiness` INT)  BEGIN
-	select * from suppliers where Business_id = pIdBusiness and Active = 1;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spSuppliersGet` (IN `pIdBusiness` INT, IN `pSearch` VARCHAR(500))  BEGIN
+	if(pSearch is null)
+    THEN
+    	set @search = "%%";
+    ELSE
+		set @search = concat("%",pSearch,"%");
+    end if;
+	select * from suppliers where Business_id = pIdBusiness and Active = 1 and (Name like @search or Surname like @search or Fanciful_name like @search or Cuit like @search);
 END$$
 
 DROP PROCEDURE IF EXISTS `spSupplierUpdate`$$
