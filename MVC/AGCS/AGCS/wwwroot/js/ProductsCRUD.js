@@ -17,7 +17,6 @@
                     cost: parseFloat($("#crtCost").find("input").val()),
                     price: parseFloat($("#crtPrice").find("input").val()),
                     priceW: parseFloat($("#crtPriceW").find("input").val()),
-                    idSupplier: parseInt($("#crtSupplier").val()),
                     image: $("#crtImage").find("input").val(),
                 },
                 success: function () {

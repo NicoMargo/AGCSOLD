@@ -1,9 +1,37 @@
 ﻿
 @{
-    ViewData["Title"] = "Agregar Compra";
+    ViewData["Title"] = "Nueva Compra";
+    @model AGCS.Models.Supplier
+    string validInt(string number)
+    {
+        string value = "-"; ;
+        try
+        {
+            int parsedNumber = Convert.ToInt32(number);
+            if (parsedNumber > 0)
+            {
+                value = parsedNumber.ToString();
+            }
+        }
+        catch
+        {
+        }
+        return value;
+    }
+
+    string validString(string words)
+    {
+        if (words == "")
+        {
+            words = "-";
+        }
+        return words;
+    }
 }
+
 <script crossorigin="anonymous" src="~/js/CreatePurchase.js"></script>
-<script>var sdi = @ViewBag.Supplier.Id;</script>
+<script src="~/js/SuppliersCRUD.js"></script>
+<script src="~/js/ProductsCRUD.js"></script>
 
 <div style="margin-top:4rem;" class="col-md-12">
     <div class="content mt-3">
@@ -15,6 +43,7 @@
                             <strong class="card-title">Proveedor</strong>
                         </div>
                         <div class="card-body">
+                            <button class="btn btn-primary col-md-12 mb-3" data-toggle="modal" data-target=".bd-example-modal-lg">Agregar Proveedor</button>
                             <table id="bootstrap-data-table-export" class="table table-striped">
                                 <tr class="header">
                                     <th style="width:20%;">DNI/CUIT</th>
@@ -22,13 +51,13 @@
                                     <th style="width:15%;">Apellido</th>
                                     <th style="width:20%;">Razón Social</th>
                                     <th style="width:20%;">Nombre de Fantasía</th>
-                                </tr>   
+                                </tr>
                                 <tr>
-                                    <td>@ViewBag.Supplier.Cuit </td>
-                                    <td >@ViewBag.Supplier.Surname</td>
-                                    <td>@ViewBag.Supplier.Name </td>
-                                    <td>@ViewBag.Supplier.Company </td>
-                                    <td>@ViewBag.Supplier.Fanciful_name </td>
+                                    <td id="supplierCuit"></td>
+                                    <td id="supplierName"></td>
+                                    <td id="supplierSurname"></td>
+                                    <td id="supplierCompany"></td>
+                                    <td id="supplierFancifulName"></td>
                                 </tr>
                             </table>
                         </div>
@@ -67,8 +96,8 @@
                                     <tr>
                                         <td> <input type="text" id="codProdToEnter" placeholder="Codigo" class="form-control text-black"></td>
                                         <td id="descProdToEnter"></td>
-                                        <td class="validInput notEmpty validPositive" id="inputQuant"><input type="number" required min="1" id="quantProdToEnter"  class="loadToList form-control text-black"> <div class="validation_msg hidden text-center"></div></td>
-                                        <td class="validInput notEmpty validPositive" id="inputCost"><input type="number" required min="0" id="costProdToEnter"  class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
+                                        <td class="validInput notEmpty validPositive" id="inputQuant"><input type="number" required min="1" id="quantProdToEnter" class="loadToList form-control text-black"> <div class="validation_msg hidden text-center"></div></td>
+                                        <td class="validInput notEmpty validPositive" id="inputCost"><input type="number" required min="0" id="costProdToEnter" class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
                                         <td class="validInput notEmpty validPositive" id="inputPrice"><input type="number" required min="1" id="priceProdToEnter" placeholder="X Menor" class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
                                         <td class="validInput notEmpty validPositive" id="inputPriceW"><input type="number" required min="1" id="priceWProdToEnter" placeholder="X Mayor" class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
                                         <td> <input type="text" id="inputCond" placeholder="Condicion de pago" class="form-control text-black"></td>
@@ -115,4 +144,144 @@
     </div>
 </div>
 
+<!-- select supplier-->
+<div class="modal fade bd-example-modal-lg" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Seleccionar Proveedor</h5>
+            </div>
+            <div class="modal-body">
+                <div class="content mt-3">
+                    <div class="animated fadeIn">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Proveedores</strong>
+                            </div>
+                            <div class="card-body">
+                                <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Proveedor (por CUIT, nombre, apellido o nombre de fantasía)">
+                                <table class="CRUDTable" id="CRUDTable">
+                                    <tr class="header">
+                                        <th class="p-2 pl-4" style="width:13%;">CUIT</th>
+                                        <th class="p-2 " style="width:18%;">Nombre</th>
+                                        <th class="p-2" style="width:18%;">Apellido</th>
+                                        <th class="p-2" style="width:25%;">Nombre de Fantasía</th>
+                                        <th class="p-2" style="width:7%;">Agregar</th>
+                                    </tr>
+                                    @{
+                                        for (int i = 0; i < ViewBag.Suppliers.Count; i++)
+                                        {
+                                            <tr class="tableRow">
+                                                <td class="colToSearch pl-4">@validInt(ViewBag.Suppliers[i].Cuit.ToString()) </td>
+                                                <td class="colToSearch">@validString(ViewBag.Suppliers[i].Name)</td>
+                                                <td class="pl-2 colToSearch">@validString(ViewBag.Suppliers[i].Surname)</td>
+                                                <td class="colToSearch"> @validString(ViewBag.Suppliers[i].Fanciful_name)</td>
+                                                <td>
+                                                    <button name="idSupplier" class="btn btn-warning ml-3 searchSupplier" data-dismiss="modal" type="submit" value="@ViewBag.Suppliers[i].Id">+</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary mr-4" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+
+<!-- Extra large modal Create Product-->
+<div class="modal fade bd-example-modal-xl" id="modalCrt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">No existe el producto ¿Desea crearlo?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-center">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <strong><span>Nro. de Artículo</span></strong>
+                        </div>
+                        <div class="crtInput notEmpty validInt" id="crtNumber">
+                            <input class="form-control text-center" type="number" min="0" step="1">
+                            <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
+                        </div>
+                    </div>
+                    <div class="ml-5 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Descripción</span></strong>
+                        </div>
+                        <div class="crtInput notEmpty" id="crtDescription">
+                            <input class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
+                        </div>
+                    </div>
+                    <div class="ml-5 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Código</span></strong>
+                        </div>
+                        <div class="crtInput notEmpty" id="crtCode">
+                            <input class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center">Ingrese un código válido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <strong><span>Costo</span></strong>
+                        </div>
+                        <div class="crtInput notEmpty validPositive" id="crtCost">
+                            <input class="form-control text-center" type="number" min="0" step="0.01">
+                            <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
+                        </div>
+                    </div>
+                    <div class="ml-5 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Precio por Menor</span></strong>
+                        </div>
+                        <div class="crtInput notEmpty validPositive" id="crtPrice">
+                            <input class="form-control text-center" type="number" min="0" step="0.01">
+                            <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
+                        </div>
+                    </div>
+                    <div class="ml-5 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Precio por Mayor</span></strong>
+                        </div>
+                        <div class="crtInput notEmpty validPositive" id="crtPriceW">
+                            <input class="form-control text-center" type="number" min="0" step="0.01" />
+                            <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
+                        </div>
+                    </div>
+                </div>                
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-md-10">
+                        <div class="text-center">
+                            <strong><span>Imagen</span></strong>
+                        </div>
+                        <div class="crtInput" id="crtImage">
+                            <input class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center">Ingrese un valor valido</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secundary" id="createCancel" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-primary" id="add">Crear</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Create END-->

@@ -89,8 +89,8 @@
         modelId = $(this).attr("modelId");
         $("#confirm").click(function () {
             $.ajax({
-                type: "DELETE",
-                url: "/Suppliers/DeleteSupplier",
+                type: "POST",
+                url: "/Suppliers/GetDataSupplier",
                 data: { id: modelId },
                 success: function () {
                     location.reload();

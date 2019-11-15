@@ -1,6 +1,28 @@
 ﻿$(document).ready(function () {
-    var idProduct, product, total = 0, Items = [], p;
+    var idProduct, product, total = 0, Items = [], p, IdSupplier;
     var Product = { Id: null, Quant: null, iva: 1, Price: null, Code: null, Cost: null, PriceW: null };
+
+    //search supplier from database
+    $(".searchSupplier").click(function() {
+        IdSupplier = $(this).attr("value");
+        $.ajax({
+            type: "POST",
+            url: "/Suppliers/GetDataSupplier",
+            data: { id: IdSupplier },
+            success: function (Supplier) {
+                data = JSON.parse(Supplier);
+                $("#supplierName").html(data.Name);
+                $("#supplierCuit").html(data.Cuit);
+                $("#supplierSurname").html(data.Surname);
+                $("#supplierCompany").html(data.Company);
+                $("#supplierFancifulName").html(data.Fanciful_name);
+            },
+            error: function () {
+                CreateModal("Error", "Hubo un error al eliminar al proveedor");
+            }
+        });
+    });
+
 
     $('#codProdToEnter').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -27,8 +49,7 @@
             type: "POST",
             url: "../../Purchases/GetProduct",
             data: {
-                code: $("#codProdToEnter").val(),
-                idSupplier: sdi
+                code: $("#codProdToEnter").val()
             },
             success: function (DataJson) {
                 product = JSON.parse(DataJson);
@@ -40,7 +61,7 @@
                     $("#priceWProdToEnter").val(product.PriceW);
                     $("#quantProdToEnter").focus();
                 } else {
-                    CreateModal("Error de Producto","No existe el producto o no corresponde con el proveedor");
+                    $("#modalCrt").modal('show');
                 }
             },
             error: function () {
@@ -99,9 +120,6 @@
         $("#" + id).removeClass("validation_error");
     }
 
-
-
-    
     function fT(idProduct) {
         let success = false, i = 0;
         do {
@@ -209,7 +227,7 @@
                         url: "/Purchases/NewPurchase",
                         data: {
                             json: JSON.stringify(Items),
-                            sdi: sdi
+                            sdi: IdSupplier
                         },
                         success: function (success) {
                             if (success) {
