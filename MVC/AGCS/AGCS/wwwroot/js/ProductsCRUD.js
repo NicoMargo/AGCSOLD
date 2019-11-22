@@ -41,7 +41,7 @@
             success: function (DataJson) {
                 var Data = JSON.parse(DataJson);
                 $("#updtNumber").find("input").val(Data.ArticleNumber);
-                $("#updtName").find("input").val(Data.ArticleNumber);
+                $("#updtName").find("input").val(Data.Name);
                 $("#updtDescription").find("textArea").val(Data.Description);
                 $("#updtCode").find("input").val(Data.Code);
                 $("#updtCost").find("input").val(Data.Cost);

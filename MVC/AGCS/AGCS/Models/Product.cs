@@ -75,7 +75,7 @@ namespace AGCS.Models
             _image = image;
         }
       
-        //Insert - Update - get all
+        //Insert - Update
         public Product(ulong articleNumber, string code, string name, string description, float cost, float price, float priceW, string image)
         {
             _articleNumber = (int)articleNumber;

@@ -268,7 +268,7 @@ var nicEditorConfig = bkClass.extend({
 		'outdent' : {name : __('Remove Indent'), command : 'outdent', noActive : true},
 		'hr' : {name : __('Horizontal Rule'), command : 'insertHorizontalRule', noActive : true}
 	},
-	iconsPath : '../nicEditorIcons.gif',
+    iconsPath: "/images/nicEditorIcons.gif",
 	buttonList : ['save','bold','italic','underline','left','center','right','justify','ol','ul','fontSize','fontFamily','fontFormat','indent','outdent','image','upload','link','unlink','forecolor','bgcolor'],
 	iconList : {"bold":1,"center":2,"hr":3,"indent":4,"italic":5,"justify":6,"left":7,"ol":8,"outdent":9,"removeformat":10,"right":11,"save":12,"strikethrough":13,"subscript":14,"superscript":15,"ul":16,"underline":17,"close":18,"arrow":19}
 	
@@ -320,7 +320,7 @@ var nicEditor = bkClass.extend({
 	
 	panelInstance : function(e,o) {
 		e = this.checkReplace($BK(e));
-		var panelElm = new bkElement('DIV').setStyle({width : (parseInt(e.getStyle('width')) || e.clientWidth)+'px'}).appendBefore(e);
+		var panelElm = new bkElement('DIV').setStyle({width : 100+'%'}).appendBefore(e);
 		this.setPanel(panelElm);
 		return this.addInstance(e,o);	
 	},
@@ -423,10 +423,10 @@ var nicEditorInstance = bkClass.extend({
 		var isTextarea = (e.nodeName.toLowerCase() == "textarea");
 		if(isTextarea || this.options.hasPanel) {
 			var ie7s = (bkLib.isMSIE && !((typeof document.body.style.maxHeight != "undefined") && document.compatMode == "CSS1Compat"))
-			var s = {width: newX+'px', border : '1px solid #ccc', borderTop : 0, overflowY : 'auto', overflowX: 'hidden' };
+			var s = {width: 100+'%', border : '1px solid #ccc', borderTop : 0, overflowY : 'auto', overflowX: 'hidden' };
 			s[(ie7s) ? 'height' : 'maxHeight'] = (this.ne.options.maxHeight) ? this.ne.options.maxHeight+'px' : null;
 			this.editorContain = new bkElement('DIV').setStyle(s).appendBefore(e);
-			var editorElm = new bkElement('DIV').setStyle({width : (newX-8)+'px', margin: '4px', minHeight : newY+'px'}).addClass('main').appendTo(this.editorContain);
+			var editorElm = new bkElement('DIV').setStyle({width : '98%', margin: '1%', minHeight : newY+'px'}).addClass('main').appendTo(this.editorContain);
 
 			e.setStyle({display : 'none'});
 				

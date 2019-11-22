@@ -34,18 +34,7 @@ namespace AGCS.Models.BDD
                 int stock;
                 try
                 {
-                    id = Convert.ToUInt32(ConnectionReader["idProduct"]);
-                    articleNumber = Helpers.ReadULong(ConnectionReader, "Article_Number");
-                    code = Helpers.ReadString(ConnectionReader, "CodeProduct");
-
-                    name = Helpers.ReadString(ConnectionReader, "Description");
-                    description = Helpers.ReadString(ConnectionReader, "Description");
-                    cost = Helpers.ReadFloat(ConnectionReader, "Cost");
-                    price = Helpers.ReadFloat(ConnectionReader, "Price");
-                    priceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
-                    stock = Helpers.ReadInt(ConnectionReader, "Stock");
-                    image = Helpers.ReadString(ConnectionReader, "image");
-                    Product product = new Product(id, articleNumber,code,name, description, price, priceW, stock,image);
+                    Product product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadULong(ConnectionReader, "Article_Number"), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Description"), price = Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadFloat(ConnectionReader, "PriceW"), Helpers.ReadInt(ConnectionReader, "Stock"), Helpers.ReadString(ConnectionReader, "image"));
                     productsList.Add(product);
                 }
                 catch { }

@@ -38,9 +38,12 @@
 }
 
     <script type="text/javascript" src="~/js/nicEdit.js"></script>
+    
     <script type="text/javascript">
-	    bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
+        bkLib.onDomLoaded(function () { nicEditors.allTextAreas() });
+        $(".nicEdit-main").css("width:100%");
     </script>
+    
     <div class="content mt-3">
         <div class="animated fadeIn">
             <div class="card">
@@ -143,12 +146,12 @@
                         </div>
                     </div>
                     <div class="row mt-4 justify-content-center">
-                        <div class="col-md-3">
+                        <div class="col-md-10">
                             <div class="text-center">
                                 <strong><span>Descripción</span></strong>
                             </div>
                             <div class="crtInput notEmpty" id="crtDescription">
-                                <textarea cols="10"></textarea>
+                                <textarea style="width:100%"></textarea>
                                 <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
                             </div>
                         </div>
@@ -243,12 +246,12 @@
                         </div>
                     </div>
                     <div class="row mt-4 justify-content-center">
-                        <div class="col-md-3">
+                        <div class="col-md-10">
                             <div class="text-center">
                                 <strong><span>Descripción</span></strong>
                             </div>
                             <div class="updInput notEmpty" id="updtDescription">
-                                <textarea cols="10"></textarea>
+                                <textarea style="width:100%"></textarea>
                                 <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
                             </div>
                         </div>

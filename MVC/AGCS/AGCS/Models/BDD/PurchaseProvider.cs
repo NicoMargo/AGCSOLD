@@ -30,7 +30,7 @@ namespace AGCS.Models.BDD
                         {
                             foreach (Product product in purchase.Products)
                             {
-                                success &= InsertPurchaseXProduct(id, product);
+                                success &= InsertPurchaseXProduct(id, product,purchase.IdSupplier);
                             }
                         }
                         success = true;
@@ -46,7 +46,7 @@ namespace AGCS.Models.BDD
         }
 
         //Methods for store procedures of Table Purchases
-        public static bool InsertPurchaseXProduct(ulong idPurchase, Product product)
+        public static bool InsertPurchaseXProduct(ulong idPurchase, Product product,ulong idSupplier)
         {
             
             bool success = false;
@@ -58,7 +58,8 @@ namespace AGCS.Models.BDD
                 {"pIdUser", Session.GetSUInt32("idUser")},
                 {"pCost", product.Cost},
                 {"pPrice", product.Price},
-                {"pPriceW", product.PriceW}
+                {"pPriceW", product.PriceW},
+                {"pIdSupplier", idSupplier}
             };
             success = Helpers.CallNonQuery("spPurchaseXProductInsert", args)>0;
             return success;

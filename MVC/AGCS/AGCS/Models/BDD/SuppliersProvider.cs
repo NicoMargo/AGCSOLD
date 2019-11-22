@@ -9,11 +9,12 @@ namespace AGCS.Models.BDD
     public static class SuppliersProvider
     {
 
-        public static List<Supplier> GetSuppliersShort() {
+        public static List<Supplier> GetSuppliersShort(string search = "") {
             List<Supplier> suppliersList = new List<Supplier>();
 
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Session.GetSUInt32("idBusiness")}
+                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
+                {"pSearch",search }
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spSuppliersGet", args);
 
@@ -37,11 +38,12 @@ namespace AGCS.Models.BDD
         }
 
          //Methods for store procedures of Table Suppliers 
-        public static List<Supplier> GetSuppliers()
+        public static List<Supplier> GetSuppliers(string search = "")
         {
             List<Supplier> suppliersList = new List<Supplier>();
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness",Session.GetSUInt32("idBusiness")}
+                {"pIdBusiness",Session.GetSUInt32("idBusiness")},
+                {"pSearch",search}
             };
             MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spSuppliersGet", args);
             while (ConnectionReader.Read())
