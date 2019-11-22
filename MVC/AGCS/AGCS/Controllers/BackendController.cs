@@ -4,6 +4,8 @@ using AGCS.Models;
 using AGCS.Models.BDD;
 using Newtonsoft.Json;
 using System;
+using System.IO;
+using IronPdf;
 
 namespace AGCS.Controllers
 {
@@ -67,6 +69,35 @@ namespace AGCS.Controllers
         public ActionResult Configuration()
         {
             return View();
+        }
+
+        public void BillPdf()
+        {
+            var html = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "TestInvoice1.html"));
+
+            var pdfPrintOptions = new PdfPrintOptions()
+            {
+                MarginTop = 50,
+                MarginBottom = 50,
+                Header = new SimpleHeaderFooter()
+                {
+                    CenterText = "{pdf-title}",
+                    DrawDividerLine = true,
+                    FontSize = 16
+                },
+                Footer = new SimpleHeaderFooter()
+                {
+                    LeftText = "{date} {time}",
+                    RightText = "Page {page} of {total-pages}",
+                    DrawDividerLine = true,
+                    FontSize = 14
+                },
+                CssMediaType = PdfPrintOptions.PdfCssMediaType.Print
+            };
+
+            var htmlToPdf = new HtmlToPdf(pdfPrintOptions);
+            var pdf = htmlToPdf.RenderHtmlAsPdf(html);
+            pdf.SaveAs(Path.Combine(Directory.GetCurrentDirectory(), "HtmlToPdfExample2.Pdf"));
         }
     }
 }
