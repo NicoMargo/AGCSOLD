@@ -48,13 +48,13 @@ function RowSearcher(tableId, searchInputId) {
 
 function validInt(element, expectedCondition = true) {
     let valid = false;
-    let value = element.getElementsByTagName("input")[0].value;
+    let value = element.children[0].value;
     if (expectedCondition && value < 0) {
-        element.getElementsByTagName("input")[0].classList.add("validation_error");
+        element.children[0].classList.add("validation_error");
         element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
     }
     else {
-        element.getElementsByTagName("input")[0].classList.remove("validation_error");
+        element.children[0].classList.remove("validation_error");
         element.getElementsByClassName('validation_msg')[0].classList.add("hidden");
         valid = true;
     }
@@ -63,13 +63,13 @@ function validInt(element, expectedCondition = true) {
 
 function validPositive(element, expectedCondition = true) {
     let valid = false;
-    let value = element.getElementsByTagName("input")[0].value;
+    let value = element.children[0].value;
     if (expectedCondition && value < 0) {
-        element.getElementsByTagName("input")[0].classList.add("validation_error");
+        element.children[0].classList.add("validation_error");
         element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
     }
     else {
-        element.getElementsByTagName("input")[0].classList.remove("validation_error");
+        element.children[0].classList.remove("validation_error");
         element.getElementsByClassName('validation_msg')[0].classList.add("hidden");
         valid = true;
     }
@@ -78,12 +78,12 @@ function validPositive(element, expectedCondition = true) {
 
 function validString(element, expectedCondition = true) {
     let valid = false;
-    if (!(expectedCondition && element.getElementsByTagName("input")[0].value != '')) {
-        element.getElementsByTagName("input")[0].classList.add("validation_error");
+    if (!(expectedCondition && element.children[0].value != '')) {
+        element.children[0].classList.add("validation_error");
         element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
     }
     else {
-        element.getElementsByTagName("input")[0].classList.remove("validation_error");
+        element.children[0].classList.remove("validation_error");
         element.getElementsByClassName('validation_msg')[0].classList.add("hidden");
         valid = true;
     }

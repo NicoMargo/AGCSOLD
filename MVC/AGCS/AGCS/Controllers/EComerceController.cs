@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AGCS.Controllers
 {
+    //Area experimental en Desarrollo, No funciona por ahora
+
     [Route("api/[controller]")]
     [ApiController]
     public class EComerceController : Controller

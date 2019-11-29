@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.2
+-- version 4.7.9
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 29-11-2019 a las 04:34:02
--- Versión del servidor: 10.4.10-MariaDB
--- Versión de PHP: 7.3.12
+-- Tiempo de generación: 29-11-2019 a las 12:37:01
+-- Versión del servidor: 5.7.21
+-- Versión de PHP: 5.6.35
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -243,10 +243,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN 
 			update Products set Name = pName where idProduct = pId and Business_id = pIdBusiness;
         end if;
         #Description
-        if (pDescription != "" and pDescription is not null )
-        then
-			update Products set Products.Description = pDescription where Products.idProduct = pId and Products.Business_id = pIdBusiness;
-        end if;
+        update Products set Products.Description = pDescription where Products.idProduct = pId and Products.Business_id = pIdBusiness;
 		#Cost
         if (pCost > 0 and pCost is not null )
         then
@@ -502,11 +499,11 @@ CREATE TABLE IF NOT EXISTS `bills` (
   `Users_id` int(11) DEFAULT NULL,
   `IVA_Condition` varchar(45) DEFAULT NULL,
   `TypeBill` varchar(1) DEFAULT NULL,
-  `Subtotal` float(10,2) DEFAULT 0.00,
-  `Discount` float(5,2) UNSIGNED ZEROFILL DEFAULT 00.00,
-  `IVA_Recharge` float(5,2) UNSIGNED ZEROFILL DEFAULT 00.00,
+  `Subtotal` float(10,2) DEFAULT '0.00',
+  `Discount` float(5,2) UNSIGNED ZEROFILL DEFAULT '00.00',
+  `IVA_Recharge` float(5,2) UNSIGNED ZEROFILL DEFAULT '00.00',
   `WholeSaler` bit(1) DEFAULT NULL,
-  `Total` float(2,2) DEFAULT 0.00,
+  `Total` float(2,2) DEFAULT '0.00',
   `Branches_id` int(11) DEFAULT NULL,
   `Payment_Methods_id` int(11) DEFAULT NULL,
   `Macs_id` int(11) DEFAULT NULL,
@@ -518,7 +515,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Macs1_idx` (`Macs_id`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_id`) USING BTREE,
   KEY `fk_Bills_Clients1_idx` (`Clients_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
@@ -542,7 +539,8 @@ INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_id`, `Users_id`, `IVA_Condit
 (71, '2019-10-25', 46, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (72, '2019-11-07', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (73, '2019-11-07', 47, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(74, '2019-11-22', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1);
+(74, '2019-11-22', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
+(75, '2019-11-29', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 7500.00, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -556,11 +554,11 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   `Bills_id` int(11) NOT NULL,
   `Products_id` int(11) NOT NULL,
   `Quantity` int(11) DEFAULT NULL,
-  `Price` float(10,2) NOT NULL DEFAULT 0.00,
+  `Price` float(10,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_id`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills_x_products`
@@ -582,7 +580,9 @@ INSERT INTO `bills_x_products` (`idBills_X_Products`, `Bills_id`, `Products_id`,
 (81, 72, 27, 5, 200.00),
 (82, 73, 2, 10, 300.00),
 (83, 74, 2, 1, 300.00),
-(84, 74, 1, 5, 300.00);
+(84, 74, 1, 5, 300.00),
+(85, 75, 2, 5, 300.00),
+(86, 75, 1, 20, 300.00);
 
 -- --------------------------------------------------------
 
@@ -661,7 +661,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idClient`) USING BTREE,
   KEY `fk_Clients_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
@@ -688,7 +688,8 @@ INSERT INTO `clients` (`idClient`, `Name`, `Surname`, `DNI_CUIT`, `Mail`, `Telep
 (59, 'Jonathan', 'Liu', 43403847, 'Jony@gmail.com', '0', '1546374589', 1, b'1'),
 (60, 'Federico', 'Snieg', 29475860, 'fede@gmail.com', '0', '1547305867', 1, b'1'),
 (61, 'test', 'test', 1234567, NULL, '0', '0', 1, b'1'),
-(62, 'b', 'a', 135794521, 'a', '1', '1', 1, b'0');
+(62, 'b', 'a', 135794521, 'a', '1', '1', 1, b'0'),
+(63, 'ente', 'nuevo cli', 817036, '', '0', '0', 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -760,27 +761,27 @@ CREATE TABLE IF NOT EXISTS `products` (
   `Article_number` int(11) DEFAULT NULL,
   `Name` varchar(200) COLLATE latin1_bin NOT NULL,
   `Description` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
-  `Cost` float(10,2) UNSIGNED ZEROFILL DEFAULT 0000000.00,
-  `Price` float(10,2) UNSIGNED ZEROFILL DEFAULT 0000000.00,
-  `PriceW` float(10,2) UNSIGNED ZEROFILL DEFAULT 0000000.00,
+  `Cost` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
+  `Price` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
+  `PriceW` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
   `Image` varchar(2000) COLLATE latin1_bin NOT NULL DEFAULT '',
   `Age` bit(1) DEFAULT NULL,
-  `Stock` int(11) DEFAULT 0,
+  `Stock` int(11) DEFAULT '0',
   `CodeProduct` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
   `Business_id` int(11) NOT NULL,
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idProduct`) USING BTREE,
   KEY `fk_Products_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Volcado de datos para la tabla `products`
 --
 
 INSERT INTO `products` (`idProduct`, `Article_number`, `Name`, `Description`, `Cost`, `Price`, `PriceW`, `Image`, `Age`, `Stock`, `CodeProduct`, `Business_id`, `Active`) VALUES
-(1, 666, '	Manga Yakusoku no Neverland Vol 1', 'Manga Yakusoku no Neverland Vol 1', 0000500.00, 0000300.00, 0000200.00, 'https://inmanga.com/thumbnails/manga/The-Promised-Neverland/df035c49-d49f-4f15-bd2d-4ae9ea94d72d', b'1', 2290, '777', 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 'Manga Yakusoku no Neverland Vol 2', 0000010.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793089401_G.jpg', b'1', 98, '2', 1, b'1'),
-(3, 3, 'Manga Yakusoku no Neverland Vol 4', 'Manga Yakusoku no Neverland Vol 4', 0000800.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793289801_G.jpg', b'1', -936, '3', 1, b'1'),
+(1, 666, '	Manga Yakusoku no Neverland Vol 1', 'Manga Yakusoku no Neverland Vol 1', 0000500.00, 0000300.00, 0000200.00, 'https://inmanga.com/thumbnails/manga/The-Promised-Neverland/df035c49-d49f-4f15-bd2d-4ae9ea94d72d', b'1', 2180, '777', 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 'Manga Yakusoku no Neverland Vol 2', 0000010.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793089401_G.jpg', b'1', 93, '2', 1, b'1'),
+(3, 3, 'Manga Yakusoku no Neverland Vol 4', 'Manga Yakusoku no Neverland Vol 4', 0000800.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793289801_G.jpg', b'1', -6, '3', 1, b'1'),
 (4, 5, 'Yogurisimo Con Cereales', 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, 'https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwj0g-ub0djlAhVXI7kGHRZtCZsQjRx6BAgBEAQ&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DTzzXd2b2xaM&psig=AOvVaw1Ho3pxUY9tQ7FfifW8uuT6&ust=1573234455794867', b'1', -1, '7791337613027', 1, b'0'),
 (7, 32, 'amazing hat', 'amazing hat', 0050056.00, 0000600.00, 0054958.00, 'https://i0.pngocean.com/files/12/157/298/minecraft-breastplate-motorcycle-helmets-armour-pickaxe.jpg', NULL, -1, '434', 1, b'0'),
 (8, 85, 'awful hat', 'awful hat', 0000005.00, 0000331.00, 0000328.00, 'https://66.media.tumblr.com/2f4da14349d6ff0a065e6e7035df2fb1/tumblr_o130144hGr1tm6273o8_400.png', NULL, -32, '32222', 1, b'0'),
@@ -795,11 +796,14 @@ INSERT INTO `products` (`idProduct`, `Article_number`, `Name`, `Description`, `C
 (24, 2345, '2345', '2345', 0002345.00, 0002345.00, 0002345.00, '', NULL, 0, '34523452', 1, b'0'),
 (25, 84, 'Nerf maverick', 'Nerf maverick', 0000500.00, 0000700.00, 0000650.00, 'https://http2.mlstatic.com/pistolas-nerf-maverick-rev-6-sol-y-lanza-hidrogel-blaster-D_NQ_NP_838401-MLM27678430146_072018-F.jpg', NULL, 0, '69420', 1, b'0'),
 (26, 4, '	Manga Yakusoku no Neverland Vol 3', 'Manga Yakusoku no Neverland Vol 3', 0000100.00, 0000300.00, 0000200.00, 'https://www.normaeditorial.com/libros_img/978846793090001_G.jpg', NULL, 0, '4', 1, b'1'),
-(27, 6, 'Manga Yakusoku no Neverland Vol 5', 'Manga Yakusoku no Neverland Vol 5', 0000100.00, 0000200.00, 0000300.00, 'https://www.normaeditorial.com/libros_img/978846793402101_G.jpg', NULL, -5, '5', 1, b'1'),
-(28, 7, 'Manga Yakusoku no Neverland Vol 6', 'Manga Yakusoku no Neverland Vol 6', 0000100.00, 0000200.00, 0000300.00, 'https://www.normaeditorial.com/libros_img/978846793455701_G.jpg', NULL, 0, '77', 1, b'1'),
+(27, 6, 'Manga Yakusoku no Neverland Vol 5', 'Manga Yakusoku no Neverland Vol 5', 0000100.00, 0000200.00, 0000300.00, 'https://www.normaeditorial.com/libros_img/978846793402101_G.jpg', NULL, 43, '5', 1, b'1'),
+(28, 7, 'Manga Yakusoku no Neverland Vol 6', 'Manga Yakusoku no Neverland Vol 6a', 0000100.00, 0000200.00, 0000300.00, 'https://www.normaeditorial.com/libros_img/978846793455701_G.jpg', NULL, 0, '77', 1, b'1'),
 (29, 99, 'test', 'test', 0000100.00, 0000300.00, 0000200.00, '', NULL, 0, '99', 1, b'0'),
 (30, 89079087, '8907', '8907', 0007987.00, 0009087.00, 0000907.00, '', NULL, 0, '098709', 1, b'0'),
-(31, 8980, 'PRUEBA 2', 'PRUEBA 2', 0000100.00, 0000200.00, 0000150.00, '', NULL, 0, '85743', 1, b'0');
+(31, 8980, 'PRUEBA 2', 'PRUEBA 2', 0000100.00, 0000200.00, 0000150.00, '', NULL, 0, '85743', 1, b'0'),
+(32, 514, 'un producto', 'descri´cion', 0000080.00, 0001000.00, 0000200.00, 'https://cdn.shopify.com/s/files/1/0229/0839/files/Untitled_design__1.png?2393', NULL, 0, '213948', 1, b'0'),
+(33, 5789, '{\"\"ñ***[]}\'\'\'¡', 'ññ][}´*uüýsh{}[]', 0014798.00, 0041879.00, 0047129.00, 'https://cdn.shopify.com/s/files/1/0229/0839/files/Untitled_design__1.png?2393', NULL, 0, '213879', 1, b'0'),
+(34, 11321, 'asdf', NULL, 0001234.00, 0004152.00, 0004215.00, 'aa', NULL, 0, '1234152', 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -815,7 +819,7 @@ CREATE TABLE IF NOT EXISTS `products_x_suppliers` (
   PRIMARY KEY (`idProductsXSuppliers`),
   KEY `fk_ProductsXSuppliers_Products_idx` (`Products_id`),
   KEY `fk_ProductsXSuppliers_Suppliers_idx` (`Suppliers_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `products_x_suppliers`
@@ -823,7 +827,10 @@ CREATE TABLE IF NOT EXISTS `products_x_suppliers` (
 
 INSERT INTO `products_x_suppliers` (`idProductsXSuppliers`, `Products_id`, `Suppliers_id`) VALUES
 (1, 2, 3),
-(2, 2, 0);
+(2, 2, 0),
+(3, 3, 3),
+(4, 27, 3),
+(5, 3, 0);
 
 -- --------------------------------------------------------
 
@@ -865,7 +872,7 @@ CREATE TABLE IF NOT EXISTS `purchases` (
   KEY `fk_Purchases_Suppliers_idx` (`Suppliers_id`) USING BTREE,
   KEY `fk_Purchases_Users_id_idx` (`Users_id`) USING BTREE,
   KEY `fk_Purchases_Business_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases`
@@ -886,7 +893,9 @@ INSERT INTO `purchases` (`idPurchase`, `Suppliers_id`, `Users_id`, `date`, `tota
 (13, 3, 27, '2019-11-07', 30000.00, '', 1),
 (14, 3, 27, '2019-11-29', 600.00, '', 1),
 (15, 3, 27, '2019-11-29', 600.00, '', 1),
-(16, 0, 27, '2019-11-29', 600.00, '', 1);
+(16, 0, 27, '2019-11-29', 600.00, '', 1),
+(17, 3, 27, '2019-11-29', 36600.00, '', 1),
+(18, 0, 27, '2019-11-29', 252000.00, '', 1);
 
 -- --------------------------------------------------------
 
@@ -900,11 +909,11 @@ CREATE TABLE IF NOT EXISTS `purchases_x_products` (
   `Purchases_id` int(11) UNSIGNED NOT NULL,
   `Products_id` int(11) NOT NULL,
   `Quantity` int(11) NOT NULL,
-  `Cost` float(10,2) DEFAULT 0.00,
+  `Cost` float(10,2) DEFAULT '0.00',
   PRIMARY KEY (`idPurchases_x_Products`),
   KEY `fk_PurchasesXProducts_Purchases_idx` (`Purchases_id`),
   KEY `fk_PurchasesXProducts_Products_idx` (`Products_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases_x_products`
@@ -929,7 +938,10 @@ INSERT INTO `purchases_x_products` (`idPurchases_x_Products`, `Purchases_id`, `P
 (55, 13, 2, 100, 10.00),
 (56, 14, 2, 2, 10.00),
 (57, 15, 2, 2, 10.00),
-(58, 16, 2, 2, 10.00);
+(58, 16, 2, 2, 10.00),
+(59, 17, 3, 90, 800.00),
+(60, 17, 27, 48, 100.00),
+(61, 18, 3, 840, 800.00);
 
 -- --------------------------------------------------------
 
@@ -945,12 +957,12 @@ CREATE TABLE IF NOT EXISTS `stock_movement` (
   `Products_id` int(11) DEFAULT NULL,
   `dateTime` datetime DEFAULT NULL,
   `quant` mediumint(8) DEFAULT NULL,
-  `Amount` float(10,2) NOT NULL DEFAULT 0.00,
+  `Amount` float(10,2) NOT NULL DEFAULT '0.00',
   `Users_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_StockMovement_Products_idx` (`Products_id`) USING BTREE,
   KEY `fk_StockMovement_Users_idx` (`Users_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `stock_movement`
@@ -1015,7 +1027,13 @@ INSERT INTO `stock_movement` (`id`, `type`, `description`, `Products_id`, `dateT
 (57, 0, 'Venta de producto', 1, '2019-11-22 10:05:51', 5, 300.00, 27),
 (58, 1, 'Compra de producto', 2, '2019-11-29 01:25:07', 2, 10.00, 27),
 (59, 1, 'Compra de producto', 2, '2019-11-29 01:26:49', 2, 10.00, 27),
-(60, 1, 'Compra de producto', 2, '2019-11-29 01:26:59', 2, 10.00, 27);
+(60, 1, 'Compra de producto', 2, '2019-11-29 01:26:59', 2, 10.00, 27),
+(61, 1, 'Compra de producto', 3, '2019-11-29 08:41:19', 90, 800.00, 27),
+(62, 1, 'Compra de producto', 27, '2019-11-29 08:41:19', 48, 100.00, 27),
+(63, 2, 'explotó', 1, '2019-11-29 08:44:23', 90, 0.00, 27),
+(64, 1, 'Compra de producto', 3, '2019-11-29 08:47:54', 840, 800.00, 27),
+(65, 0, 'Venta de producto', 2, '2019-11-29 09:17:58', 5, 300.00, 27),
+(66, 0, 'Venta de producto', 1, '2019-11-29 09:17:58', 20, 300.00, 27);
 
 -- --------------------------------------------------------
 
@@ -1039,7 +1057,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idSupplier`) USING BTREE,
   KEY `fk_Supplier_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `suppliers`
@@ -1059,7 +1077,8 @@ INSERT INTO `suppliers` (`idSupplier`, `Cuit`, `Name`, `Surname`, `Company`, `Fa
 (14, 43994080, 'nicolas', 'Margossian', NULL, 'Margo-tech', '44322210', '1561730659', 1, NULL, NULL, b'1'),
 (15, 80000009, 'Don pepe', 'Y sus globos', 'Distribución de globos  y bombas, de Jose Globo', 'DIstribuidora de globos Don Jose', '155468794', '141234567', 1, 'Av Estado de palestina 911', 'donpepe@yahoo.com.ar', b'1'),
 (16, 138794685, 'Brother', 'Jajas', 'Hasbro', 'Hasbro', '18916548', '153481', 3, 'Avenida Juanita perez 123', 'mail@hasbro', b'1'),
-(17, 8009080, 'vv', 'aaa', '1aa', 'oof', '1', '1', 1, 'a', 'a', b'0');
+(17, 8009080, 'vv', 'aaa', '1aa', 'oof', '1', '1', 1, 'a', 'a', b'0'),
+(18, 13312, 'nonvre', 'apexido', 'a', 'fasdfasdsfa', '1', '1', 1, 'a', 'a', b'0');
 
 -- --------------------------------------------------------
 

@@ -63,7 +63,7 @@ namespace AGCS
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
-            //app.UseMiddlewareSession();
+            app.UseMiddlewareSession();
             /*
             app.MapWhen(context => context.Request.Path.Value != "/", appBuilder =>
             {              

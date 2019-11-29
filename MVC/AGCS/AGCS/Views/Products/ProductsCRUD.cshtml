@@ -1,12 +1,14 @@
 ﻿@{
     @model AGCS.Models.Product
-    string validInt(int number) {
+    string validInt(int number)
+    {
         string value;
         if (number <= 0)
         {
             value = "-";
         }
-        else {
+        else
+        {
             value = number.ToString();
         }
         return value;
@@ -36,274 +38,264 @@
     }
 
 }
+<div class="content mt-3">
+    <div class="animated fadeIn">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title">Productos</strong>
+            </div>
+            <div class="card-body">
+                <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Producto (por Nombre, nro de artículo o código)">
+                <button type="button" id="btnModalCrt" class="btn btn-primary w-100" data-toggle="modal" data-target="#modalCrt">
+                    Agregar Product
+                </button>
 
-    <script type="text/javascript" src="~/js/nicEdit.js"></script>
-    
-    <script type="text/javascript">
-        bkLib.onDomLoaded(function () { nicEditors.allTextAreas() });
-        $(".nicEdit-main").css("width:100%");
-    </script>
-    
-    <div class="content mt-3">
-        <div class="animated fadeIn">
-            <div class="card">
-                <div class="card-header">
-                    <strong class="card-title">Productos</strong>
-                </div>
-                <div class="card-body">
-                    <input type="text" id="searchInput" class="searchInput" placeholder="Buscar Producto (por Nombre, nro de artículo o código)">
-                    <button type="button" id="btnModalCrt" class="btn btn-primary w-100" data-toggle="modal" data-target="#modalCrt">
-                        Agregar Product
-                    </button>
-
-                    <table id="CRUDTable" class="CRUDTable">
-                        <tr class="header">
-                            <th class="p-2" style="width:10%;">Nro. de Artículo</th>
-                            <th class="p-2" style="width:30%;">Nombre</th>
-                            <th class="p-2" style="width:20%;">Código de Producto</th>
-                            <th class="p-2" style="width:10%;">Precio por mayor</th>
-                            <th class="p-2" style="width:10%;">Precio por menor</th>
-                            <th class="p-2" style="width:10%;">Stock</th>
-                            <th class="p-2" style="width:5%;">Modificar</th>
-                            <th class="p-2" style="width:5%;">Eliminar</th>
-                        </tr>
-                        @{
-                            for (int i = 0; i < ViewBag.Products.Count; i++)
-                            {
-                        <tr class="tableRow">
-                            <td class="colToSearch">@validInt(ViewBag.Products[i].ArticleNumber)</td>
-                            <td class="colToSearch">@validString(ViewBag.Products[i].Name)</td>
-                            <td class="colToSearch">@validString(ViewBag.Products[i].Code)</td>
-                            <td>@validFloat(ViewBag.Products[i].PriceW)</td>
-                            <td>@validFloat(ViewBag.Products[i].Price)</td>
-                            <td><a href="@Url.Action("ProductStock", "Products", new { id = @ViewBag.Products[i].Id })"><img class="crudButton display-inline" src="~/images/submit.png" style="width:50px" /> </a>@ViewBag.Products[i].Stock </td>
-                            <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
-                            <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
-                        </tr>
-                            }
+                <table id="CRUDTable" class="CRUDTable">
+                    <tr class="header">
+                        <th class="p-2" style="width:10%;">Nro. de Artículo</th>
+                        <th class="p-2" style="width:30%;">Nombre</th>
+                        <th class="p-2" style="width:20%;">Código de Producto</th>
+                        <th class="p-2" style="width:10%;">Precio por mayor</th>
+                        <th class="p-2" style="width:10%;">Precio por menor</th>
+                        <th class="p-2" style="width:10%;">Stock</th>
+                        <th class="p-2" style="width:5%;">Modificar</th>
+                        <th class="p-2" style="width:5%;">Eliminar</th>
+                    </tr>
+                    @{
+                        for (int i = 0; i < ViewBag.Products.Count; i++)
+                        {
+                            <tr class="tableRow">
+                                <td class="colToSearch">@validInt(ViewBag.Products[i].ArticleNumber)</td>
+                                <td class="colToSearch">@validString(ViewBag.Products[i].Name)</td>
+                                <td class="colToSearch">@validString(ViewBag.Products[i].Code)</td>
+                                <td>@validFloat(ViewBag.Products[i].PriceW)</td>
+                                <td>@validFloat(ViewBag.Products[i].Price)</td>
+                                <td><a href="@Url.Action("ProductStock", "Products", new { id = @ViewBag.Products[i].Id })"><img class="crudButton display-inline" src="~/images/submit.png" style="width:50px" /> </a>@ViewBag.Products[i].Stock </td>
+                                <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
+                                <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Products[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>
+                            </tr>
                         }
-                    </table>
-                </div>
+                    }
+                </table>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal delete Prod-->
-    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+<!-- Modal delete Prod-->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h5 class="modal-title">Esta seguro que quiere eliminar el producto?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="confirm" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  modal Create-->
+<div>
+    <div class="modal fade bd-example-modal-xl" id="modalCrt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Crear Producto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
-                    <h5 class="modal-title">Esta seguro que quiere eliminar el producto?</h5>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="confirm" class="btn btn-primary">Confirmar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- Extra large modal Create-->
-    <div>
-        <div class="modal fade bd-example-modal-xl" id="modalCrt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Crear Producto</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                    <div class="row justify-content-center">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nro. de Artículo</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty validInt" id="crtNumber">
+                                <input class="form-control text-center" type="number" min="0" step="1">
+                                <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
+                            </div>
+                        </div>
+                        <div class="ml-5 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Nombre</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty" id="crtName">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor válida</div>
+                            </div>
+                        </div>
+                        <div class="ml-5 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Código</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty" id="crtCode">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un código válido</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <div class="row justify-content-center">
-                            <div class="col-md-3">
-                                <div class="text-center">
-                                    <strong><span>Nro. de Artículo</span></strong>
-                                </div>
-                                <div class="crtInput notEmpty validInt" id="crtNumber">
-                                    <input class="form-control text-center" type="number" min="0" step="1">
-                                    <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
-                                </div>
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <strong><span>Costo</span></strong>
                             </div>
-                            <div class="ml-5 col-md-3">
-                                <div class="text-center">
-                                    <strong><span>Nombre</span></strong>
-                                </div>
-                                <div class="crtInput notEmpty" id="crtName">
-                                    <input class="form-control text-center" type="text">
-                                    <div class="validation_msg hidden text-center">Ingrese un valor válida</div>
-                                </div>
-                            </div>
-                            <div class="ml-5 col-md-3">
-                                <div class="text-center">
-                                    <strong><span>Código</span></strong>
-                                </div>
-                                <div class="crtInput notEmpty" id="crtCode">
-                                    <input class="form-control text-center" type="text">
-                                    <div class="validation_msg hidden text-center">Ingrese un código válido</div>
-                                </div>
+                            <div class="crtInput notEmpty validPositive" id="crtCost">
+                                <input class="form-control text-center" type="number" min="0" step="0.01">
+                                <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
                         </div>
-                        <div class="row mt-4 justify-content-center">
-                            <div class="col-md-3">
-                                <div class="text-center">
-                                    <strong><span>Costo</span></strong>
-                                </div>
-                                <div class="crtInput notEmpty validPositive" id="crtCost">
-                                    <input class="form-control text-center" type="number" min="0" step="0.01">
-                                    <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
-                                </div>
+                        <div class="ml-5 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Precio por Menor</span></strong>
                             </div>
-                            <div class="ml-5 col-md-3">
-                                <div class="text-center">
-                                    <strong><span>Precio por Menor</span></strong>
-                                </div>
-                                <div class="crtInput notEmpty validPositive" id="crtPrice">
-                                    <input class="form-control text-center" type="number" min="0" step="0.01">
-                                    <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
-                                </div>
-                            </div>
-                            <div class="ml-5 col-md-3">
-                                <div class="text-center">
-                                    <strong><span>Precio por Mayor</span></strong>
-                                </div>
-                                <div class="crtInput notEmpty validPositive" id="crtPriceW">
-                                    <input class="form-control text-center" type="number" min="0" step="0.01" />
-                                    <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
-                                </div>
+                            <div class="crtInput notEmpty validPositive" id="crtPrice">
+                                <input class="form-control text-center" type="number" min="0" step="0.01">
+                                <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                             </div>
                         </div>
-                        <div class="row mt-4 justify-content-center">
-                            <div class="col-md-10">
-                                <div class="text-center">
-                                    <strong><span>Descripción</span></strong>
-                                </div>
-                                <!-- <div class="crtInput notEmpty" id="crtDescription"> -->
+                        <div class="ml-5 col-md-3">
+                            <div class="text-center">
+                                <strong><span>Precio por Mayor</span></strong>
+                            </div>
+                            <div class="crtInput notEmpty validPositive" id="crtPriceW">
+                                <input class="form-control text-center" type="number" min="0" step="0.01" />
+                                <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-md-10">
+                            <div class="text-center">
+                                <strong><span>Descripción</span></strong>
+                            </div>
+                            <div class="crtInput" id="crtDescription">
                                 <textarea style="width:100%"></textarea>
                                 <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
-                                <!-- </div>-->
-                            </div>
-                        </div>
-                        <div class="row mt-4 justify-content-center">
-                            <div class="col-md-10">
-                                <div class="text-center">
-                                    <strong><span>Imagen</span></strong>
-                                </div>
-                                <div class="crtInput" id="crtImage">
-                                    <input class="form-control text-center" type="text">
-                                    <div class="validation_msg hidden text-center">Ingrese un valor valido</div>
-                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secundary" id="createCancel" data-dismiss="modal">Cerrar</button>
-                        <button class="btn btn-primary" id="add">Crear</button>
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-md-10">
+                            <div class="text-center">
+                                <strong><span>Imagen</span></strong>
+                            </div>
+                            <div class="crtInput" id="crtImage">
+                                <input class="form-control text-center" type="text">
+                                <div class="validation_msg hidden text-center">Ingrese un valor valido</div>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secundary" id="createCancel" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" id="add">Crear</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Modal Create END-->
-                            <!-- Modal Update Beginning-->
-                            <div class="modal fade bd-example-modal-xl" id="modalUpdt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-xl">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Información Del Producto</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row justify-content-center">
-                                                <div class="col-md-3">
-                                                    <div class="text-center">
-                                                        <strong><span>Nro. de Artículo</span></strong>
-                                                    </div>
-                                                    <div class="updtInput notEmpty validInt" id="updtNumber">
-                                                        <input class="form-control text-center" type="number" min="1" step="1">
-                                                        <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-5 col-md-3">
-                                                    <div class="text-center">
-                                                        <strong><span>Nombre</span></strong>
-                                                    </div>
-                                                    <div class="updtInput notEmpty" id="updtName">
-                                                        <input class="form-control text-center" type="text">
-                                                        <div class="validation_msg hidden text-center">Ingrese un valor válida</div>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-5 col-md-3">
-                                                    <div class="text-center">
-                                                        <strong><span>Código</span></strong>
-                                                    </div>
-                                                    <div class="updtInput notEmpty" id="updtCode">
-                                                        <input class="form-control text-center" type="text">
-                                                        <div class="validation_msg hidden text-center">Ingrese un código válido</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row mt-4 justify-content-center">
-                                                <div class="col-md-3">
-                                                    <div class="text-center">
-                                                        <strong><span>Costo</span></strong>
-                                                    </div>
-                                                    <div class="updtInput notEmpty validPositive" id="updtCost">
-                                                        <input class="form-control text-center" type="number" min="0" step="0.01">
-                                                        <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-5 col-md-3">
-                                                    <div class="text-center">
-                                                        <strong><span>Precio por Menor</span></strong>
-                                                    </div>
-                                                    <div class="updtInput notEmpty validPositive" id="updtPrice">
-                                                        <input class="form-control text-center" type="number" min="0" step="0.01">
-                                                        <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-5 col-md-3">
-                                                    <div class="text-center">
-                                                        <strong><span>Precio por Mayor</span></strong>
-                                                    </div>
-                                                    <div class="updtInput notEmpty validPositive" id="updtPriceW">
-                                                        <input class="form-control text-center" type="number" min="0" step="0.01" />
-                                                        <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row mt-4 justify-content-center">
-                                                <div class="col-md-10">
-                                                    <div class="text-center">
-                                                        <strong><span>Descripción</span></strong>
-                                                    </div>
-                                                    <!-- <div class="updInput notEmpty" id="updtDescription"> -->
-                                                    <textarea style="width:100%"></textarea>
-                                                    <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
-                                                    <!--</div> -->
-                                                </div>
-                                            </div>
-                                            <div class="row mt-4 justify-content-center">
-                                                <div class="col-md-10">
-                                                    <div class="text-center">
-                                                        <strong><span>Imagen</span></strong>
-                                                    </div>
-                                                    <div class="updtInput" id="updtImage">
-                                                        <input class="form-control text-center" type="text">
-                                                        <div class="validation_msg hidden text-center">Ingrese un valor valido</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secundary" id="updateCancel" data-dismiss="modal">Cerrar</button>
-                                            <button class="btn btn-primary" id="update">Guardar</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <script src="~/js/ProductsCRUD.js"></script>
+</div>
+<!-- Modal Create END-->
+<!-- Modal Update Beginning-->
+<div class="modal fade bd-example-modal-xl" id="modalUpdt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Información Del Producto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-center">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <strong><span>Nro. de Artículo</span></strong>
+                        </div>
+                        <div class="updtInput notEmpty validInt" id="updtNumber">
+                            <input class="form-control text-center" type="number" min="1" step="1">
+                            <div class="validation_msg hidden text-center">Ingrese un nro válido</div>
+                        </div>
+                    </div>
+                    <div class="ml-5 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Nombre</span></strong>
+                        </div>
+                        <div class="updtInput notEmpty" id="updtName">
+                            <input class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center">Ingrese un valor válida</div>
+                        </div>
+                    </div>
+                    <div class="ml-5 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Código</span></strong>
+                        </div>
+                        <div class="updtInput notEmpty" id="updtCode">
+                            <input class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center">Ingrese un código válido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <strong><span>Costo</span></strong>
+                        </div>
+                        <div class="updtInput notEmpty validPositive" id="updtCost">
+                            <input class="form-control text-center" type="number" min="0" step="0.01">
+                            <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
+                        </div>
+                    </div>
+                    <div class="ml-5 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Precio por Menor</span></strong>
+                        </div>
+                        <div class="updtInput notEmpty validPositive" id="updtPrice">
+                            <input class="form-control text-center" type="number" min="0" step="0.01">
+                            <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
+                        </div>
+                    </div>
+                    <div class="ml-5 col-md-3">
+                        <div class="text-center">
+                            <strong><span>Precio por Mayor</span></strong>
+                        </div>
+                        <div class="updtInput notEmpty validPositive" id="updtPriceW">
+                            <input class="form-control text-center" type="number" min="0" step="0.01" />
+                            <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-md-10">
+                        <div class="text-center">
+                            <strong><span>Descripción</span></strong>
+                        </div>
+                        <div class="updInput" id="updtDescription">
+                            <textarea style="width:100%"></textarea>
+                            <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-md-10">
+                        <div class="text-center">
+                            <strong><span>Imagen</span></strong>
+                        </div>
+                        <div class="updtInput" id="updtImage">
+                            <input class="form-control text-center" type="text">
+                            <div class="validation_msg hidden text-center">Ingrese un valor valido</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secundary" id="updateCancel" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-primary" id="update">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/ProductsCRUD.js"></script>
