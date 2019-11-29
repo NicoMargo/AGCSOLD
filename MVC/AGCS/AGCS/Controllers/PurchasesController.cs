@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using AGCS.Models.BDD;
 using AGCS.Models;
@@ -10,22 +8,15 @@ namespace AGCS.Controllers
 {
     public class PurchasesController : BaseController
     {
-        public ActionResult SelectSupplier()
+        public ActionResult CreatePurchase()
         {
-            ViewBag.Suppliers = SuppliersProvider.GetSuppliers();
+            ViewBag.Suppliers = SuppliersProvider.GetSuppliers();            
             return View();
         }
         [HttpPost]
-        public ActionResult CreatePurchase(uint idSupplier)
+        public JsonResult GetProduct(uint code)
         {
-            ViewBag.Supplier = SuppliersProvider.GetSupplierById(idSupplier);
-            
-            return View();
-        }
-        [HttpPost]
-        public JsonResult GetProduct(uint code, uint idSupplier)
-        {
-            Product product = ProductsProvider.GetProductByCode(code,idSupplier);
+            Product product = ProductsProvider.GetProductByCode(code);
             string JsonDataProduct = JsonConvert.SerializeObject(product);
             return Json(JsonDataProduct);
         }

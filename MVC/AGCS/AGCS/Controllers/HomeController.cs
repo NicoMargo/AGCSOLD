@@ -20,11 +20,11 @@ namespace AGCS.Controllers
             User Loginuser = new User(mail,passUser);
             Business LoginBusiness;
             Tuple<User, Business> objects = UsersProvider.LogIn(Loginuser);
-
-            LoginBusiness = objects.Item2;
-            Loginuser = objects.Item1;
             try
             {
+                LoginBusiness = objects.Item2;
+                Loginuser = objects.Item1;
+           
                 if (Loginuser.Name != null)
                 {
                     HttpContext.Session.SetString("username", Loginuser.Name+" "+Loginuser.Surname);                    

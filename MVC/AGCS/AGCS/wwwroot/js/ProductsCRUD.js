@@ -12,12 +12,13 @@
                 url: "/Products/CreateProduct",
                 data: {
                     number: parseInt($("#crtNumber").find("input").val()),
-                    description: $("#crtDescription").find("input").val(),
+                    name: $("#crtName").find("input").val(),
+                    description: $("#crtDescription").find("textArea").val(),
                     code: $("#crtCode").find("input").val(),
                     cost: parseFloat($("#crtCost").find("input").val()),
                     price: parseFloat($("#crtPrice").find("input").val()),
                     priceW: parseFloat($("#crtPriceW").find("input").val()),
-                    idSupplier: parseInt($("#crtSupplier").val())
+                    image: $("#crtImage").find("input").val(),
                 },
                 success: function () {
                     location.reload();
@@ -39,12 +40,14 @@
             success: function (DataJson) {
                 var Data = JSON.parse(DataJson);
                 $("#updtNumber").find("input").val(Data.ArticleNumber);
-                $("#updtDescription").find("input").val(Data.Description);
+                $("#updtName").find("input").val(Data.Name);
+                $("#updtDescription").find("textArea").val(Data.Description);
                 $("#updtCode").find("input").val(Data.Code);
                 $("#updtCost").find("input").val(Data.Cost);
                 $("#updtPrice").find("input").val(Data.Price);
                 $("#updtPriceW").find("input").val(Data.PriceW);
                 $("#updtSupplier").val(Data.IdSupplier);
+                $("#updtImage").find("input").val(Data.Image);
             },
             error: function () {
                 CreateModal("Error", "Hubo un error al modificar el producto");
@@ -61,12 +64,14 @@
                 data: {
                     id: modelId,
                     number: parseInt($("#updtNumber").find("input").val()),
-                    description: $("#updtDescription").find("input").val(),
+                    name: $("#updtName").find("input").val(),
+                    description: $("#updtDescription").find("textArea").val(),
                     code: $("#updtCode").find("input").val(),
                     cost: $("#updtCost").find("input").val(),
                     price: $("#updtPrice").find("input").val(),
                     priceW: $("#updtPriceW").find("input").val(),
-                    idSupplier: parseInt($("#updtSupplier").val())
+                    idSupplier: parseInt($("#updtSupplier").val()),
+                    image: $("#updtImage").find("input").val()
                 },
                 success: function () {
                     location.reload();

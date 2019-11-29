@@ -8,15 +8,22 @@ namespace AGCS.Models.BDD
     {
         //public static string connectionString = "Server=localhost;User=root;Database=bd_agcs;Uid=Jonyloco;Pwd=agcs;"; //Chino
         //public static string connectionString = "Server=127.0.0.1;User=root;Database=bd_agcs"; //Anush
-        public static string connectionString = "Server=localhost;User=root;Database=bd_agcs2"; //Ort
+        public static string connectionString = "Server=localhost;User=root;Database=bd_agcs"; //Ort
         private static MySqlConnection Connection;
 
         public static List<Product> ListProducts = new List<Product>();
 
         public static void Connect()
         {
-            Connection = new MySqlConnection(connectionString);
-            Connection.Open();
+            try
+            {
+                Connection = new MySqlConnection(connectionString);
+                Connection.Open();
+            }
+            catch
+            {
+
+            }
         }
 
         public static void Disconect()

@@ -25,7 +25,7 @@
                 D = JSON.parse(DataJson);
                 if (D != null) {
                     idOfProd = D.Id;
-                    $("#descProdToEnter").append(D.Description);
+                    $("#descProdToEnter").append(D.Name);
                     $("#priceProdToEnter").append(D.Price);
                     $("#stockProdToEnter").append(D.Stock);
                     $("#quantProdToEnter").focus();
@@ -137,7 +137,7 @@
             Product.Quant = parseInt($("#quantProdToEnter").val());
             Product.Code = D.Code;
             Items.push(Product);
-            var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><deleteButton id="db' + idOfProd + '"  position="' + idOfProd + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
+            var ProdToEnter = '<tr id="' + idOfProd + '"><td>' + D.Name + '</td>' + '<td><input type="number" this="quant" id="q' + idOfProd + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td>' + D.Price + '</td><td>' + D.Stock + '</td><td><deleteButton id="db' + idOfProd + '"  position="' + idOfProd + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
             ProdToEnter.keypress;
             $("#tableProducts").prepend(ProdToEnter);
             KeyPressEventQuant(idOfProd);
