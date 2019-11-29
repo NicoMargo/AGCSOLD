@@ -49,7 +49,7 @@ function RowSearcher(tableId, searchInputId) {
 function validInt(element, expectedCondition = true) {
     let valid = false;
     let value = element.children[0].value;
-    if (expectedCondition && value < 0) {
+    if (expectedCondition && value <= 0 && value != "") {
         element.children[0].classList.add("validation_error");
         element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
     }
@@ -64,7 +64,7 @@ function validInt(element, expectedCondition = true) {
 function validPositive(element, expectedCondition = true) {
     let valid = false;
     let value = element.children[0].value;
-    if (expectedCondition && value < 0) {
+    if (expectedCondition && value <= 0 && value !="") {
         element.children[0].classList.add("validation_error");
         element.getElementsByClassName("validation_msg")[0].classList.remove("hidden");
     }

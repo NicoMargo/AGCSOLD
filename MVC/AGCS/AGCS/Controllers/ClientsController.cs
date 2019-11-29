@@ -20,10 +20,10 @@ namespace AGCS.Controllers
         }
         
         [HttpPost]
-        public bool CreateClient(string surname = "", string name = "", ulong dni = 0, string mail = "", ulong telephone = 0, ulong cellphone = 0, string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
+        public bool CreateClient(string surname = "", string name = "", ulong dni = 0, string mail = "", string telephone = "", string cellphone = "", string town = "", string address = "", string province = "", string leter = "", int number = 0, int floor = 0)
         {
             bool Success;
-            Client NewClient = new Client(name, surname, dni, mail, telephone.ToString(), cellphone.ToString());
+            Client NewClient = new Client(name, surname, dni, mail, telephone, cellphone);
             try
             {
                 Success = ClientsProvider.InsertClient(NewClient);
@@ -51,11 +51,11 @@ namespace AGCS.Controllers
         }
 
         [HttpPost]
-        public bool UpdateClient(uint id, string surname, string name, ulong dni, string mail, ulong telephone = 0, ulong cellphone = 0/*, string Town, string Address, string Province, string Leter, int Number, int Floor*/)
+        public bool UpdateClient(uint id, string surname, string name, ulong dni, string mail, string telephone = "", string cellphone = ""/*, string Town, string Address, string Province, string Leter, int Number, int Floor*/)
             {
             bool Success = true;
             if (mail is null) { mail = ""; }
-            Client client = new Client(id, name, surname, dni, mail, cellphone.ToString(), telephone.ToString());
+            Client client = new Client(id, name, surname, dni, mail, cellphone, telephone);
             try
             {
                 ClientsProvider.UpdateClient(client);

@@ -112,11 +112,11 @@ namespace AGCS.Models.BDD
         public static void UpdateUser(User user)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
-                {"id", user.Id },
+                {"pId", user.Id },
                 {"pIdBusiness", Session.GetSUInt32("idBusiness")},
                 {"pName", user.Name},
                 {"pSurname", user.Surname},
-                {"pDNI_CUIT", user.Dni},
+                {"pDNI", user.Dni},
                 {"pMail", user.Mail},
                 {"pTelephone", user.Telephone},
                 {"pCellphone", user.Cellphone},
