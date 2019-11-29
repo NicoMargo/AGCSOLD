@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    var idProduct, product, total = 0, Items = [], p, IdSupplier;
+    var idProduct, product, total = 0, Items = [], p, IdSupplier = 0;
     var Product = { Id: null, Quant: null, iva: 1, Price: null, Code: null, Cost: null, PriceW: null };
 
     //search supplier from database
