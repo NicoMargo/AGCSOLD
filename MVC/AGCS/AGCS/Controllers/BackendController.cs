@@ -5,7 +5,7 @@ using AGCS.Models.BDD;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using IronPdf;
+//using IronPdf;
 
 namespace AGCS.Controllers
 {
@@ -70,7 +70,7 @@ namespace AGCS.Controllers
         {
             return View();
         }
-
+        /*
         public void BillPdf()
         {
             var html = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "TestInvoice1.html"));
@@ -98,6 +98,6 @@ namespace AGCS.Controllers
             var htmlToPdf = new HtmlToPdf(pdfPrintOptions);
             var pdf = htmlToPdf.RenderHtmlAsPdf(html);
             pdf.SaveAs(Path.Combine(Directory.GetCurrentDirectory(), "HtmlToPdfExample2.Pdf"));
-        }
+        }*/
     }
 }
