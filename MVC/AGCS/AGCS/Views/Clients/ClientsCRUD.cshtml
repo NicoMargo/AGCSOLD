@@ -14,7 +14,7 @@
 
     string validString(string words)
     {
-        if (words == "")
+        if (words == "" || words == null)
         {
             words = "-";
         }
@@ -51,7 +51,7 @@
                                     <td class="colToSearch pl-2">@validString(ViewBag.Clients[i].Surname)</td>
                                     <td class="colToSearch">@validString(ViewBag.Clients[i].Name)</td>
                                     <td class="colToSearch">@validInt((long)ViewBag.Clients[i].Dni)</td>
-                                    <td>@validInt(Convert.ToInt64(ViewBag.Clients[i].Cellphone))</td>
+                                    <td>@validString(ViewBag.Clients[i].Cellphone)</td>
                                     <td>@validString(ViewBag.Clients[i].Mail)</td>
                                     <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Clients[i].Id" ><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
                                     <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Clients[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>

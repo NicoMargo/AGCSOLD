@@ -14,7 +14,7 @@ namespace AGCS.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult GetProduct(uint code)
+        public JsonResult GetProduct(ulong code)
         {
             Product product = ProductsProvider.GetProductByCode(code);
             string JsonDataProduct = JsonConvert.SerializeObject(product);

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 29-11-2019 a las 12:58:20
+-- Tiempo de generación: 29-11-2019 a las 14:36:55
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -255,7 +255,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductUpdate` (IN `pId` INT, IN 
 			update Products set Name = pName where idProduct = pId and Business_id = pIdBusiness;
         end if;
         #Description
-        update Products set Products.Description = pDescription where Products.idProduct = pId and Products.Business_id = pIdBusiness;
+        if (pDescription != "" and pDescription is not null )
+        then
+			update Products set Products.Description = pDescription where Products.idProduct = pId and Products.Business_id = pIdBusiness;
+        end if;
 		#Cost
         if (pCost > 0 and pCost is not null )
         then
@@ -527,7 +530,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Macs1_idx` (`Macs_id`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_id`) USING BTREE,
   KEY `fk_Bills_Clients1_idx` (`Clients_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
@@ -570,7 +573,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_id`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills_x_products`
@@ -682,26 +685,11 @@ CREATE TABLE IF NOT EXISTS `clients` (
 INSERT INTO `clients` (`idClient`, `Name`, `Surname`, `DNI_CUIT`, `Mail`, `Telephone`, `Cellphone`, `Business_id`, `Active`) VALUES
 (0, 'Consumidor Final', 'Consumidor Final', 1, ' ', '0', '1', 0, b'1'),
 (8, 'Yare Yare', 'Dawa', 1211, 'bot01@mail.com', '113212113', '11231213', 1, b'0'),
-(22, 'MargossianEmpresa2', '11', 3, 'a', NULL, '111', 2, b'1'),
-(23, 'test', 'prueba', 123456, NULL, NULL, '43214321', 1, b'0'),
-(25, 'nombre', 'apellido', 987654321, NULL, NULL, '40005000', 1, b'0'),
-(32, 'Margossian', 'Nicolas', 5555555, NULL, '1144322258', '1165898555', 1, b'0'),
-(39, 'aaa', 'aaa', 43444, NULL, '1125458', '1154898', 1, b'0'),
-(40, 'asdf8', 'asdf9', 3246, 'hola9', '2436', '2344', 1, b'0'),
-(45, 'hoola', 'q hace', 555555, NULL, '0', '123213213', 1, b'0'),
 (46, 'Nicolas', 'Margossian', 43994080, NULL, '0', '111561730659', 1, b'0'),
 (47, 'Nicolas', 'Margossian', 439940804, 'nico@gmail.com', '5613', '1561730659', 1, b'1'),
-(52, 'dawa', 'yareyare', 1234, 'mnail@q', '123', '5', 1, b'0'),
-(53, 'R', 'lucas', 7, NULL, NULL, NULL, 1, b'0'),
-(54, 'xdd', 'aaa', 9, '', NULL, NULL, 1, b'0'),
 (55, 'Empresa2', 'Cliente', 2345544, NULL, NULL, NULL, 2, b'1'),
 (56, 'Gabriel', 'Guivi', 32592593, NULL, NULL, '', 2, b'1'),
-(58, 'wz', 'wz', 17181915, '5', '5', '5', 1, b'0'),
-(59, 'Jonathan', 'Liu', 43403847, 'Jony@gmail.com', '0', '1546374589', 1, b'1'),
-(60, 'Federico', 'Snieg', 29475860, 'fede@gmail.com', '0', '1547305867', 1, b'1'),
-(61, 'test', 'test', 1234567, NULL, '0', '0', 1, b'1'),
-(62, 'b', 'a', 135794521, 'a', '1', '1', 1, b'0'),
-(63, 'ente', 'nuevo cli', 817036, '', '0', '0', 1, b'1');
+(60, 'Federico', 'Snieg', 29475860, 'fede@gmail.com', '0', '1547305867', 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -784,7 +772,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idProduct`) USING BTREE,
   KEY `fk_Products_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Volcado de datos para la tabla `products`
@@ -792,13 +780,12 @@ CREATE TABLE IF NOT EXISTS `products` (
 
 INSERT INTO `products` (`idProduct`, `Article_number`, `Name`, `Description`, `Cost`, `Price`, `PriceW`, `Image`, `Age`, `Stock`, `CodeProduct`, `Business_id`, `Active`) VALUES
 (1, 666, '	Manga Yakusoku no Neverland Vol 1', 'Manga Yakusoku no Neverland Vol 1', 0000500.00, 0000300.00, 0000200.00, 'https://inmanga.com/thumbnails/manga/The-Promised-Neverland/df035c49-d49f-4f15-bd2d-4ae9ea94d72d', b'1', 2290, '777', 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 'Manga Yakusoku no Neverland Vol 2', 0000010.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793089401_G.jpg', b'1', 90, '2', 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 'Manga Yakusoku no Neverland Vol 2', 0000010.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793089401_G.jpg', b'1', 82, '2', 1, b'1'),
 (3, 3, 'Manga Yakusoku no Neverland Vol 4', 'Manga Yakusoku no Neverland Vol 4', 0000800.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793289801_G.jpg', b'1', -939, '3', 1, b'1'),
 (4, 5, 'Yogurisimo Con Cereales', 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, 'https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwj0g-ub0djlAhVXI7kGHRZtCZsQjRx6BAgBEAQ&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DTzzXd2b2xaM&psig=AOvVaw1Ho3pxUY9tQ7FfifW8uuT6&ust=1573234455794867', b'1', -1, '7791337613027', 1, b'1'),
 (7, 32, 'amazing hat', 'amazing hat', 0050056.00, 0000600.00, 0054958.00, 'https://i0.pngocean.com/files/12/157/298/minecraft-breastplate-motorcycle-helmets-armour-pickaxe.jpg', NULL, -1, '434', 1, b'0'),
 (8, 85, 'awful hat', 'awful hat', 0000005.00, 0000331.00, 0000328.00, 'https://66.media.tumblr.com/2f4da14349d6ff0a065e6e7035df2fb1/tumblr_o130144hGr1tm6273o8_400.png', NULL, -32, '32222', 1, b'0'),
 (9, 75, 'a beautiful hat', 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, '', NULL, 0, '707', 1, b'0'),
-(17, 106, 'loljajasalu2', 'loljajasalu2', 0000081.00, 0000071.00, 0000082.00, '', NULL, 89, '891', 1, b'0'),
 (18, 218, 'Tabla Periódica', 'Tabla Periódica', 0000010.00, 0000040.00, 0000030.00, '', NULL, 50, '7798107220218', 2, b'1'),
 (19, 1, 'item borrar', 'item borrar', 0000100.00, 0000500.00, 0000300.00, '', NULL, 75, '12', 2, b'1'),
 (20, 3, 'Castaña De Caju', 'Castaña De Caju', 0000050.00, 0000150.00, 0000100.00, '', NULL, 101, '2670550000003', 2, b'1'),
@@ -808,14 +795,9 @@ INSERT INTO `products` (`idProduct`, `Article_number`, `Name`, `Description`, `C
 (24, 2345, '2345', '2345', 0002345.00, 0002345.00, 0002345.00, '', NULL, 0, '34523452', 1, b'0'),
 (25, 84, 'Nerf maverick', 'Nerf maverick', 0000500.00, 0000700.00, 0000650.00, 'https://http2.mlstatic.com/pistolas-nerf-maverick-rev-6-sol-y-lanza-hidrogel-blaster-D_NQ_NP_838401-MLM27678430146_072018-F.jpg', NULL, 0, '69420', 1, b'0'),
 (26, 4, '	Manga Yakusoku no Neverland Vol 3', 'Manga Yakusoku no Neverland Vol 3', 0000100.00, 0000300.00, 0000200.00, 'https://www.normaeditorial.com/libros_img/978846793090001_G.jpg', NULL, 0, '4', 1, b'1'),
-(27, 6, 'Manga Yakusoku no Neverland Vol 5', 'Manga Yakusoku no Neverland Vol 5', 0000100.00, 0000200.00, 0000300.00, 'https://www.normaeditorial.com/libros_img/978846793402101_G.jpg', NULL, 43, '5', 1, b'1'),
-(28, 7, 'Manga Yakusoku no Neverland Vol 6', 'Manga Yakusoku no Neverland Vol 6a', 0000100.00, 0000200.00, 0000300.00, 'https://www.normaeditorial.com/libros_img/978846793455701_G.jpg', NULL, 0, '77', 1, b'1'),
-(29, 99, 'test', 'test', 0000100.00, 0000300.00, 0000200.00, '', NULL, 0, '99', 1, b'0'),
-(30, 89079087, '8907', '8907', 0007987.00, 0009087.00, 0000907.00, '', NULL, 0, '098709', 1, b'0'),
-(31, 8980, 'PRUEBA 2', 'PRUEBA 2', 0000100.00, 0000200.00, 0000150.00, '', NULL, 0, '85743', 1, b'0'),
-(32, 514, 'un producto', 'descri´cion', 0000080.00, 0001000.00, 0000200.00, 'https://cdn.shopify.com/s/files/1/0229/0839/files/Untitled_design__1.png?2393', NULL, 0, '213948', 1, b'0'),
-(33, 5789, '{\"\"ñ***[]}\'\'\'¡', 'ññ][}´*uüýsh{}[]', 0014798.00, 0041879.00, 0047129.00, 'https://cdn.shopify.com/s/files/1/0229/0839/files/Untitled_design__1.png?2393', NULL, 0, '213879', 1, b'0'),
-(34, 11321, 'asdf', NULL, 0001234.00, 0004152.00, 0004215.00, 'aa', NULL, 0, '1234152', 1, b'1');
+(27, 6, 'Manga Yakusoku no Neverland Vol 5', 'Manga Yakusoku no Neverland Vol 5', 0000100.00, 0000200.00, 0000300.00, 'https://www.normaeditorial.com/libros_img/978846793402101_G.jpg', NULL, -5, '5', 1, b'1'),
+(28, 7, 'Manga Yakusoku no Neverland Vol 6', 'Manga Yakusoku no Neverland Vol 6', 0000100.00, 0000200.00, 0000300.00, 'https://www.normaeditorial.com/libros_img/978846793455701_G.jpg', NULL, 0, '77', 1, b'1'),
+(32, 234, 'agua', '3456', 0003456.00, 0003456.00, 0003456.00, '34563456', NULL, 0, '77999999999999', 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -831,7 +813,7 @@ CREATE TABLE IF NOT EXISTS `products_x_suppliers` (
   PRIMARY KEY (`idProductsXSuppliers`),
   KEY `fk_ProductsXSuppliers_Products_idx` (`Products_id`),
   KEY `fk_ProductsXSuppliers_Suppliers_idx` (`Suppliers_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `products_x_suppliers`
@@ -839,10 +821,7 @@ CREATE TABLE IF NOT EXISTS `products_x_suppliers` (
 
 INSERT INTO `products_x_suppliers` (`idProductsXSuppliers`, `Products_id`, `Suppliers_id`) VALUES
 (1, 2, 3),
-(2, 2, 0),
-(3, 3, 3),
-(4, 27, 3),
-(5, 3, 0);
+(2, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -884,7 +863,7 @@ CREATE TABLE IF NOT EXISTS `purchases` (
   KEY `fk_Purchases_Suppliers_idx` (`Suppliers_id`) USING BTREE,
   KEY `fk_Purchases_Users_id_idx` (`Users_id`) USING BTREE,
   KEY `fk_Purchases_Business_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases`
@@ -906,8 +885,7 @@ INSERT INTO `purchases` (`idPurchase`, `Suppliers_id`, `Users_id`, `date`, `tota
 (14, 3, 27, '2019-11-29', 600.00, '', 1),
 (15, 3, 27, '2019-11-29', 600.00, '', 1),
 (16, 0, 27, '2019-11-29', 600.00, '', 1),
-(17, 3, 27, '2019-11-29', 36600.00, '', 1),
-(18, 0, 27, '2019-11-29', 252000.00, '', 1);
+(17, 0, 27, '2019-11-29', 600.00, '', 1);
 
 -- --------------------------------------------------------
 
@@ -925,7 +903,7 @@ CREATE TABLE IF NOT EXISTS `purchases_x_products` (
   PRIMARY KEY (`idPurchases_x_Products`),
   KEY `fk_PurchasesXProducts_Purchases_idx` (`Purchases_id`),
   KEY `fk_PurchasesXProducts_Products_idx` (`Products_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases_x_products`
@@ -951,9 +929,7 @@ INSERT INTO `purchases_x_products` (`idPurchases_x_Products`, `Purchases_id`, `P
 (56, 14, 2, 2, 10.00),
 (57, 15, 2, 2, 10.00),
 (58, 16, 2, 2, 10.00),
-(59, 17, 3, 90, 800.00),
-(60, 17, 27, 48, 100.00),
-(61, 18, 3, 840, 800.00);
+(59, 17, 2, 2, 10.00);
 
 -- --------------------------------------------------------
 
@@ -974,7 +950,7 @@ CREATE TABLE IF NOT EXISTS `stock_movement` (
   PRIMARY KEY (`id`),
   KEY `fk_StockMovement_Products_idx` (`Products_id`) USING BTREE,
   KEY `fk_StockMovement_Users_idx` (`Users_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `stock_movement`
@@ -1040,12 +1016,10 @@ INSERT INTO `stock_movement` (`id`, `type`, `description`, `Products_id`, `dateT
 (58, 1, 'Compra de producto', 2, '2019-11-29 01:25:07', 2, 10.00, 27),
 (59, 1, 'Compra de producto', 2, '2019-11-29 01:26:49', 2, 10.00, 27),
 (60, 1, 'Compra de producto', 2, '2019-11-29 01:26:59', 2, 10.00, 27),
-(61, 1, 'Compra de producto', 3, '2019-11-29 08:41:19', 90, 800.00, 27),
-(62, 1, 'Compra de producto', 27, '2019-11-29 08:41:19', 48, 100.00, 27),
-(63, 2, 'explotó', 1, '2019-11-29 08:44:23', 90, 0.00, 27),
-(64, 1, 'Compra de producto', 3, '2019-11-29 08:47:54', 840, 800.00, 27),
-(65, 0, 'Venta de producto', 2, '2019-11-29 09:17:58', 5, 300.00, 27),
-(66, 0, 'Venta de producto', 1, '2019-11-29 09:17:58', 20, 300.00, 27);
+(61, 1, 'Compra de producto', 2, '2019-11-29 08:15:01', 2, 10.00, 27),
+(62, 0, 'Venta de producto', 2, '2019-11-29 08:26:05', 10, 300.00, 27),
+(63, 0, 'Venta de producto', 3, '2019-11-29 08:26:05', 3, 300.00, 27),
+(64, 0, 'Venta de producto', 2, '2019-11-29 11:28:06', 8, 300.00, 27);
 
 -- --------------------------------------------------------
 
@@ -1077,20 +1051,8 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
 
 INSERT INTO `suppliers` (`idSupplier`, `Cuit`, `Name`, `Surname`, `Company`, `Fanciful_name`, `Telephone`, `Cellphone`, `Business_id`, `Address`, `Mail`, `Active`) VALUES
 (0, 1, 'Sin Proveedor', 'Sin Proveedor', NULL, '', NULL, '0', 0, NULL, NULL, b'1'),
-(1, 54127534, 'Presentacion de Todos', 'La Mejor', 'Tenemos un 10', 'Tenemos un 10', '2345234', '8004448375', 1, 'Av Juancho Aparte 393', 'Presentacion@Xd.com', b'1'),
-(2, 44887784, 'Aquiles', 'Doy', 'yo tampoco jaja salu2', 'yo tampoco jaja salu2', '45678912', '1513317546', 1, 'viste china, bueno doblando a la izquierda', NULL, b'0'),
 (3, 18484910, 'Marmol', 'Jose', 'EEEE', 'Ivera', '1', '1', 1, 'Avenida San juan bautista de lasalle 720', 'a', b'1'),
-(4, 105968465, 'void', 'main', 'EEEEEEEE', 'EEEEEEEE', '1', '1', 1, 'a', 'a', b'0'),
-(5, 45646548, 'Unpro', 'vedor', 'F', 'F', '15115', '14115', 2, 'Acala vuelta 0', 'correo@correo', b'1'),
-(7, 79881684, 'd', 'd', 'g', 'g', '1', '1', 1, 'q', 'r', b'0'),
-(11, 44444444, 'h', 'h', 'hsan', 'nk', '44445444', '44446444', 1, 'hhhhhh', 'h@h', b'0'),
-(12, 43572144, 'Liu', 'Jonathan', 'HOla', 'ola k aze', '1531174589', '8104774857', 1, 'aca xdddd', 'Jonathan@gmail.com', b'1'),
-(13, 198713214, 'wwww', 'w', 'zzzz', 'zzzzz', '1', '1', 1, 'a', 'a', b'0'),
-(14, 43994080, 'nicolas', 'Margossian', NULL, 'Margo-tech', '44322210', '1561730659', 1, NULL, NULL, b'1'),
-(15, 80000009, 'Don pepe', 'Y sus globos', 'Distribución de globos  y bombas, de Jose Globo', 'DIstribuidora de globos Don Jose', '155468794', '141234567', 1, 'Av Estado de palestina 911', 'donpepe@yahoo.com.ar', b'1'),
-(16, 138794685, 'Brother', 'Jajas', 'Hasbro', 'Hasbro', '18916548', '153481', 3, 'Avenida Juanita perez 123', 'mail@hasbro', b'1'),
-(17, 8009080, 'vv', 'aaa', '1aa', 'oof', '1', '1', 1, 'a', 'a', b'0'),
-(18, 13312, 'nonvre', 'apexido', 'a', 'fasdfasdsfa', '1', '1', 1, 'a', 'a', b'0');
+(18, 46464685, 'Juan', 'Domingo', 'Hasbro', 'Hasbro', '41', '411', 2, 'Av Rio de la plata 50', 'juan@domingo', b'1');
 
 -- --------------------------------------------------------
 

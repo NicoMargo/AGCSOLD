@@ -11,11 +11,7 @@ namespace AGCS.Models.BDD
         {
             bool success = false;
             if (ClientBill.Name != null)
-            {
-                if(ClientBill.Cellphone == "")
-                {
-                    ClientBill.Cellphone = "0";
-                }
+            {                
                 ClientsProvider.InsertClient(ClientBill);
             }
 
