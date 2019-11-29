@@ -15,8 +15,15 @@ namespace AGCS.Models.BDD
 
         public static void Connect()
         {
-            Connection = new MySqlConnection(connectionString);
-            Connection.Open();
+            try
+            {
+                Connection = new MySqlConnection(connectionString);
+                Connection.Open();
+            }
+            catch
+            {
+
+            }
         }
 
         public static void Disconect()

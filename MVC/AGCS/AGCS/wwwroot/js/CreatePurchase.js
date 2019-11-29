@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    var idProduct, product, total = 0, Items = [], p, IdSupplier;
+    var idProduct, product, total = 0, Items = [], p, IdSupplier = 0;
     var Product = { Id: null, Quant: null, iva: 1, Price: null, Code: null, Cost: null, PriceW: null };
 
     //search supplier from database
@@ -41,7 +41,7 @@
         }
     });
     function EnterProduct() {
-        $("#descProdToEnter").empty();
+        $("#nameProdToEnter").empty();
         $("#costProdToEnter").empty();
         $("#priceProdToEnter").empty();
         $("#priceWProdToEnter").empty();
@@ -55,7 +55,7 @@
                 product = JSON.parse(DataJson);
                 if (product != null) {
                     idProduct = product.Id;
-                    $("#descProdToEnter").append(product.Description);
+                    $("#nameProdToEnter").append(product.Name);
                     $("#costProdToEnter").val(product.Cost);
                     $("#priceProdToEnter").val(product.Price);
                     $("#priceWProdToEnter").val(product.PriceW);
@@ -191,7 +191,7 @@
                 Product.PriceW = parseInt($("#priceWProdToEnter").val(), 10);
                 Items.push(Product);
                 total += Product.Cost * Product.Quant;                
-                var ProdToEnter = '<tr id="' + idProduct + '"><td>' + product.Description + '</td>' + '<td><input type="number" this="quant" id="q' + idProduct + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td  id="c' + idProduct + '">' + $("#costProdToEnter").val() + '</td><td  id="p' + idProduct + '">' + $("#priceProdToEnter").val() + '</td><td  id="pw' + idProduct + '">' + $("#priceWProdToEnter").val() + '</td><td><deleteButton id="db' + idProduct + '"  position="' + idProduct + '"> <img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
+                var ProdToEnter = '<tr id="' + idProduct + '"><td>' + product.Name + '</td>' + '<td><input type="number" this="quant" id="q' + idProduct + '" placeholder="Cantidad" min="1" value="' + $("#quantProdToEnter").val() + '" class="form-control text-black"></td> <td  id="c' + idProduct + '">' + $("#costProdToEnter").val() + '</td><td  id="p' + idProduct + '">' + $("#priceProdToEnter").val() + '</td><td  id="pw' + idProduct + '">' + $("#priceWProdToEnter").val() + '</td><td> <input type="text" id="inputCond" placeholder="Condicion de pago" value="' + $("#inputCond").val() + '" class="form-control text-black"></td ><td><deleteButton id="db' + idProduct + '"  position="' + idProduct + '"><img data-target="#confirmationModal" data-toggle="modal" class="w-25" src="/images/boton-x.png" alt="Borrar"/></deleteButton></td></tr>';
                 ProdToEnter.keypress;
                 $("#tableProducts").prepend(ProdToEnter);
                 KeyPressEventQuant(idProduct);
@@ -203,12 +203,10 @@
             $("#codProdToEnter").val("");
             $("#priceProdToEnter").val("");
             $("#priceWProdToEnter").val("");
-            $("#descProdToEnter").empty();
+            $("#nameProdToEnter").empty();
             $("#costProdToEnter").val("");
             $("#codProdToEnter").focus();
         }
-        
-
     function validateQuant() {
         let successVQ = true;
         for (let y = 0; y < Items.length; y++) {
@@ -217,8 +215,6 @@
             }
         }
         return successVQ;}
-    
-
     $("#b").click(function () {
         if (validateQuant()) {
                 if (Items.length > 0) {                    
@@ -261,4 +257,29 @@
         }
         return State;
     }
+    $("#add").click(function () {
+        if (validateInputs("modalCrt", "crtInput")) {
+            $.ajax({
+                type: "POST",
+                url: "/Products/CreateProduct",
+                data: {
+                    number: parseInt($("#crtNumber").find("input").val()),
+                    name: $("#crtName").find("input").val(),
+                    description: $("#crtDescription").find("textArea").val(),
+                    code: $("#crtCode").find("input").val(),
+                    cost: parseFloat($("#crtCost").find("input").val()),
+                    price: parseFloat($("#crtPrice").find("input").val()),
+                    priceW: parseFloat($("#crtPriceW").find("input").val()),
+                    image: $("#crtImage").find("input").val()
+                },
+                success: function () {
+                    CreateModal("Exito", "El producto se creó correctamente");
+                    EnterProduct();
+                },
+                error: function () {
+                    CreateModal("Error", "Hubo un error al crear el producto");
+                }
+            });
+        }
+    });
 });

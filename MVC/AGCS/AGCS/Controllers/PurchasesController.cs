@@ -10,9 +10,7 @@ namespace AGCS.Controllers
     {
         public ActionResult CreatePurchase()
         {
-            ViewBag.Suppliers = SuppliersProvider.GetSuppliers();
-            //ViewBag.Supplier = SuppliersProvider.GetSupplierById();
-            
+            ViewBag.Suppliers = SuppliersProvider.GetSuppliers();            
             return View();
         }
         [HttpPost]
@@ -25,7 +23,6 @@ namespace AGCS.Controllers
         [HttpPost]
         public bool NewPurchase(string json, ulong sdi, string condition = "", string notes = "")
         {
-
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(json);
             bool success = false;
             if (products.Count > 0)

@@ -62,7 +62,7 @@ namespace AGCS.Models
         }
         
         //Constructor for GetAll
-        public Product(uint id, ulong articleNumber, string code, string name, string description, float price, float priceW, int stock, string image)
+        public Product(uint id, ulong articleNumber, string code, string name, string description,float cost, float price, float priceW, int stock, string image)
         {
             _id = id;
             _articleNumber = (int)articleNumber;
@@ -73,6 +73,7 @@ namespace AGCS.Models
             _priceW = priceW;
             _stock = stock;
             _image = image;
+            _cost = cost;
         }
       
         //Insert - Update

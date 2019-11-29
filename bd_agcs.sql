@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.9
+-- version 4.9.2
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 22-11-2019 a las 14:57:20
--- Versión del servidor: 5.7.21
--- Versión de PHP: 5.6.35
+-- Tiempo de generación: 29-11-2019 a las 04:34:02
+-- Versión del servidor: 10.4.10-MariaDB
+-- Versión de PHP: 7.3.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -268,15 +268,21 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spPurchaseInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spPurchaseInsert` (IN `pIdBusiness` INT(11) UNSIGNED, IN `pDate` DATE, IN `pTotal` FLOAT(10,2), IN `pIdSupplier` INT(11) UNSIGNED, IN `pIdUser` INT(11) UNSIGNED)  NO SQL
-if EXISTS(select idSupplier from suppliers where idSupplier = pIdSupplier and (Business_id = pIdBusiness or Business_id = 0) and Active = 1) 
-THEN
-	if exists(select idSupplier from suppliers where idSupplier = pIdSupplier and Business_id = pIdBusiness) and exists(select idUser from users where idUser = pIdUser and Business_id = pIdBusiness)
-    THEN
-    	Insert into purchases(date,total,Business_id,Suppliers_id,Users_id) values( pDate, pTotal, pIdBusiness,pIdSupplier, pIdUser);
-    	select idPurchase from purchases where idPurchase = LAST_INSERT_ID() and total = pTotal and purchases.Business_id = pIdBusiness ;
+if(pIdSupplier = 0)
+then
+	Insert into purchases(date,total,Business_id,Suppliers_id,Users_id) values( pDate, pTotal, pIdBusiness,pIdSupplier, pIdUser);
+	select idPurchase from purchases where idPurchase = LAST_INSERT_ID() and total = pTotal and purchases.Business_id = pIdBusiness ;
+else     
+	if EXISTS(select idSupplier from suppliers where idSupplier = pIdSupplier and (Business_id = pIdBusiness or Business_id = 0) and Active = 1) 
+	THEN
+		if exists(select idSupplier from suppliers where idSupplier = pIdSupplier and Business_id = pIdBusiness) and exists(select idUser from users where idUser = pIdUser and Business_id = pIdBusiness)
+		THEN
+			Insert into purchases(date,total,Business_id,Suppliers_id,Users_id) values( pDate, pTotal, pIdBusiness,pIdSupplier, pIdUser);
+			select idPurchase from purchases where idPurchase = LAST_INSERT_ID() and total = pTotal and purchases.Business_id = pIdBusiness ;
+		end if;
+	ELSE
+		select -1 as idPurchase;
 	end if;
-ELSE
-	select -1 as idPurchase;
 end if$$
 
 DROP PROCEDURE IF EXISTS `spPurchaseXProductInsert`$$
@@ -496,11 +502,11 @@ CREATE TABLE IF NOT EXISTS `bills` (
   `Users_id` int(11) DEFAULT NULL,
   `IVA_Condition` varchar(45) DEFAULT NULL,
   `TypeBill` varchar(1) DEFAULT NULL,
-  `Subtotal` float(10,2) DEFAULT '0.00',
-  `Discount` float(5,2) UNSIGNED ZEROFILL DEFAULT '00.00',
-  `IVA_Recharge` float(5,2) UNSIGNED ZEROFILL DEFAULT '00.00',
+  `Subtotal` float(10,2) DEFAULT 0.00,
+  `Discount` float(5,2) UNSIGNED ZEROFILL DEFAULT 00.00,
+  `IVA_Recharge` float(5,2) UNSIGNED ZEROFILL DEFAULT 00.00,
   `WholeSaler` bit(1) DEFAULT NULL,
-  `Total` float(2,2) DEFAULT '0.00',
+  `Total` float(2,2) DEFAULT 0.00,
   `Branches_id` int(11) DEFAULT NULL,
   `Payment_Methods_id` int(11) DEFAULT NULL,
   `Macs_id` int(11) DEFAULT NULL,
@@ -536,7 +542,7 @@ INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_id`, `Users_id`, `IVA_Condit
 (71, '2019-10-25', 46, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (72, '2019-11-07', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (73, '2019-11-07', 47, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(74, '2019-11-22', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 1800.00, NULL, NULL, NULL, 1);
+(74, '2019-11-22', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -550,7 +556,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   `Bills_id` int(11) NOT NULL,
   `Products_id` int(11) NOT NULL,
   `Quantity` int(11) DEFAULT NULL,
-  `Price` float(10,2) NOT NULL DEFAULT '0.00',
+  `Price` float(10,2) NOT NULL DEFAULT 0.00,
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_id`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_id`) USING BTREE
@@ -754,12 +760,12 @@ CREATE TABLE IF NOT EXISTS `products` (
   `Article_number` int(11) DEFAULT NULL,
   `Name` varchar(200) COLLATE latin1_bin NOT NULL,
   `Description` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
-  `Cost` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
-  `Price` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
-  `PriceW` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
+  `Cost` float(10,2) UNSIGNED ZEROFILL DEFAULT 0000000.00,
+  `Price` float(10,2) UNSIGNED ZEROFILL DEFAULT 0000000.00,
+  `PriceW` float(10,2) UNSIGNED ZEROFILL DEFAULT 0000000.00,
   `Image` varchar(2000) COLLATE latin1_bin NOT NULL DEFAULT '',
   `Age` bit(1) DEFAULT NULL,
-  `Stock` int(11) DEFAULT '0',
+  `Stock` int(11) DEFAULT 0,
   `CodeProduct` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
   `Business_id` int(11) NOT NULL,
   `Active` bit(1) NOT NULL DEFAULT b'1',
@@ -773,7 +779,7 @@ CREATE TABLE IF NOT EXISTS `products` (
 
 INSERT INTO `products` (`idProduct`, `Article_number`, `Name`, `Description`, `Cost`, `Price`, `PriceW`, `Image`, `Age`, `Stock`, `CodeProduct`, `Business_id`, `Active`) VALUES
 (1, 666, '	Manga Yakusoku no Neverland Vol 1', 'Manga Yakusoku no Neverland Vol 1', 0000500.00, 0000300.00, 0000200.00, 'https://inmanga.com/thumbnails/manga/The-Promised-Neverland/df035c49-d49f-4f15-bd2d-4ae9ea94d72d', b'1', 2290, '777', 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 'Manga Yakusoku no Neverland Vol 2', 0000010.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793089401_G.jpg', b'1', 92, '2', 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 'Manga Yakusoku no Neverland Vol 2', 0000010.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793089401_G.jpg', b'1', 98, '2', 1, b'1'),
 (3, 3, 'Manga Yakusoku no Neverland Vol 4', 'Manga Yakusoku no Neverland Vol 4', 0000800.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793289801_G.jpg', b'1', -936, '3', 1, b'1'),
 (4, 5, 'Yogurisimo Con Cereales', 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, 'https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwj0g-ub0djlAhVXI7kGHRZtCZsQjRx6BAgBEAQ&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DTzzXd2b2xaM&psig=AOvVaw1Ho3pxUY9tQ7FfifW8uuT6&ust=1573234455794867', b'1', -1, '7791337613027', 1, b'0'),
 (7, 32, 'amazing hat', 'amazing hat', 0050056.00, 0000600.00, 0054958.00, 'https://i0.pngocean.com/files/12/157/298/minecraft-breastplate-motorcycle-helmets-armour-pickaxe.jpg', NULL, -1, '434', 1, b'0'),
@@ -809,7 +815,15 @@ CREATE TABLE IF NOT EXISTS `products_x_suppliers` (
   PRIMARY KEY (`idProductsXSuppliers`),
   KEY `fk_ProductsXSuppliers_Products_idx` (`Products_id`),
   KEY `fk_ProductsXSuppliers_Suppliers_idx` (`Suppliers_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `products_x_suppliers`
+--
+
+INSERT INTO `products_x_suppliers` (`idProductsXSuppliers`, `Products_id`, `Suppliers_id`) VALUES
+(1, 2, 3),
+(2, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -851,7 +865,7 @@ CREATE TABLE IF NOT EXISTS `purchases` (
   KEY `fk_Purchases_Suppliers_idx` (`Suppliers_id`) USING BTREE,
   KEY `fk_Purchases_Users_id_idx` (`Users_id`) USING BTREE,
   KEY `fk_Purchases_Business_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases`
@@ -869,7 +883,10 @@ INSERT INTO `purchases` (`idPurchase`, `Suppliers_id`, `Users_id`, `date`, `tota
 (10, 3, 27, '2019-10-25', 120.00, '', 1),
 (11, 3, 27, '2019-10-25', 120.00, '', 1),
 (12, 3, 27, '2019-10-25', 120.00, '', 1),
-(13, 3, 27, '2019-11-07', 30000.00, '', 1);
+(13, 3, 27, '2019-11-07', 30000.00, '', 1),
+(14, 3, 27, '2019-11-29', 600.00, '', 1),
+(15, 3, 27, '2019-11-29', 600.00, '', 1),
+(16, 0, 27, '2019-11-29', 600.00, '', 1);
 
 -- --------------------------------------------------------
 
@@ -883,11 +900,11 @@ CREATE TABLE IF NOT EXISTS `purchases_x_products` (
   `Purchases_id` int(11) UNSIGNED NOT NULL,
   `Products_id` int(11) NOT NULL,
   `Quantity` int(11) NOT NULL,
-  `Cost` float(10,2) DEFAULT '0.00',
+  `Cost` float(10,2) DEFAULT 0.00,
   PRIMARY KEY (`idPurchases_x_Products`),
   KEY `fk_PurchasesXProducts_Purchases_idx` (`Purchases_id`),
   KEY `fk_PurchasesXProducts_Products_idx` (`Products_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases_x_products`
@@ -909,7 +926,10 @@ INSERT INTO `purchases_x_products` (`idPurchases_x_Products`, `Purchases_id`, `P
 (52, 10, 2, 2, 10.00),
 (53, 11, 2, 2, 10.00),
 (54, 12, 2, 2, 10.00),
-(55, 13, 2, 100, 10.00);
+(55, 13, 2, 100, 10.00),
+(56, 14, 2, 2, 10.00),
+(57, 15, 2, 2, 10.00),
+(58, 16, 2, 2, 10.00);
 
 -- --------------------------------------------------------
 
@@ -925,12 +945,12 @@ CREATE TABLE IF NOT EXISTS `stock_movement` (
   `Products_id` int(11) DEFAULT NULL,
   `dateTime` datetime DEFAULT NULL,
   `quant` mediumint(8) DEFAULT NULL,
-  `Amount` float(10,2) NOT NULL DEFAULT '0.00',
+  `Amount` float(10,2) NOT NULL DEFAULT 0.00,
   `Users_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_StockMovement_Products_idx` (`Products_id`) USING BTREE,
   KEY `fk_StockMovement_Users_idx` (`Users_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `stock_movement`
@@ -992,7 +1012,10 @@ INSERT INTO `stock_movement` (`id`, `type`, `description`, `Products_id`, `dateT
 (54, 1, 'Compra de producto', 2, '2019-10-25 10:55:32', 2, 10.00, 27),
 (55, 2, 'robo', 1, '2019-10-25 11:48:40', 5, 0.00, 27),
 (56, 0, 'Venta de producto', 2, '2019-11-22 10:05:51', 1, 300.00, 27),
-(57, 0, 'Venta de producto', 1, '2019-11-22 10:05:51', 5, 300.00, 27);
+(57, 0, 'Venta de producto', 1, '2019-11-22 10:05:51', 5, 300.00, 27),
+(58, 1, 'Compra de producto', 2, '2019-11-29 01:25:07', 2, 10.00, 27),
+(59, 1, 'Compra de producto', 2, '2019-11-29 01:26:49', 2, 10.00, 27),
+(60, 1, 'Compra de producto', 2, '2019-11-29 01:26:59', 2, 10.00, 27);
 
 -- --------------------------------------------------------
 

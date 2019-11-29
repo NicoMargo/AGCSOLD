@@ -23,7 +23,7 @@ namespace AGCS.Controllers
             try
             {
                 LoginBusiness = objects.Item2;
-            Loginuser = objects.Item1;
+                Loginuser = objects.Item1;
            
                 if (Loginuser.Name != null)
                 {

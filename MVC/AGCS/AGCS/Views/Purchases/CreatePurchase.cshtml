@@ -31,9 +31,13 @@
 
 <script crossorigin="anonymous" src="~/js/CreatePurchase.js"></script>
 <script src="~/js/SuppliersCRUD.js"></script>
-<script src="~/js/ProductsCRUD.js"></script>
+<script type="text/javascript" src="~/js/nicEdit.js"></script>
 
-<div style="margin-top:4rem;" class="col-md-12">
+<script type="text/javascript">
+    bkLib.onDomLoaded(function () { nicEditors.allTextAreas() });
+    $(".nicEdit-main").css("width:100%");
+</script>
+
     <div class="content mt-3">
         <div class="animated fadeIn">
             <div class="row">
@@ -53,11 +57,11 @@
                                     <th style="width:20%;">Nombre de Fantasía</th>
                                 </tr>
                                 <tr>
-                                    <td id="supplierCuit"></td>
-                                    <td id="supplierName"></td>
-                                    <td id="supplierSurname"></td>
-                                    <td id="supplierCompany"></td>
-                                    <td id="supplierFancifulName"></td>
+                                    <td id="supplierCuit">0</td>
+                                    <td id="supplierName">Sin proveedor</td>
+                                    <td id="supplierSurname">Sin proveedor</td>
+                                    <td id="supplierCompany">-</td>
+                                    <td id="supplierFancifulName">-</td>
                                 </tr>
                             </table>
                         </div>
@@ -66,10 +70,7 @@
             </div>
         </div>
     </div>
-</div>
 
-
-<div class="col-md-12">
     <div class="content mt-3">
         <div class="animated fadeIn">
             <div class="row">
@@ -84,18 +85,18 @@
                                 <thead>
                                     <tr>
                                         <th class="w-10">Codigo</th>
-                                        <th class="w-16">Producto</th>
+                                        <th class="w-25">Producto</th>
                                         <th class="w-8">Cantidad</th>
                                         <th class="w-8">Costo</th>
-                                        <th class="w-12">Precio x Menor</th>
-                                        <th class="w-12">Precio x Mayor</th>
-                                        <th class="w-31">Condicion de pago</th>
+                                        <th class="w-8">Precio x Menor</th>
+                                        <th class="w-8">Precio x Mayor</th>
+                                        <th class="w-31">Condicion de pago (no esta implementado no hace nada)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td> <input type="text" id="codProdToEnter" placeholder="Codigo" class="form-control text-black"></td>
-                                        <td id="descProdToEnter"></td>
+                                        <td id="nameProdToEnter"></td>
                                         <td class="validInput notEmpty validPositive" id="inputQuant"><input type="number" required min="1" id="quantProdToEnter" class="loadToList form-control text-black"> <div class="validation_msg hidden text-center"></div></td>
                                         <td class="validInput notEmpty validPositive" id="inputCost"><input type="number" required min="0" id="costProdToEnter" class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
                                         <td class="validInput notEmpty validPositive" id="inputPrice"><input type="number" required min="1" id="priceProdToEnter" placeholder="X Menor" class="loadToList form-control text-black"><div class="validation_msg hidden text-center"></div></td>
@@ -110,10 +111,11 @@
                                 <thead>
                                     <tr>
                                         <th>Productos</th>
-                                        <th class="w-12">Cantidad</th>
-                                        <th class="w-10">Costo</th>
-                                        <th class="w-10">Precio X Menor</th>
-                                        <th class="w-10">Precio X Mayor</th>
+                                        <th class="w-8">Cantidad</th>
+                                        <th class="w-8">Costo</th>
+                                        <th class="w-8">Precio X Menor</th>
+                                        <th class="w-8">Precio X Mayor</th>
+                                        <th class="w-31">Condicion de pago (no esta implementado no hace nada)</th>
                                         <th class="w-8">Eliminar</th>
                                     </tr>
                                 </thead>
@@ -126,7 +128,6 @@
             </div>
         </div>
     </div>
-</div>
 
 
 <!-- Modal Create Beg-->
@@ -195,13 +196,12 @@
     </div>
 </div>
 
-
-<!-- Extra large modal Create Product-->
+<!-- Extra large modal Create-->
 <div class="modal fade bd-example-modal-xl" id="modalCrt" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">No existe el producto ¿Desea crearlo?</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Crear Producto</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -219,11 +219,11 @@
                     </div>
                     <div class="ml-5 col-md-3">
                         <div class="text-center">
-                            <strong><span>Descripción</span></strong>
+                            <strong><span>Nombre</span></strong>
                         </div>
-                        <div class="crtInput notEmpty" id="crtDescription">
+                        <div class="crtInput notEmpty" id="crtName">
                             <input class="form-control text-center" type="text">
-                            <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
+                            <div class="validation_msg hidden text-center">Ingrese un valor válida</div>
                         </div>
                     </div>
                     <div class="ml-5 col-md-3">
@@ -264,7 +264,18 @@
                             <div class="validation_msg hidden text-center">Ingrese un monto válido</div>
                         </div>
                     </div>
-                </div>                
+                </div>
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-md-10">
+                        <div class="text-center">
+                            <strong><span>Descripción</span></strong>
+                        </div>
+                        <!-- <div class="crtInput notEmpty" id="crtDescription"> -->
+                        <textarea style="width:100%"></textarea>
+                        <div class="validation_msg hidden text-center">Ingrese una descripción válida</div>
+                        <!-- </div> -->
+                    </div>
+                </div>
                 <div class="row mt-4 justify-content-center">
                     <div class="col-md-10">
                         <div class="text-center">

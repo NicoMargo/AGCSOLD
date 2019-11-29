@@ -22,19 +22,9 @@ namespace AGCS.Models.BDD
 
             while (ConnectionReader.Read())
             {
-                uint id;
-                ulong articleNumber;
-                string code;
-                string name;
-                string description;
-                string image;
-                float cost;
-                float price;
-                float priceW;
-                int stock;
                 try
                 {
-                    Product product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadULong(ConnectionReader, "Article_Number"), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Description"), price = Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadFloat(ConnectionReader, "PriceW"), Helpers.ReadInt(ConnectionReader, "Stock"), Helpers.ReadString(ConnectionReader, "image"));
+                    Product product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadULong(ConnectionReader, "Article_Number"), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Description"),0, Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadFloat(ConnectionReader, "PriceW"), Helpers.ReadInt(ConnectionReader, "Stock"), Helpers.ReadString(ConnectionReader, "image"));
                     productsList.Add(product);
                 }
                 catch { }
@@ -55,42 +45,15 @@ namespace AGCS.Models.BDD
 
             if (ConnectionReader.Read())
             {
-                /*Addres info ...*/
                 try
                 {
-                    product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadInt(ConnectionReader, "Stock"));
+                    product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]),Helpers.ReadULong(ConnectionReader, "Article_number"), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Cost"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadFloat(ConnectionReader, "PriceW"), Helpers.ReadInt(ConnectionReader, "Stock"), Helpers.ReadString(ConnectionReader,"Image"));
                 }
                 catch { }
             }
             Helpers.Disconect();
             return product;
         }
-
-        public static Product GetProductByCode(ulong code, ulong idSupplier)
-        {
-            Product product = null;
-
-            Dictionary<string, object> args = new Dictionary<string, object> {
-                {"pIdBusiness", Session.GetSUInt32("idBusiness")},
-                {"pCode", code}
-            };
-            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductGetByCode", args);
-
-            if (ConnectionReader.Read())
-            {
-                /*Addres info ...*/
-                try
-                {
-                    product = new Product(Convert.ToUInt32(ConnectionReader["idProduct"]), Helpers.ReadString(ConnectionReader, "CodeProduct"), Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadString(ConnectionReader, "Description"), Helpers.ReadFloat(ConnectionReader, "Price"), Helpers.ReadInt(ConnectionReader, "Stock"));
-                    product.PriceW = Helpers.ReadFloat(ConnectionReader, "PriceW");
-                    product.Cost = Helpers.ReadFloat(ConnectionReader, "Cost");
-                }
-                catch { }
-            }
-            Helpers.Disconect();
-            return product;
-        }
-
         public static Product GetProductById(uint idProduct)
         {
             Product product = null;
