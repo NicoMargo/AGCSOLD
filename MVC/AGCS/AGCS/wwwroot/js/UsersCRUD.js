@@ -16,13 +16,13 @@ $(document).ready(function () {
                     mail: $("#crtMail").find("input").val(),
                     passUser: $("#crtPass").find("input").val(),
                     cPassUser: $("#crtPassConfirm").find("input").val(),
-                    telephone: parseInt($("#crtTelephone").find("input").val()),
-                    cellphone: parseInt($("#crtCellphone").find("input").val()),
-                    dni: parseInt($("#crtDni").find("input").val()),
+                    telephone: $("#crtTelephone").find("input").val(),
+                    cellphone: $("#crtCellphone").find("input").val(),
+                    dni: $("#crtDni").find("input").val(),
                     address: $("#crtAddress").find("input").val(),
-                    telephoneM: parseInt($("#crtTelM").find("input").val()),
-                    telephoneF: parseInt($("#crtTelF").find("input").val()),
-                    telephoneB: parseInt($("#crtTelB").find("input").val())
+                    telephoneM: $("#crtTelM").find("input").val(),
+                    telephoneF: $("#crtTelF").find("input").val(),
+                    telephoneB: $("#crtTelB").find("input").val()
                 },
                 success: function (success) {
                     if (success == "True")
@@ -77,12 +77,12 @@ $(document).ready(function () {
                     secondName: $("#updtSecond").find("input").val(),
                     dni: parseInt($("#updtDni").find("input").val()),
                     mail: $("#updtMail").find("input").val(),
-                    telephone: parseInt($("#updtTelephone").find("input").val()),
-                    cellphone: parseInt($("#updtCellphone").find("input").val()),
+                    telephone: $("#updtTelephone").find("input").val(),
+                    cellphone: $("#updtCellphone").find("input").val(),
                     address: $("#updtAddress").find("input").val(),
-                    telephoneM: parseInt($("#updtTelM").find("input").val()),
-                    telephoneF: parseInt($("#updtTelF").find("input").val()),
-                    telephoneB: parseInt($("#updtTelB").find("input").val()),
+                    telephoneM: $("#updtTelM").find("input").val(),
+                    telephoneF: $("#updtTelF").find("input").val(),
+                    telephoneB: $("#updtTelB").find("input").val(),
                 },
                 success: function (success) {
                     if (success) {

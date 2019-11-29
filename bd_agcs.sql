@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 29-11-2019 a las 14:36:55
+-- Tiempo de generación: 29-11-2019 a las 15:32:32
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -332,9 +332,33 @@ DROP PROCEDURE IF EXISTS `spSupplierInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spSupplierInsert` (IN `pIdBusiness` INT(20), IN `pCuit` INT(11), IN `pName` VARCHAR(100), IN `pSurname` VARCHAR(100), IN `pCompany` VARCHAR(100), IN `pFanciful` VARCHAR(100), IN `pTelephone` VARCHAR(20), IN `pCellphone` VARCHAR(20), IN `pAddress` VARCHAR(200), IN `pMail` VARCHAR(100))  NO SQL
 if not EXISTS(select idSupplier from suppliers where ((Name = pName and Surname = pSurname) or (Cuit = pCuit)) and Business_id = pIdBusiness)
 then
-	if (((pName != "" and pName is not null) or (pSurname != "" and pSurname is not null)) and ( (pCompany != "" and pCompany is not null) or (pFanciful != "" and pFanciful is not null)))
+	if (((pName != "" and pName is not null) or (pSurname != "" and pSurname is not null)) and  (pFanciful != "" and pFanciful is not null))
     THEN
-  	  INSERT INTO suppliers (Business_id, Cuit, Name, Surname, Telephone, Cellphone, Company,Fanciful_name, Address, Mail) VALUES(pIdBusiness, pCuit, pName, pSurname, pTelephone, pCellphone, pCompany, pFanciful, pAddress, pMail);
+  	  INSERT INTO suppliers (Business_id, Cuit, Name, Surname, Fanciful_name) VALUES(pIdBusiness, pCuit, pName, pSurname, pFanciful);
+      set @lastId = (select idSupplier from suppliers where idSupplier = LAST_INSERT_ID() and Name = pName and Surname = pSurname and Business_id = pIdBusiness);
+      if( @lastId is not null)
+      THEN
+      	if(pTelephone is not null and pTelephone != "")
+        THEN
+        	UPDATE suppliers set Telephone = pTelephone where idSupplier = @lastId;
+        end if;
+        if(pCellphone is not null and pCellphone != "")
+        THEN
+        	UPDATE suppliers set Cellphone = pCellphone where idSupplier = @lastId;
+        end if;
+        if(pCompany is not null and pCompany != "")
+        THEN
+        	UPDATE suppliers set Company = pCompany where idSupplier = @lastId;
+        end if;
+        if(pAddress is not null and pAddress != "")
+        THEN
+        	UPDATE suppliers set Address = pAddress where idSupplier = @lastId;
+        end if;
+        if(pMail is not null and pMail != "")
+        THEN
+        	UPDATE suppliers set Mail = pMail where idSupplier = @lastId;
+        end if;
+      end if;
     end if;
 end if$$
 
@@ -530,7 +554,7 @@ CREATE TABLE IF NOT EXISTS `bills` (
   KEY `fk_Bills_Macs1_idx` (`Macs_id`) USING BTREE,
   KEY `fk_Bills_Business1_idx` (`Business_id`) USING BTREE,
   KEY `fk_Bills_Clients1_idx` (`Clients_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills`
@@ -555,7 +579,9 @@ INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_id`, `Users_id`, `IVA_Condit
 (72, '2019-11-07', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (73, '2019-11-07', 47, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (74, '2019-11-22', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(75, '2019-11-29', 47, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 3900.00, NULL, NULL, NULL, 1);
+(75, '2019-11-29', 47, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 3900.00, NULL, NULL, NULL, 1),
+(77, '2019-11-29', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 408.00, NULL, NULL, NULL, 1),
+(78, '2019-11-29', 64, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 510.00, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -573,7 +599,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_id`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `bills_x_products`
@@ -597,7 +623,9 @@ INSERT INTO `bills_x_products` (`idBills_X_Products`, `Bills_id`, `Products_id`,
 (83, 74, 2, 1, 300.00),
 (84, 74, 1, 5, 300.00),
 (85, 75, 2, 10, 300.00),
-(86, 75, 3, 3, 300.00);
+(86, 75, 3, 3, 300.00),
+(88, 77, 33, 8, 51.00),
+(89, 78, 33, 10, 51.00);
 
 -- --------------------------------------------------------
 
@@ -676,7 +704,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idClient`) USING BTREE,
   KEY `fk_Clients_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `clients`
@@ -689,7 +717,9 @@ INSERT INTO `clients` (`idClient`, `Name`, `Surname`, `DNI_CUIT`, `Mail`, `Telep
 (47, 'Nicolas', 'Margossian', 439940804, 'nico@gmail.com', '5613', '1561730659', 1, b'1'),
 (55, 'Empresa2', 'Cliente', 2345544, NULL, NULL, NULL, 2, b'1'),
 (56, 'Gabriel', 'Guivi', 32592593, NULL, NULL, '', 2, b'1'),
-(60, 'Federico', 'Snieg', 29475860, 'fede@gmail.com', '0', '1547305867', 1, b'1');
+(60, 'Federico', 'Snieg', 29475860, 'fede@gmail.com', '0', '1547305867', 1, b'1'),
+(64, 'cliento', 'nuevo', 64975138, '', '0', '0', 1, b'1'),
+(65, 'a', 'a', 12341, NULL, '0', '0', 1, b'0');
 
 -- --------------------------------------------------------
 
@@ -772,7 +802,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idProduct`) USING BTREE,
   KEY `fk_Products_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Volcado de datos para la tabla `products`
@@ -797,7 +827,8 @@ INSERT INTO `products` (`idProduct`, `Article_number`, `Name`, `Description`, `C
 (26, 4, '	Manga Yakusoku no Neverland Vol 3', 'Manga Yakusoku no Neverland Vol 3', 0000100.00, 0000300.00, 0000200.00, 'https://www.normaeditorial.com/libros_img/978846793090001_G.jpg', NULL, 0, '4', 1, b'1'),
 (27, 6, 'Manga Yakusoku no Neverland Vol 5', 'Manga Yakusoku no Neverland Vol 5', 0000100.00, 0000200.00, 0000300.00, 'https://www.normaeditorial.com/libros_img/978846793402101_G.jpg', NULL, -5, '5', 1, b'1'),
 (28, 7, 'Manga Yakusoku no Neverland Vol 6', 'Manga Yakusoku no Neverland Vol 6', 0000100.00, 0000200.00, 0000300.00, 'https://www.normaeditorial.com/libros_img/978846793455701_G.jpg', NULL, 0, '77', 1, b'1'),
-(32, 234, 'agua', '3456', 0003456.00, 0003456.00, 0003456.00, '34563456', NULL, 0, '77999999999999', 1, b'1');
+(32, 234, 'agua', '3456', 0003456.00, 0003456.00, 0003456.00, '34563456', NULL, 0, '77999999999999', 1, b'0'),
+(33, 16842, 'agua villavicnecio 500', 'Una botella que tiene agua', 0000021.00, 0000051.00, 0000041.00, 'https://statics.dinoonline.com.ar/imagenes/full_600x600_ma/3040004_f.jpg', NULL, 47, '12345678901234', 1, b'1');
 
 -- --------------------------------------------------------
 
@@ -813,7 +844,7 @@ CREATE TABLE IF NOT EXISTS `products_x_suppliers` (
   PRIMARY KEY (`idProductsXSuppliers`),
   KEY `fk_ProductsXSuppliers_Products_idx` (`Products_id`),
   KEY `fk_ProductsXSuppliers_Suppliers_idx` (`Suppliers_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `products_x_suppliers`
@@ -821,7 +852,8 @@ CREATE TABLE IF NOT EXISTS `products_x_suppliers` (
 
 INSERT INTO `products_x_suppliers` (`idProductsXSuppliers`, `Products_id`, `Suppliers_id`) VALUES
 (1, 2, 3),
-(2, 2, 0);
+(2, 2, 0),
+(3, 33, 0);
 
 -- --------------------------------------------------------
 
@@ -863,7 +895,7 @@ CREATE TABLE IF NOT EXISTS `purchases` (
   KEY `fk_Purchases_Suppliers_idx` (`Suppliers_id`) USING BTREE,
   KEY `fk_Purchases_Users_id_idx` (`Users_id`) USING BTREE,
   KEY `fk_Purchases_Business_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases`
@@ -885,7 +917,8 @@ INSERT INTO `purchases` (`idPurchase`, `Suppliers_id`, `Users_id`, `date`, `tota
 (14, 3, 27, '2019-11-29', 600.00, '', 1),
 (15, 3, 27, '2019-11-29', 600.00, '', 1),
 (16, 0, 27, '2019-11-29', 600.00, '', 1),
-(17, 0, 27, '2019-11-29', 600.00, '', 1);
+(17, 0, 27, '2019-11-29', 600.00, '', 1),
+(18, 0, 27, '2019-11-29', 3315.00, '', 1);
 
 -- --------------------------------------------------------
 
@@ -903,7 +936,7 @@ CREATE TABLE IF NOT EXISTS `purchases_x_products` (
   PRIMARY KEY (`idPurchases_x_Products`),
   KEY `fk_PurchasesXProducts_Purchases_idx` (`Purchases_id`),
   KEY `fk_PurchasesXProducts_Products_idx` (`Products_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `purchases_x_products`
@@ -929,7 +962,8 @@ INSERT INTO `purchases_x_products` (`idPurchases_x_Products`, `Purchases_id`, `P
 (56, 14, 2, 2, 10.00),
 (57, 15, 2, 2, 10.00),
 (58, 16, 2, 2, 10.00),
-(59, 17, 2, 2, 10.00);
+(59, 17, 2, 2, 10.00),
+(60, 18, 33, 65, 21.00);
 
 -- --------------------------------------------------------
 
@@ -950,7 +984,7 @@ CREATE TABLE IF NOT EXISTS `stock_movement` (
   PRIMARY KEY (`id`),
   KEY `fk_StockMovement_Products_idx` (`Products_id`) USING BTREE,
   KEY `fk_StockMovement_Users_idx` (`Users_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `stock_movement`
@@ -1019,7 +1053,10 @@ INSERT INTO `stock_movement` (`id`, `type`, `description`, `Products_id`, `dateT
 (61, 1, 'Compra de producto', 2, '2019-11-29 08:15:01', 2, 10.00, 27),
 (62, 0, 'Venta de producto', 2, '2019-11-29 08:26:05', 10, 300.00, 27),
 (63, 0, 'Venta de producto', 3, '2019-11-29 08:26:05', 3, 300.00, 27),
-(64, 0, 'Venta de producto', 2, '2019-11-29 11:28:06', 8, 300.00, 27);
+(64, 0, 'Venta de producto', 2, '2019-11-29 11:28:06', 8, 300.00, 27),
+(65, 1, 'Compra de producto', 33, '2019-11-29 11:47:15', 65, 21.00, 27),
+(66, 0, 'Venta de producto', 33, '2019-11-29 11:47:39', 8, 51.00, 27),
+(67, 0, 'Venta de producto', 33, '2019-11-29 11:48:19', 10, 51.00, 27);
 
 -- --------------------------------------------------------
 
@@ -1034,16 +1071,16 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   `Name` varchar(50) DEFAULT NULL,
   `Surname` varchar(50) DEFAULT NULL,
   `Company` varchar(50) DEFAULT NULL,
-  `Fanciful_name` varchar(100) NOT NULL,
-  `Telephone` varchar(20) DEFAULT NULL,
-  `Cellphone` varchar(20) NOT NULL,
+  `Fanciful_name` varchar(100) NOT NULL DEFAULT '',
+  `Telephone` varchar(20) DEFAULT '',
+  `Cellphone` varchar(20) NOT NULL DEFAULT '',
   `Business_id` int(11) NOT NULL,
-  `Address` varchar(200) DEFAULT NULL,
+  `Address` varchar(200) DEFAULT '',
   `Mail` varchar(60) DEFAULT NULL,
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idSupplier`) USING BTREE,
   KEY `fk_Supplier_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `suppliers`
@@ -1052,7 +1089,10 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
 INSERT INTO `suppliers` (`idSupplier`, `Cuit`, `Name`, `Surname`, `Company`, `Fanciful_name`, `Telephone`, `Cellphone`, `Business_id`, `Address`, `Mail`, `Active`) VALUES
 (0, 1, 'Sin Proveedor', 'Sin Proveedor', NULL, '', NULL, '0', 0, NULL, NULL, b'1'),
 (3, 18484910, 'Marmol', 'Jose', 'EEEE', 'Ivera', '1', '1', 1, 'Avenida San juan bautista de lasalle 720', 'a', b'1'),
-(18, 46464685, 'Juan', 'Domingo', 'Hasbro', 'Hasbro', '41', '411', 2, 'Av Rio de la plata 50', 'juan@domingo', b'1');
+(18, 46464685, 'Juan', 'Domingo', 'Hasbro', 'Hasbro', '41', '411', 2, 'Av Rio de la plata 50', 'juan@domingo', b'1'),
+(19, 1354864, 'juancito', 'don', NULL, 'fantasias', '806', '', 1, NULL, NULL, b'1'),
+(20, 43572145, 'jonathan', 'liu', NULL, 'asdffa', NULL, '', 1, NULL, NULL, b'1'),
+(21, 4564563, 'uteiwaoju', 'dafsjkñlgjt', NULL, 'ewraaefw', NULL, '142412', 1, NULL, NULL, b'0');
 
 -- --------------------------------------------------------
 
@@ -1074,7 +1114,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idUser`) USING BTREE,
   KEY `fk_Users_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `users`
@@ -1087,7 +1127,8 @@ INSERT INTO `users` (`idUser`, `Mail`, `Password`, `Admin`, `Name`, `Surname`, `
 (34, 'n@n', '21232f297a57a5a743894a0e4a801fc3', b'1', 'nico', 'margo', 'Alejandro Anushavan', 2, '43994080', b'1'),
 (35, 'mati@mati', '4d186321c1a7f0f354b297e8914ab240', b'0', 'Matias', 'Santoro', 'Javier', 2, '43994857', b'1'),
 (37, 'm@m', '21232f297a57a5a743894a0e4a801fc3', b'0', 'nombre modificar ', 'apellido modificar ', NULL, 2, '11111', b'1'),
-(38, 'test', '7510d498f23f5815d3376ea7bad64e29', b'0', 'test', 'test', 'test', 1, '22', b'1');
+(38, 'test', '7510d498f23f5815d3376ea7bad64e29', b'0', 'test', 'test', 'test', 1, '22', b'1'),
+(39, 'jfadsioñ@a', 'b0baee9d279d34fa1dfd71aadb908c3f', b'0', 'jkñfladsjt', 'jaskdjfñ', NULL, 1, '45468', b'1');
 
 -- --------------------------------------------------------
 
@@ -1109,7 +1150,7 @@ CREATE TABLE IF NOT EXISTS `user_extrainfo` (
   `Cellphone` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`idUser_ExtraInfo`) USING BTREE,
   KEY `fk_User_ExtraInfo_Users_idx` (`Users_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `user_extrainfo`
@@ -1121,7 +1162,8 @@ INSERT INTO `user_extrainfo` (`idUser_ExtraInfo`, `Address`, `Tel_Father`, `Tel_
 (6, 'para borrar usuario a', '889', '1000', '778', '110', NULL, NULL, 32, '200'),
 (8, 'Formosa 430', '888', '999', '777', '12', NULL, NULL, 35, '13'),
 (10, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 37, NULL),
-(11, '22', '22', '22', '22', '11', NULL, NULL, 38, '22');
+(11, '22', '22', '22', '22', '11', NULL, NULL, 38, '22'),
+(12, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 39, NULL);
 
 --
 -- Restricciones para tablas volcadas

@@ -58,7 +58,7 @@
                             <td class="colToSearch">@validString(ViewBag.Suppliers[i].Surname)</td>
                             <td class="colToSearch">@validString(ViewBag.Suppliers[i].Name)</td>
                             <td class="colToSearch">@validString(ViewBag.Suppliers[i].Fanciful_name)</td>
-                            <td>@validString((ViewBag.Suppliers[i].Cellphone))</td>
+                            <td>@validString(ViewBag.Suppliers[i].Cellphone)</td>
                             <td>@validString(ViewBag.Suppliers[i].Mail)</td>
                             <td><a data-toggle="modal" data-target="#modalUpdt"><updateButton modelId="@ViewBag.Suppliers[i].Id"><img class="crudButton" src="~/images/edit.png" /></updateButton></a></td>
                             <td><a data-toggle="modal" data-target="#confirmModal"><deleteButton modelId="@ViewBag.Suppliers[i].Id"><img class="crudButton" src="~/images/delete.png" /></deleteButton></a></td>

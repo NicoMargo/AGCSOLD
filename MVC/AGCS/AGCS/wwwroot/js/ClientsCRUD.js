@@ -16,8 +16,8 @@
                     name: $("#crtName").find("input").val(),
                     dni: parseInt($("#crtDni").find("input").val()),
                     mail: $("#crtMail").find("input").val(),
-                    telephone: parseInt($("#crtTelephone").find("input").val()),
-                    cellphone: parseInt($("#crtCellphone").find("input").val())
+                    telephone: $("#crtTelephone").find("input").val(),
+                    cellphone: $("#crtCellphone").find("input").val()
                     /*
                     town: $("#modalCreateTown").val(),
                     address: $("#modalCreateAddressC").val(),
@@ -76,8 +76,8 @@
                     name: $("#updtName").find("input").val(),
                     dni: parseInt($("#updtDni").find("input").val()),
                     mail: $("#updtMail").find("input").val(),
-                    telephone: parseInt($("#updtTelephone").find("input").val()),
-                    cellphone: parseInt($("#updtCellphone").find("input").val())/*,
+                    telephone: $("#updtTelephone").find("input").val(),
+                    cellphone: $("#updtCellphone").find("input").val()/*,
                     Town: $("#modalUpdateTown").val(),
                     Address: $("#modalUpdateAddress").val(),
                     Province: 1,

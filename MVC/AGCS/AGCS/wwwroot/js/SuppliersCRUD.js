@@ -16,8 +16,8 @@
                     surname: $("#crtSurname").find("input").val(),
                     name: $("#crtName").find("input").val(),
                     mail: $("#crtMail").find("input").val(),
-                    telephone: parseInt($("#crtTelephone").find("input").val()),
-                    cellphone: parseInt($("#crtCellphone").find("input").val()),
+                    telephone: $("#crtTelephone").find("input").val(),
+                    cellphone: $("#crtCellphone").find("input").val(),
                     address: $("#crtAddress").find("input").val(),
                     company: $("#crtCompany").find("input").val(),
                     fanciful_name: $("#crtFanciful").find("input").val()
@@ -69,8 +69,8 @@
                     surname: $("#updtSurname").find("input").val(),
                     name: $("#updtName").find("input").val(),
                     mail: $("#updtMail").find("input").val(),
-                    telephone: parseInt($("#updtTelephone").find("input").val()),
-                    cellphone: parseInt($("#updtCellphone").find("input").val()),
+                    telephone: $("#updtTelephone").find("input").val(),
+                    cellphone: $("#updtCellphone").find("input").val(),
                     address: $("#updtAddress").find("input").val(),
                     company: $("#updtCompany").find("input").val(),
                     fanciful_name: $("#updtFanciful").find("input").val()
