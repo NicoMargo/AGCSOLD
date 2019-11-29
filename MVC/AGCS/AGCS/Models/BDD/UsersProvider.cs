@@ -46,21 +46,23 @@ namespace AGCS.Models.BDD
             Helpers.Disconect();
             return ListOfUsers;
         }
-        public static void DeleteUser(uint id)
+        public static bool DeleteUser(uint id)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pId", id },
                 {"pIdBusiness",Session.GetSUInt32("idBusiness")},
             };
+            bool regs = false;
             try
             {
-                Helpers.CallNonQuery("spUserDelete", args);
+               regs = Convert.ToBoolean(Helpers.CallNonQuery("spUserDelete", args));
             }
             catch
             {
 
             }
             Helpers.Disconect();
+            return regs;
         }
         public static string InsertUser(User user)
         {

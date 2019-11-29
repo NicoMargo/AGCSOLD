@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using AGCS.Models;
 using AGCS.Models.BDD;
 using Newtonsoft.Json;
 using System;
-using Microsoft.AspNetCore.Http;
 
 namespace AGCS.Controllers
 {
     public class UsersController : BaseController
     {
-
+        public ActionResult Configuration()
+        {
+            return View();
+        }
         public ActionResult UsersCRUD()
         {
             if (Convert.ToBoolean(Session.GetSUInt32("op")))
@@ -56,12 +57,9 @@ namespace AGCS.Controllers
             bool Success = false;
             try
             {
-                UsersProvider.DeleteUser(id);
-                Success = true;
+                Success =UsersProvider.DeleteUser(id);
             }
-            catch (Exception)
-            {
-
+            catch{
             }
             return Success;
 
