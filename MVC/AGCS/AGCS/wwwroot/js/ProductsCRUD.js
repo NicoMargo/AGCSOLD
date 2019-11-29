@@ -1,9 +1,6 @@
 ﻿$(document).ready(function () {
     var modelId;
     RowSearcher("CRUDTable", "searchInput");
-    
-    $("#btnModalCrt").click(function () {
-    });
 
     $("#add").click(function () {
         if (validateInputs("modalCrt", "crtInput")) {
@@ -20,8 +17,13 @@
                     priceW: parseFloat($("#crtPriceW").find("input").val()),
                     image: $("#crtImage").find("input").val(),
                 },
-                success: function () {
-                    location.reload();
+                success: function (success){
+                    if (success)
+                        location.reload();
+                    else {
+                        $('#modalCrt').modal('toggle');
+                        CreateModal("Error", "Hubo un error al crear el producto");
+                    }
                 },
                 error: function () {
                     CreateModal("Error", "Hubo un error al crear el producto");
@@ -57,7 +59,7 @@
 
 
     $("#update").click(function () {
-        if (validateInputs("modalUpdt","updtInput")) {
+        if (validateInputs("modalUpdt", "updtInput")) {
             $.ajax({
                 type: "POST",
                 url: "/Products/UpdateProduct",
@@ -85,7 +87,7 @@
 
     $("deleteButton").click(function () {
         modelId = $(this).attr("modelId");
-         $("#confirm").click(function () {
+        $("#confirm").click(function () {
             $.ajax({
                 type: "DELETE",
                 url: "/Products/DeleteProduct",
@@ -98,7 +100,7 @@
                 }
             });
         });
-    });   
+    });
     $("#updt").click(function () {
         modelId = $(this).attr("modelId");
         if (!parseInt($('#subtractStock').val().isNaN) && $('#description').val() != "") {
@@ -117,7 +119,7 @@
                         success: function (s) {
                             if (s) {
                                 $('#quant').html(parseInt($('#quant').html()) - parseInt($("#subtractStock").val()));
-                                CreateModal("Stock", "Se modifico el stock correctamente", function () { location.reload();});
+                                CreateModal("Stock", "Se modifico el stock correctamente", function () { location.reload(); });
                             } else {
                                 CreateModal("Error", "Hubo un error al modificar el stock");
                             }

@@ -19,7 +19,7 @@
         $("#stockProdToEnter").empty();
         $.ajax({
             type: "POST",
-            url: "/Backend/GetProductToEnter",
+            url: "/Bill/GetProductToEnter",
             data: { code: $("#codProdToEnter").val() },
             success: function (DataJson) {
                 D = JSON.parse(DataJson);
@@ -180,7 +180,7 @@
 
                     $.ajax({
                         type: "POST",
-                        url: "/Backend/NewBill",
+                        url: "/Bill/NewBill",
                         data: {
                             json: JSON.stringify(Items), dniClient: $("#dni").val(), jsonClient: JSON.stringify(C)
                         },

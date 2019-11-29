@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 29-11-2019 a las 12:37:01
+-- Tiempo de generación: 29-11-2019 a las 12:58:20
 -- Versión del servidor: 5.7.21
 -- Versión de PHP: 5.6.35
 
@@ -159,7 +159,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductDelete` (IN `pId` INT, IN 
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductGetByCode`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetByCode` (IN `pCode` INT, IN `pIdBusiness` INT)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductGetByCode` (IN `pCode` VARCHAR(200), IN `pIdBusiness` INT)  BEGIN
 
 	SELECT * FROM products WHERE (/*products.Article_Number = pCode or */products.CodeProduct = pCode) and products.Business_id = pIdBusiness and products.Active = 1;
 
@@ -172,34 +172,46 @@ END$$
 
 DROP PROCEDURE IF EXISTS `spProductInsert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spProductInsert` (IN `pIdBusiness` INT, IN `pProduct_Number` INT, IN `pCode` VARCHAR(100), IN `pName` VARCHAR(200), IN `pDescription` VARCHAR(200), IN `pCost` FLOAT(10,2), IN `pPrice` FLOAT(10,2), IN `pPriceW` FLOAT(10,2), IN `pImage` VARCHAR(2000))  BEGIN
-	if (not exists(select idProduct from Products where Business_id = pIdBusiness and (CodeProduct = pCode or Article_number = pProduct_Number or Products.Name = pName)))
+if (not exists(select idProduct from Products where Business_id = pIdBusiness and (CodeProduct = pCode or Article_number = pCode)))
     then
-    	if(pProduct_Number > 0)
-        then 
-        	insert into Products(Business_id,Article_number,CodeProduct,Name) values(pIdBusiness, pProduct_Number, pCode, pName);
-            set @lastId = (select Products.idProduct from Products where Products.idProduct = LAST_INSERT_ID());# and Products.Business_id = pIdBusiness /*and Products.Article_number = pProduct_Number*/ and Products.CodeProduct = pCode and Products.Description = pDescription/* and Products.Stock = pStock*/ and Products.Suppliers_id = pIdSupplier);
-            if(@lastId is not null)
-            then
-            	if(pDescription !="" and pDescription is not null)
-                THEN
-                	Update Products set Description = pDescription where idProduct = @lastId;
-                end if;
-            	if(pCost > 0)
-                then
-                	Update Products set Cost = pCost where idProduct = @lastId; 
-				end if;
-				if(pPrice > 0)
+	if (not exists(select idProduct from Products where Business_id = pIdBusiness and (CodeProduct = pProduct_Number or Article_number = pProduct_Number)))
+    then
+		if(not exists(select idProduct from Products where Business_id = pIdBusiness and  Products.Name = pName))
+        then        
+			if(pProduct_Number > 0)
+			then 
+				insert into Products(Business_id,Article_number,CodeProduct,Name) values(pIdBusiness, pProduct_Number, pCode, pName);
+				set @lastId = (select Products.idProduct from Products where Products.idProduct = LAST_INSERT_ID());# and Products.Business_id = pIdBusiness /*and Products.Article_number = pProduct_Number*/ and Products.CodeProduct = pCode and Products.Description = pDescription/* and Products.Stock = pStock*/ and Products.Suppliers_id = pIdSupplier);
+				if(@lastId is not null)
 				then
-					Update Products set Price = pPrice where idProduct = @lastId; 
-				end if;
-				if(pPriceW > 0)
-				then
-					Update Products set PriceW = pPriceW where idProduct = @lastId; 
-				end if;
-				update products set Image = pImage where idProduct = @lastId; 
-			end if; #endif lastId is not null 
-		end if;#endif ProductNumber > 0
-	end if;#endif not exists product with same code or product number in the same business
+					if(pDescription !="" and pDescription is not null)
+					THEN
+						Update Products set Description = pDescription where idProduct = @lastId;
+					end if;
+					if(pCost > 0)
+					then
+						Update Products set Cost = pCost where idProduct = @lastId; 
+					end if;
+					if(pPrice > 0)
+					then
+						Update Products set Price = pPrice where idProduct = @lastId; 
+					end if;
+					if(pPriceW > 0)
+					then
+						Update Products set PriceW = pPriceW where idProduct = @lastId; 
+					end if;
+					update products set Image = pImage where idProduct = @lastId; 
+				end if; #endif lastId is not null 
+			end if;#endif ProductNumber > 0
+            else 
+				select 2;
+		end if; # Productname = product.Name
+        else
+			select 3;
+	end if;#endif not exists product with same product number in the same business
+    else
+		select 4;
+	end if;#endif nos exist product with same pcode in the same business 
 END$$
 
 DROP PROCEDURE IF EXISTS `spProductsGet`$$
@@ -428,7 +440,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserLogin` (IN `Mail` VARCHAR(320
 
 DROP PROCEDURE IF EXISTS `spUsersGet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUsersGet` (IN `pIdBusiness` INT)  NO SQL
-SELECT user_extrainfo.Cellphone, users.idUser, users.Name, users.Surname, users.Dni, users.Mail FROM users left join user_extrainfo on users.idUser = user_extrainfo.Users_id where users.Business_id = pIdBusiness and users.Admin != 1$$
+SELECT user_extrainfo.Cellphone, users.idUser, users.Name, users.Surname, users.Dni, users.Mail FROM users left join user_extrainfo on users.idUser = user_extrainfo.Users_id where users.Business_id = pIdBusiness and users.Admin != 1 and users.Active != 0$$
 
 DROP PROCEDURE IF EXISTS `spUserUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserUpdate` (IN `id` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(60), IN `pSurname` VARCHAR(60), IN `pDNI_CUIT` INT, IN `pMail` VARCHAR(60), IN `pTelephone` VARCHAR(60), IN `pCellphone` VARCHAR(60), IN `pTelephoneM` VARCHAR(60), IN `pTelephoneF` VARCHAR(60), IN `pTelephoneB` VARCHAR(60), IN `pAddress` VARCHAR(60), IN `pSecondN` VARCHAR(60))  NO SQL
@@ -540,7 +552,7 @@ INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_id`, `Users_id`, `IVA_Condit
 (72, '2019-11-07', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (73, '2019-11-07', 47, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (74, '2019-11-22', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(75, '2019-11-29', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 7500.00, NULL, NULL, NULL, 1);
+(75, '2019-11-29', 47, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 3900.00, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -581,8 +593,8 @@ INSERT INTO `bills_x_products` (`idBills_X_Products`, `Bills_id`, `Products_id`,
 (82, 73, 2, 10, 300.00),
 (83, 74, 2, 1, 300.00),
 (84, 74, 1, 5, 300.00),
-(85, 75, 2, 5, 300.00),
-(86, 75, 1, 20, 300.00);
+(85, 75, 2, 10, 300.00),
+(86, 75, 3, 3, 300.00);
 
 -- --------------------------------------------------------
 
@@ -779,10 +791,10 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`idProduct`, `Article_number`, `Name`, `Description`, `Cost`, `Price`, `PriceW`, `Image`, `Age`, `Stock`, `CodeProduct`, `Business_id`, `Active`) VALUES
-(1, 666, '	Manga Yakusoku no Neverland Vol 1', 'Manga Yakusoku no Neverland Vol 1', 0000500.00, 0000300.00, 0000200.00, 'https://inmanga.com/thumbnails/manga/The-Promised-Neverland/df035c49-d49f-4f15-bd2d-4ae9ea94d72d', b'1', 2180, '777', 1, b'1'),
-(2, 2, 'Manga Yakusoku no Neverland Vol 2', 'Manga Yakusoku no Neverland Vol 2', 0000010.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793089401_G.jpg', b'1', 93, '2', 1, b'1'),
-(3, 3, 'Manga Yakusoku no Neverland Vol 4', 'Manga Yakusoku no Neverland Vol 4', 0000800.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793289801_G.jpg', b'1', -6, '3', 1, b'1'),
-(4, 5, 'Yogurisimo Con Cereales', 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, 'https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwj0g-ub0djlAhVXI7kGHRZtCZsQjRx6BAgBEAQ&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DTzzXd2b2xaM&psig=AOvVaw1Ho3pxUY9tQ7FfifW8uuT6&ust=1573234455794867', b'1', -1, '7791337613027', 1, b'0'),
+(1, 666, '	Manga Yakusoku no Neverland Vol 1', 'Manga Yakusoku no Neverland Vol 1', 0000500.00, 0000300.00, 0000200.00, 'https://inmanga.com/thumbnails/manga/The-Promised-Neverland/df035c49-d49f-4f15-bd2d-4ae9ea94d72d', b'1', 2290, '777', 1, b'1'),
+(2, 2, 'Manga Yakusoku no Neverland Vol 2', 'Manga Yakusoku no Neverland Vol 2', 0000010.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793089401_G.jpg', b'1', 90, '2', 1, b'1'),
+(3, 3, 'Manga Yakusoku no Neverland Vol 4', 'Manga Yakusoku no Neverland Vol 4', 0000800.00, 0000300.00, 0000200.00, 'http://www.normaeditorial.com/libros_img/978846793289801_G.jpg', b'1', -939, '3', 1, b'1'),
+(4, 5, 'Yogurisimo Con Cereales', 'Yogurisimo Con Cereales', 0000019.00, 0000050.00, 0000034.00, 'https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwj0g-ub0djlAhVXI7kGHRZtCZsQjRx6BAgBEAQ&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DTzzXd2b2xaM&psig=AOvVaw1Ho3pxUY9tQ7FfifW8uuT6&ust=1573234455794867', b'1', -1, '7791337613027', 1, b'1'),
 (7, 32, 'amazing hat', 'amazing hat', 0050056.00, 0000600.00, 0054958.00, 'https://i0.pngocean.com/files/12/157/298/minecraft-breastplate-motorcycle-helmets-armour-pickaxe.jpg', NULL, -1, '434', 1, b'0'),
 (8, 85, 'awful hat', 'awful hat', 0000005.00, 0000331.00, 0000328.00, 'https://66.media.tumblr.com/2f4da14349d6ff0a065e6e7035df2fb1/tumblr_o130144hGr1tm6273o8_400.png', NULL, -32, '32222', 1, b'0'),
 (9, 75, 'a beautiful hat', 'a beautiful hat', 0000035.59, 0000080.51, 0000040.03, '', NULL, 0, '707', 1, b'0'),
@@ -1113,7 +1125,7 @@ INSERT INTO `users` (`idUser`, `Mail`, `Password`, `Admin`, `Name`, `Surname`, `
 (34, 'n@n', '21232f297a57a5a743894a0e4a801fc3', b'1', 'nico', 'margo', 'Alejandro Anushavan', 2, '43994080', b'1'),
 (35, 'mati@mati', '4d186321c1a7f0f354b297e8914ab240', b'0', 'Matias', 'Santoro', 'Javier', 2, '43994857', b'1'),
 (37, 'm@m', '21232f297a57a5a743894a0e4a801fc3', b'0', 'nombre modificar ', 'apellido modificar ', NULL, 2, '11111', b'1'),
-(38, 'test', '7510d498f23f5815d3376ea7bad64e29', b'0', 'test', 'test', 'test', 1, '22', b'0');
+(38, 'test', '7510d498f23f5815d3376ea7bad64e29', b'0', 'test', 'test', 'test', 1, '22', b'1');
 
 -- --------------------------------------------------------
 
