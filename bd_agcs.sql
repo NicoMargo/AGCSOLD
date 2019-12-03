@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.9
+-- version 4.9.2
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 29-11-2019 a las 18:51:51
--- Versión del servidor: 5.7.21
--- Versión de PHP: 5.6.35
+-- Tiempo de generación: 03-12-2019 a las 06:20:35
+-- Versión del servidor: 10.4.10-MariaDB
+-- Versión de PHP: 7.3.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -469,9 +469,11 @@ SELECT user_extrainfo.Cellphone, users.idUser, users.Name, users.Surname, users.
 DROP PROCEDURE IF EXISTS `spUserUpdate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `spUserUpdate` (IN `pId` INT, IN `pIdBusiness` INT, IN `pName` VARCHAR(60), IN `pSurname` VARCHAR(60), IN `pDNI` INT, IN `pMail` VARCHAR(60), IN `pTelephone` VARCHAR(60), IN `pCellphone` VARCHAR(60), IN `pTelephoneM` VARCHAR(60), IN `pTelephoneF` VARCHAR(60), IN `pTelephoneB` VARCHAR(60), IN `pAddress` VARCHAR(60), IN `pSecondN` VARCHAR(60))  NO SQL
 if(EXISTS(SELECT idUser from users WHERE idUser = pId and Business_id = pIdBusiness))
-THEN
-	if(pDNI > 0 and pDNI is not null and pMail!= "" and pMail is not null and not exists(SELECT Dni from users where Mail = pMail or (Dni = pDNI and Business_id = pIdBusiness)))
+THEN	
+	if(EXISTS(SELECT idUser from users WHERE Mail = pMail and pId != idUser))
     then
+		select 2 as code;
+    else
         if( pName is not null and pName != "") 
 		THEN
 			UPDATE users set Name = pName WHERE idUser = pId and Business_id = pIdBusiness; 
@@ -481,15 +483,18 @@ THEN
 		THEN
 			UPDATE users set Surname = pSurname WHERE idUser = pId and Business_id = pIdBusiness;
 		end if;
+        if(pDNI > 0 and pDNI is not null )
+        then
 		UPDATE users set Dni = pDNI WHERE idUser = pId and Business_id = pIdBusiness;
+        end if;
+        if(pMail!= "" and pMail is not null)
+        then
 		UPDATE users set Mail = pMail WHERE idUser = pId and Business_id = pIdBusiness;
-		UPDATE user_ExtraInfo set Tel_User = pTelephone WHERE Users_id = pId;
-		UPDATE user_ExtraInfo set Cellphone = pCellphone WHERE Users_id = pId;
-		UPDATE user_ExtraInfo set Tel_Mother = pTelephoneM WHERE Users_id = pId;
-		UPDATE user_ExtraInfo set Tel_Father = pTelephoneF WHERE Users_id = pId;
-		UPDATE user_ExtraInfo set Tel_Brother = pTelephoneB WHERE Users_id = pId;
-		UPDATE user_ExtraInfo set Address = pAddress WHERE Users_id = pId; 
-	end if;
+        end if;        
+		UPDATE user_ExtraInfo set Tel_User = pTelephone,Cellphone = pCellphone,Tel_Mother = pTelephoneM,Tel_Father = pTelephoneF,Tel_Brother = pTelephoneB,Address = pAddress WHERE Users_id = pId;
+		SELECT 1 as code;
+end if;
+SELECT 0 as code;
 end if$$
 
 DELIMITER ;
@@ -535,11 +540,11 @@ CREATE TABLE IF NOT EXISTS `bills` (
   `Users_id` int(11) DEFAULT NULL,
   `IVA_Condition` varchar(45) DEFAULT NULL,
   `TypeBill` varchar(1) DEFAULT NULL,
-  `Subtotal` float(10,2) DEFAULT '0.00',
-  `Discount` float(5,2) UNSIGNED ZEROFILL DEFAULT '00.00',
-  `IVA_Recharge` float(5,2) UNSIGNED ZEROFILL DEFAULT '00.00',
+  `Subtotal` float(10,2) DEFAULT 0.00,
+  `Discount` float(5,2) UNSIGNED ZEROFILL DEFAULT 00.00,
+  `IVA_Recharge` float(5,2) UNSIGNED ZEROFILL DEFAULT 00.00,
   `WholeSaler` bit(1) DEFAULT NULL,
-  `Total` float(2,2) DEFAULT '0.00',
+  `Total` float(2,2) DEFAULT 0.00,
   `Branches_id` int(11) DEFAULT NULL,
   `Payment_Methods_id` int(11) DEFAULT NULL,
   `Macs_id` int(11) DEFAULT NULL,
@@ -579,8 +584,8 @@ INSERT INTO `bills` (`idBill`, `DateBill`, `Clients_id`, `Users_id`, `IVA_Condit
 (75, '2019-11-29', 47, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (77, '2019-11-29', 0, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
 (78, '2019-11-29', 64, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
-(79, '2019-11-29', 64, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 1500.00, NULL, NULL, NULL, 1),
-(80, '2019-11-29', 67, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 5132.00, NULL, NULL, NULL, 1);
+(79, '2019-11-29', 64, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1),
+(80, '2019-11-29', 67, NULL, NULL, NULL, 0.00, 00.00, 00.00, NULL, 0.99, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -594,7 +599,7 @@ CREATE TABLE IF NOT EXISTS `bills_x_products` (
   `Bills_id` int(11) NOT NULL,
   `Products_id` int(11) NOT NULL,
   `Quantity` int(11) DEFAULT NULL,
-  `Price` float(10,2) NOT NULL DEFAULT '0.00',
+  `Price` float(10,2) NOT NULL DEFAULT 0.00,
   PRIMARY KEY (`idBills_X_Products`) USING BTREE,
   KEY `fk_Bill_X_Products_Products1_idx` (`Products_id`) USING BTREE,
   KEY `fk_Bill_X_Products_Bills1_idx` (`Bills_id`) USING BTREE
@@ -792,12 +797,12 @@ CREATE TABLE IF NOT EXISTS `products` (
   `Article_number` int(11) DEFAULT NULL,
   `Name` varchar(200) COLLATE latin1_bin NOT NULL,
   `Description` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
-  `Cost` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
-  `Price` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
-  `PriceW` float(10,2) UNSIGNED ZEROFILL DEFAULT '0000000.00',
+  `Cost` float(10,2) UNSIGNED ZEROFILL DEFAULT 0000000.00,
+  `Price` float(10,2) UNSIGNED ZEROFILL DEFAULT 0000000.00,
+  `PriceW` float(10,2) UNSIGNED ZEROFILL DEFAULT 0000000.00,
   `Image` varchar(2000) COLLATE latin1_bin NOT NULL DEFAULT '',
   `Age` bit(1) DEFAULT NULL,
-  `Stock` int(11) DEFAULT '0',
+  `Stock` int(11) DEFAULT 0,
   `CodeProduct` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
   `Business_id` int(11) NOT NULL,
   `Active` bit(1) NOT NULL DEFAULT b'1',
@@ -939,7 +944,7 @@ CREATE TABLE IF NOT EXISTS `purchases_x_products` (
   `Purchases_id` int(11) UNSIGNED NOT NULL,
   `Products_id` int(11) NOT NULL,
   `Quantity` int(11) NOT NULL,
-  `Cost` float(10,2) DEFAULT '0.00',
+  `Cost` float(10,2) DEFAULT 0.00,
   PRIMARY KEY (`idPurchases_x_Products`),
   KEY `fk_PurchasesXProducts_Purchases_idx` (`Purchases_id`),
   KEY `fk_PurchasesXProducts_Products_idx` (`Products_id`)
@@ -988,7 +993,7 @@ CREATE TABLE IF NOT EXISTS `stock_movement` (
   `Products_id` int(11) DEFAULT NULL,
   `dateTime` datetime DEFAULT NULL,
   `quant` mediumint(8) DEFAULT NULL,
-  `Amount` float(10,2) NOT NULL DEFAULT '0.00',
+  `Amount` float(10,2) NOT NULL DEFAULT 0.00,
   `Users_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_StockMovement_Products_idx` (`Products_id`) USING BTREE,
@@ -1127,7 +1132,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idUser`) USING BTREE,
   KEY `fk_Users_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `users`
@@ -1140,10 +1145,11 @@ INSERT INTO `users` (`idUser`, `Mail`, `Password`, `Admin`, `Name`, `Surname`, `
 (34, 'n@n', '21232f297a57a5a743894a0e4a801fc3', b'1', 'nico', 'margo', 'Alejandro Anushavan', 2, '43994080', b'1'),
 (35, 'mati@mati', '4d186321c1a7f0f354b297e8914ab240', b'0', 'Matias', 'Santoro', 'Javier', 2, '43994857', b'1'),
 (37, 'm@m', '21232f297a57a5a743894a0e4a801fc3', b'0', 'nombre modificar ', 'apellido modificar ', NULL, 2, '11111', b'1'),
-(38, 'test', '7510d498f23f5815d3376ea7bad64e29', b'0', 'test', 'test', 'test', 1, '22', b'1'),
-(39, 'jfadsioñ@a', 'b0baee9d279d34fa1dfd71aadb908c3f', b'0', 'jkñfladsjt', 'jaskdjfñ', NULL, 1, '45468', b'1'),
-(40, 'mail@electronico', '827ccb0eea8a706c4c34a16891f84e7b', b'0', 'Ramiro', 'Ramirez', 'Remo', 1, '43572145', b'1'),
-(41, 'meiru@mail', '6c51b6f4f61c76b6811ca72fa7a6f896', b'0', 'Ganzalo', 'Ganzalez', 'Gonzo', 1, '43572115', b'1');
+(38, 'test', '7510d498f23f5815d3376ea7bad64e29', b'0', 'test', 'test', 'test', 1, '22', b'0'),
+(39, 'jfadsioñ@a', 'b0baee9d279d34fa1dfd71aadb908c3f', b'0', 'jkñfladsjt', 'jaskdjfñ', NULL, 1, '45468', b'0'),
+(40, 'admin2@admin', '827ccb0eea8a706c4c34a16891f84e7b', b'0', 'Ramiro', 'joseph', 'Remo', 1, '43572145', b'1'),
+(41, 'nicolasmargossian@gmail.com', '6c51b6f4f61c76b6811ca72fa7a6f896', b'0', 'super', 'a', 'Gonzo', 1, '234', b'0'),
+(42, 'admin3@admin', '7510d498f23f5815d3376ea7bad64e29', b'0', 'Jonathan', 'Liu', NULL, 1, '43885768', b'1');
 
 -- --------------------------------------------------------
 
@@ -1165,7 +1171,7 @@ CREATE TABLE IF NOT EXISTS `user_extrainfo` (
   `Cellphone` varchar(60) DEFAULT '',
   PRIMARY KEY (`idUser_ExtraInfo`) USING BTREE,
   KEY `fk_User_ExtraInfo_Users_idx` (`Users_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `user_extrainfo`
@@ -1179,8 +1185,9 @@ INSERT INTO `user_extrainfo` (`idUser_ExtraInfo`, `Address`, `Tel_Father`, `Tel_
 (10, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 37, NULL),
 (11, '22', '22', '22', '22', '11', NULL, NULL, 38, '22'),
 (12, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 39, NULL),
-(13, 'calle aca 899', '654', '765', '543', '987', NULL, NULL, 40, '876'),
-(14, 'Avellaneda', '4682', '2462', '8602', '1351', NULL, NULL, 41, '3571');
+(13, 'calle aca 899', '888', '777', '999', '987', NULL, NULL, 40, '01161730475'),
+(14, 'Avellaneda', '4682', '2462', '8602', '1351', NULL, NULL, 41, '3571'),
+(15, 'Yatay240', '0114756382', '0114657364', '1547563546', '111', NULL, NULL, 42, '01161730659');
 
 --
 -- Restricciones para tablas volcadas

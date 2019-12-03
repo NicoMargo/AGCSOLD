@@ -84,12 +84,14 @@ $(document).ready(function () {
                     telephoneF: $("#updtTelF").find("input").val(),
                     telephoneB: $("#updtTelB").find("input").val(),
                 },
-                success: function (success) {
-                    if (success) {
+                success: function (code) {
+                    if (code == 1) {
                         location.reload();
                     }
-                    else {
-                        CreateModal("Datos no validos", "Ya existe un usuario con ese mail o Dni");
+                    else if (code == 2) {
+                        CreateModal("Datos no validos", "Ya existe un usuario con ese Mail");
+                    } else {
+                        CreateModal("Error", "Falla al registrar el usuario. Reintentar");
                     }
                 },
                 error: function () {

@@ -90,19 +90,18 @@ namespace AGCS.Controllers
             return Json(JsonDataClient);
         }
         [HttpPost]
-        public bool UpdateUser(uint id,string surname, string name, ulong dni, string mail, string telephone, string cellphone, string secondName, string address, string telephoneM, string telephoneF, string telephoneB)
+        public byte UpdateUser(uint id,string surname, string name, ulong dni, string mail, string telephone, string cellphone, string secondName, string address, string telephoneM, string telephoneF, string telephoneB)
         {
-            bool Success = true;
+            byte code = 0;
             User cUser = new User(id, name, surname, secondName, dni, mail, cellphone, telephone, telephoneM, telephoneF, telephoneB, address);
             try
             {
-                UsersProvider.UpdateUser(cUser);
+                code = UsersProvider.UpdateUser(cUser);
             }
             catch
             {
-                Success = false;
             }
-            return Success;
+            return code;
         }
 
     }

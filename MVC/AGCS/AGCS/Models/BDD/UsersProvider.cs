@@ -109,7 +109,7 @@ namespace AGCS.Models.BDD
             Helpers.Disconect();
             return user;
         }
-        public static void UpdateUser(User user)
+        public static byte UpdateUser(User user)
         {
             Dictionary<string, object> args = new Dictionary<string, object> {
                 {"pId", user.Id },
@@ -126,11 +126,19 @@ namespace AGCS.Models.BDD
                 {"pAddress", user.Address},
                 {"pSecondN", user.SecondName}
             };
-           
-                Helpers.CallNonQuery("spUserUpdate", args);
-            
-            Helpers.Disconect();
 
+            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spUserUpdate", args);
+            byte code =0;
+            if (ConnectionReader.Read())
+            {
+                try
+                {
+                    code = Convert.ToByte(ConnectionReader["code"]);
+                }
+                catch { }
+            }
+            Helpers.Disconect();
+            return code;
         }
         public static int ChangePassword(string original, string new1)
         {
