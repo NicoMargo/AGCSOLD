@@ -15,15 +15,27 @@
                     cost: parseFloat($("#crtCost").find("input").val()),
                     price: parseFloat($("#crtPrice").find("input").val()),
                     priceW: parseFloat($("#crtPriceW").find("input").val()),
-                    image: $("#crtImage").find("input").val(),
+                    image: $("#crtImage").find("input").val()
                 },
-                success: function (success){
-                    if (success)
+                success: function (code) {
+                    if (code == 1)
                         location.reload();
+                    else if (code == 2) {
+                        $('#modalCrt').modal('toggle');
+                        CreateModal("Error", "Ya existe un producto con ese nombre");
+                    }
+                    else if (code == 3) {
+                        $('#modalCrt').modal('toggle');
+                        CreateModal("Error", "Ya existe un producto con ese número de artículo");
+                    }
+                    else if (code == 4) {
+                        $('#modalCrt').modal('toggle');
+                        CreateModal("Error", "Ya existe un producto con ese código de barras");
+                    }
                     else {
                         $('#modalCrt').modal('toggle');
                         CreateModal("Error", "Hubo un error al crear el producto");
-                    }
+                    }                    
                 },
                 error: function () {
                     CreateModal("Error", "Hubo un error al crear el producto");
@@ -76,10 +88,11 @@
                     image: $("#updtImage").find("input").val()
                 },
                 success: function () {
-                    location.reload();
+                    location.reload();                
+                    
                 },
                 error: function () {
-                    CreateModal("Error", "Hubo un error al actualizar el cliente");
+                    CreateModal("Error", "Hubo un error al actualizar el producto");
                 }
             });
         }

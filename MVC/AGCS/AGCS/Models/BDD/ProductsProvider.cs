@@ -89,13 +89,9 @@ namespace AGCS.Models.BDD
 
             if (ConnectionReader.Read())
             {
-                string name;
-                int stock;
                 try
                 {                  
-                    name = Helpers.ReadString(ConnectionReader, "Name");
-                    stock = Helpers.ReadInt(ConnectionReader, "stock");
-                    product = new Product(idProduct, name, stock);
+                    product = new Product(idProduct, Helpers.ReadString(ConnectionReader, "Name"), Helpers.ReadInt(ConnectionReader, "stock"));
                 }
                 catch { }
             }
@@ -103,8 +99,8 @@ namespace AGCS.Models.BDD
             return product;
         }
 
-        public static bool InsertProduct(Product product) {
-            bool bInserted = false;
+        public static byte InsertProduct(Product product) {
+            byte code = 0;
             Dictionary<string, object> args = new Dictionary<string, object>
             {
                 { "pIdBusiness", Session.GetSUInt32("idBusiness")} ,
@@ -117,9 +113,13 @@ namespace AGCS.Models.BDD
                 { "pPriceW",product.PriceW } ,
                 { "pImage", product.Image}
             };
-            bInserted = (Helpers.CallNonQuery("spProductInsert", args) > 0);
+            MySqlDataReader ConnectionReader = Helpers.CallProcedureReader("spProductInsert", args);
+            if (ConnectionReader.Read())
+            {
+                code = Convert.ToByte(ConnectionReader["code"]);
+            }
             Helpers.Disconect();
-            return bInserted;
+            return code;
         }
 
         public static void UpdateProduct(Product product)

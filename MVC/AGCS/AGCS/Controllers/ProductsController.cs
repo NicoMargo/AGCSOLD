@@ -61,15 +61,13 @@ namespace AGCS.Controllers
         
         
         [HttpPost]
-        public bool CreateProduct(uint number, string name, string description, string code, string cost, string price, string priceW, int stock, string image)
+        public byte CreateProduct(uint number, string name, string description, string code, string cost, string price, string priceW, int stock, string image)
         {
-            bool success = true;
+            byte success = 0;
             float fCost = parseFloat(cost);
             float fPrice = parseFloat(price);
             float fPriceW = parseFloat(priceW);
-
             Product product = new Product(number, code, name, description, fCost, fPrice, fPriceW, image);
-
 
             try
             {
@@ -77,7 +75,6 @@ namespace AGCS.Controllers
             }
             catch
             {
-                success = false;
             }
 
             return success;

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 03-12-2019 a las 06:20:35
+-- Tiempo de generación: 03-12-2019 a las 06:49:03
 -- Versión del servidor: 10.4.10-MariaDB
 -- Versión de PHP: 7.3.12
 
@@ -201,16 +201,17 @@ if (not exists(select idProduct from Products where Business_id = pIdBusiness an
 						Update Products set PriceW = pPriceW where idProduct = @lastId; 
 					end if;
 					update products set Image = pImage where idProduct = @lastId; 
+                    select 1 as code;
 				end if; #endif lastId is not null 
 			end if;#endif ProductNumber > 0
             else 
-				select 2;
+				select 2 as code;
 		end if; # Productname = product.Name
         else
-			select 3;
+			select 3 as code;
 	end if;#endif not exists product with same product number in the same business
     else
-		select 4;
+		select 4 as code;
 	end if;#endif nos exist product with same pcode in the same business 
 END$$
 
@@ -808,7 +809,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `Active` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`idProduct`) USING BTREE,
   KEY `fk_Products_Business1_idx` (`Business_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 --
 -- Volcado de datos para la tabla `products`
@@ -836,7 +837,8 @@ INSERT INTO `products` (`idProduct`, `Article_number`, `Name`, `Description`, `C
 (32, 234, 'agua', '3456', 0003456.00, 0003456.00, 0003456.00, '34563456', NULL, 0, '77999999999999', 1, b'0'),
 (33, 16842, 'agua villavicnecio 500', 'Una botella que tiene agua', 0000021.00, 0000051.00, 0000041.00, 'https://statics.dinoonline.com.ar/imagenes/full_600x600_ma/3040004_f.jpg', NULL, 47, '12345678901234', 1, b'1'),
 (34, 15, 'Manga Full Metal Alchemist Vol 1', 'El tomo 1 de Alquimistas de puro metal', 0000200.00, 0000300.00, 0000281.00, 'https://vignette.wikia.nocookie.net/fma/images/3/3a/Volumen_1.png/revision/latest?cb=20141118003253&path-prefix=es', NULL, 33, '15', 1, b'1'),
-(37, 17, 'Manga Full Metal Alchemist vol 2', 'El tomo 2 del manga de alquimistas de puro metal', 0005312.00, 0005132.00, 0084651.00, '45631fsd', NULL, 4, '17', 1, b'1');
+(37, 17, 'Manga Full Metal Alchemist vol 2', 'El tomo 2 del manga de alquimistas de puro metal', 0005312.00, 0005132.00, 0084651.00, '45631fsd', NULL, 4, '17', 1, b'1'),
+(38, 5675675, 'Manga Yakusoku no Neverlangfgfds', NULL, 0000222.00, 0000333.00, 0000444.00, '', NULL, 0, '234543', 1, b'0');
 
 -- --------------------------------------------------------
 
